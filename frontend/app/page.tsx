@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main>
+      <main className="mt-20 md:mt-52 lg:mt-64">
         <div className="w-64 mx-auto my-24 md:mt-36 lg:mt-48 text-center hover:cursor-pointer hover:text-darkBlueLight duration-150">
           <p>The last dive was on</p>
           <p className="text-4xl py-2">28 Sep 2024</p>

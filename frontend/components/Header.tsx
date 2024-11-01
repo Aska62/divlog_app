@@ -10,22 +10,24 @@ const Header = () => {
 
   return (
     <>
-      <header className="py-4 w-100vw flex justify-between align-middle">
-        <Link href="/" className="ml-3 hover:text-darkBlueLight">
-          <h1 className="font-logo text-xl font-bold">DivLog</h1>
-        </Link>
+      <header className="bg-baseWhite py-4 w-full fixed top-0 shadow-dl">
+        <div className="w-full flex justify-between align-middle">
+          <Link href="/" className="ml-3 hover:text-darkBlueLight">
+            <h1 className="font-logo text-xl font-bold">DivLog</h1>
+          </Link>
 
-        {/* Hubmerger */}
-        <RxHamburgerMenu className="md:hidden mr-4 hover:cursor-pointer w-6 h-6" onClick={() => setMenuOpen(true)}/>
+          {/* Hubmerger */}
+          <RxHamburgerMenu className="md:hidden mr-4 hover:cursor-pointer w-6 h-6" onClick={() => setMenuOpen(true)}/>
 
-        {/* Desktop menu */}
-        <nav className="mr-4 hidden md:flex">
-          <Link href="#" className="mx-3 hover:text-darkBlueLight">Dive Plan</Link>
-          <Link href="/logBook" className="mx-3 hover:text-darkBlueLight">Log Book</Link>
-          <Link href="#" className="mx-3 hover:text-darkBlueLight">Dive Centers</Link>
-          <Link href="#" className="mx-3 hover:text-darkBlueLight">Buddies</Link>
-          <Link href="#" className="mx-3 h-6 hover:text-darkBlueLight"><CgProfile className="mx-0 h-6" /></Link>
-        </nav>
+          {/* Desktop menu */}
+          <nav className="mr-4 hidden md:flex">
+            <Link href="#" className="mx-3 hover:text-darkBlueLight">Dive Plan</Link>
+            <Link href="/logBook" className="mx-3 hover:text-darkBlueLight">Log Book</Link>
+            <Link href="#" className="mx-3 hover:text-darkBlueLight">Dive Centers</Link>
+            <Link href="#" className="mx-3 hover:text-darkBlueLight">Buddies</Link>
+            <Link href="#" className="mx-3 h-6 hover:text-darkBlueLight"><CgProfile className="mx-0 h-6" /></Link>
+          </nav>
+        </div>
       </header>
 
       {/* Mobile Menu */}
