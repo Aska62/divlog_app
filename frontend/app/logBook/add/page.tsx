@@ -1,7 +1,12 @@
+import Heading from "@/components/Heading";
+
 const AddLog = () => {
-  return ( <>
-    Add Log
-  </> );
+  return (
+    <>
+      <Heading pageTitle="Add New Log" />
+      Add Log
+    </>
+  );
 }
- 
+
 export default AddLog;
