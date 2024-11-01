@@ -15,7 +15,7 @@ const LogBokPage = () => {
           <LogCard />
           <LogCard />
           <LogCard />
-          <div className="w-60 h-44 border border-darkBlue rounded-md shadow-dl mx-6 my-8 md:justify-self-end">
+          <div className="w-60 h-44 border border-darkBlue dark:border-lightBlue rounded-md shadow-dl mx-6 my-8 md:justify-self-end">
             last card
           </div>
         </div>
