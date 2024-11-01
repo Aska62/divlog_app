@@ -23,6 +23,7 @@ const config: Config = {
         iceBlue: '#BEC8D6',
         lightGray: '#989191',
         baseBlack: '#403E3E',
+        baseBlackLight: '#595757',
         eyeCatch: '#FFAE83'
       },
       boxShadow: {
