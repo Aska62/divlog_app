@@ -75,6 +75,25 @@ const LogSearchForm = () => {
         />
       </div>
 
+      {/* Log status */}
+      <div className="w-full flex flex-col md:flex-row mb-4">
+        <p className="mr-12">Status</p>
+        <div className="flex ">
+          <div className="mr-6">
+            <input type="radio" name="status" id="all" value="all" />
+            <label htmlFor="all" className="ml-2">All</label>
+          </div>
+          <div className="mr-6">
+            <input type="radio" name="status" id="nonDraft" value="nonDraft" />
+            <label htmlFor="nonDraft" className="ml-2">Non-Draft</label>
+          </div>
+          <div className="mr-6">
+            <input type="radio" name="status" id="draft" value="draft" />
+            <label htmlFor="draft" className="ml-2">Draft</label>
+          </div>
+        </div>
+      </div>
+
       <button className="self-end bg-lightGray dark:bg-lightBlue hover:bg-darkBlue dark:hover:bg-lightGray duration-75 text-baseWhite dark:text-baseBlack px-2 rounded-md">
         Clear
       </button>
