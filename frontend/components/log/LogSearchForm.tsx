@@ -1,6 +1,6 @@
 const LogSearchForm = () => {
   return (
-    <form className="flex flex-col w-10/12 max-w-xl py-4 px-5 rounded-sm mx-auto my-12 shadow-dl">
+    <form className="flex flex-col w-10/12 max-w-xl py-4 px-5 rounded-sm mx-auto my-6 shadow-dl">
       {/* Date */}
       <div className="w-full flex flex-col md:flex-row md:justify-between mb-4">
         <p>Date</p>

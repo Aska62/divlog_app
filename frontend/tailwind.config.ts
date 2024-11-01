@@ -24,7 +24,8 @@ const config: Config = {
         lightGray: '#989191',
         baseBlack: '#403E3E',
         baseBlackLight: '#595757',
-        eyeCatch: '#FFAE83'
+        eyeCatch: '#FFAE83',
+        eyeCatchDark: '#d68960'
       },
       boxShadow: {
         'dl': '0 4px 8px 0.5px rgba(0, 0, 0, 0.3)'
