@@ -25,6 +25,9 @@ const config: Config = {
         baseBlack: '#403E3E',
         eyeCatch: '#FFAE83'
       },
+      boxShadow: {
+        'dl': '0 4px 8px 0.5px rgba(0, 0, 0, 0.3)'
+      },
     },
     fontFamily: {
       logo: ["Julius Sans One", "sans-serif"],
