@@ -4,7 +4,7 @@ const LogBookLayout: React.FC<{children: React.ReactNode}> = ({ children }) => {
   return (
     <>
       <Header />
-      <main className="w-100vw mt-20 md:mt-52 lg:mt-64">
+      <main className="w-100vw mt-20">
         {children}
       </main>
     </>
