@@ -34,7 +34,7 @@ const Header = () => {
       <div className={`fixed top-0 z-10 w-screen h-screen bg-baseWhite70 transition duration-700 ${menuOpen ? 'block opacity-100' : 'hidden opacity-0'}`}>
         <nav className={`shadow-lg w-full sm:w-96 h-full fixed transition duration-700 ease-in-out ${menuOpen ? "right-0" : "left-full"} flex flex-col bg-darkBlue text-lg text-baseWhite`}>
           <RxCross2 className="absolute top-3 right-3 h-7 w-7 hover:cursor-pointer hover:text-baseWhite70" onClick={() => setMenuOpen(false)}/>
-          <Link href="#" className="mx-auto mt-56 mb-6 hover:text-baseWhite70">Dive Plan</Link>
+          <Link href="#" className="mx-auto mt-32 mb-6 hover:text-baseWhite70">Dive Plan</Link>
           <Link href="/logBook" className="mx-auto my-6 hover:text-baseWhite70">Log Book</Link>
           <Link href="#" className="mx-auto my-6 hover:text-baseWhite70">Dive Centers</Link>
           <Link href="#" className="mx-auto my-6 hover:text-baseWhite70">Buddies</Link>
