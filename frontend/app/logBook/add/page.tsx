@@ -35,34 +35,6 @@ const AddLog = () => {
           </div>
         </div>
 
-        {/* Purpose */}
-        <div className="w-full h-14 my-3 flex justify-between items-start">
-          <label htmlFor="logNo" className="w-24 text-wrap">Purpose</label>
-          <div className="w-8/12">
-            <select name="purpose" id="purpose" className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black">
-              <option value="" > --- Select purpose --- </option>
-              <option value="1" >Recreational</option>
-              <option value="2" >Training</option>
-              <option value="3" >Technical</option>
-            </select>
-            <p className="text-eyeCatchDark text-end"></p>
-          </div>
-        </div>
-
-        {/* Course */}
-        <div className="w-full h-14 my-3 flex justify-between items-start">
-          <label htmlFor="course" className="w-24 text-wrap">Course</label>
-          <div className="w-8/12">
-            <input
-              type="text"
-              name="course"
-              placeholder="Course"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
-            />
-            <p className="text-eyeCatchDark text-end"></p>
-          </div>
-        </div>
-
         {/* Location */}
         <div className="w-full h-14 my-3 flex justify-between items-start">
           <label htmlFor="location" className="w-24 text-wrap">Location</label>
@@ -87,6 +59,34 @@ const AddLog = () => {
               <option value="2" >Phillipines</option>
               <option value="3" >Indonesia</option>
             </select>
+            <p className="text-eyeCatchDark text-end"></p>
+          </div>
+        </div>
+
+        {/* Purpose */}
+        <div className="w-full h-14 my-3 flex justify-between items-start">
+          <label htmlFor="logNo" className="w-24 text-wrap">Purpose</label>
+          <div className="w-8/12">
+            <select name="purpose" id="purpose" className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black">
+              <option value="" > --- Select purpose --- </option>
+              <option value="1" >Recreational</option>
+              <option value="2" >Training</option>
+              <option value="3" >Technical</option>
+            </select>
+            <p className="text-eyeCatchDark text-end"></p>
+          </div>
+        </div>
+
+        {/* Course */}
+        <div className="w-full h-14 my-3 flex justify-between items-start">
+          <label htmlFor="course" className="w-24 text-wrap">Course</label>
+          <div className="w-8/12">
+            <input
+              type="text"
+              name="course"
+              placeholder="Course"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
+            />
             <p className="text-eyeCatchDark text-end"></p>
           </div>
         </div>
