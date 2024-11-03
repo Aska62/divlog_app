@@ -2,9 +2,7 @@ import Heading from "@/components/Heading";
 import EditLogBtn from "@/components/log/EditLogBtn";
 
 type LogPageProps = {
-  params: {
-    id: string
-  }
+  params: Promise<{ id: string }>
 }
 
 const LogPage:React.FC<LogPageProps> = async ({ params }) => {

@@ -2,12 +2,12 @@ import Heading from "@/components/Heading";
 import UpdateLogBtn from "@/components/log/UpdateLogBtn";
 
 type EditLogProps = {
-  params: {
-    id: string
-  }
+  params: Promise<{ id: string }>
 }
-const EditLog:React.FC<EditLogProps> = async ({ params }) => {
-  const { id } = await params;
+
+const EditLog:React.FC<EditLogProps> = ({ params }) => {
+  const id = params;
+
   return (
     <>
       <Heading pageTitle={`Edit Log No. ${id}`} />
