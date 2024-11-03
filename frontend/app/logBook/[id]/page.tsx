@@ -14,7 +14,7 @@ const LogPage:React.FC<LogPageProps> = async ({ params }) => {
   <>
     <Heading pageTitle={`Log No. ${id}`} />
 
-    <div className="w-10/12 max-w-xl h-fit mx-auto mb-12">
+    <div className="w-10/12 max-w-md h-fit mx-auto mb-12">
       <div className="text-right">
         <EditLogBtn id={id} />
       </div>
@@ -50,7 +50,7 @@ const LogPage:React.FC<LogPageProps> = async ({ params }) => {
       </div>
 
       {/* Temperatuer */}
-      <div className="my-3">
+      <div className="my-3 md:flex md:items-baseline">
         <p className="text-sm mr-2">Temperatuer</p>
         <div className="flex items-baseline ml-3">
           <div className="flex items-baseline mr-3">
@@ -65,7 +65,7 @@ const LogPage:React.FC<LogPageProps> = async ({ params }) => {
       </div>
 
       {/* Time */}
-      <div className="my-3">
+      <div className="my-3 md:flex md:items-baseline">
         <p className="text-sm mr-2">Time </p>
         <div className="flex items-baseline ml-3">
           <div className="flex items-baseline mr-3">
@@ -87,7 +87,7 @@ const LogPage:React.FC<LogPageProps> = async ({ params }) => {
       </div>
 
       {/* Tank pressure */}
-      <div className="my-3">
+      <div className="my-3 md:flex md:items-baseline">
         <p className="text-sm mr-2">Tank pressure </p>
         <div className="flex items-baseline ml-3">
           <div className="flex items-baseline mr-3">
