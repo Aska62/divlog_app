@@ -16,7 +16,7 @@ const AddLog = () => {
               type="number"
               name="logNo"
               placeholder="Log no."
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
           <p className="text-eyeCatchDark text-end">error arimasu</p>
           </div>
@@ -29,7 +29,7 @@ const AddLog = () => {
             <input
               type="date"
               name="date"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">error arimasu</p>
           </div>
@@ -57,7 +57,7 @@ const AddLog = () => {
               type="text"
               name="course"
               placeholder="Course"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end"></p>
           </div>
@@ -71,7 +71,7 @@ const AddLog = () => {
               type="text"
               name="location"
               placeholder="Location"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end"></p>
           </div>
@@ -93,13 +93,13 @@ const AddLog = () => {
 
         {/* Weather */}
         <div className="w-full h-14 my-3 flex justify-between items-start">
-          <label htmlFor="weather" className="w-24 text-wrap">Weathe</label>
+          <label htmlFor="weather" className="w-24 text-wrap">Weather</label>
           <div className="w-8/12">
             <input
               type="text"
               name="weather"
               placeholder="Weather"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end"></p>
           </div>
@@ -113,7 +113,7 @@ const AddLog = () => {
               type="number"
               name="surfaceTemperature"
               placeholder="Surface temperature"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">error arimasu</p>
           </div>
@@ -127,7 +127,7 @@ const AddLog = () => {
               type="number"
               name="waterTemperature"
               placeholder="Water temperature"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">error arimasu</p>
           </div>
@@ -140,7 +140,7 @@ const AddLog = () => {
             <input
               type="time"
               name="startTime"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end"></p>
           </div>
@@ -153,7 +153,7 @@ const AddLog = () => {
             <input
               type="time"
               name="endTime"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end"></p>
           </div>
@@ -167,7 +167,7 @@ const AddLog = () => {
               type="number"
               name="tankPresureStart"
               placeholder="Tank pressure start"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end"></p>
           </div>
@@ -181,7 +181,7 @@ const AddLog = () => {
               type="number"
               name="tankPresureEnd"
               placeholder="Tank pressure end"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end"></p>
           </div>
@@ -195,7 +195,7 @@ const AddLog = () => {
               type="number"
               name="weight"
               placeholder="Weight added"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">{}</p>
           </div>
@@ -209,7 +209,7 @@ const AddLog = () => {
               type="text"
               name="suit"
               placeholder="Suit"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">{}</p>
           </div>
@@ -223,7 +223,7 @@ const AddLog = () => {
               type="number"
               name="maxDepth"
               placeholder="Max depth"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">{}</p>
           </div>
@@ -237,7 +237,7 @@ const AddLog = () => {
               type="number"
               name="visibility"
               placeholder="Visibility"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">{}</p>
           </div>
@@ -251,7 +251,7 @@ const AddLog = () => {
               type="text"
               name="buddy"
               placeholder="Buddy"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">{}</p>
           </div>
@@ -265,7 +265,7 @@ const AddLog = () => {
               type="text"
               name="instructor"
               placeholder="Instructor"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">{}</p>
           </div>
@@ -279,7 +279,7 @@ const AddLog = () => {
               type="text"
               name="diveCenter"
               placeholder="Dive Center"
-              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded-s text-black"
+              className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">{}</p>
           </div>
@@ -293,7 +293,7 @@ const AddLog = () => {
               name="note"
               id="note"
               placeholder="Dive Center"
-              className="w-full h-60 bg-lightBlue dark:bg-baseWhite px-2 mt-2 rounded-s text-black"
+              className="w-full h-60 bg-lightBlue dark:bg-baseWhite px-2 mt-2 rounded text-black"
             />
             <p className="text-eyeCatchDark text-end">{}</p>
           </div>
