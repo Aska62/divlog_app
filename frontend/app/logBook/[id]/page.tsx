@@ -9,13 +9,15 @@ type LogPageProps = {
 
 const LogPage:React.FC<LogPageProps> = async ({ params }) => {
   const { id } = await params;
+  const isDraft = true;
 
   return (
   <>
     <Heading pageTitle={`Log No. ${id}`} />
 
     <div className="w-10/12 max-w-md h-fit mx-auto mb-12">
-      <div className="text-right">
+      <div className={`${isDraft ? "flex justify-between items-center" : "text-end"}`}>
+        { isDraft && (<p className="w-1/2 bg-eyeCatchDark text-baseWhite text-center font-bold px-2 mt-3">This log is DRAFT</p>)}
         <EditLogBtn id={id} />
       </div>
 
