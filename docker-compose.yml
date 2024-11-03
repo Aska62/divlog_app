@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: db
+    image: postgres:12
+    restart: no
+    environment:
+      POSTGRES_USER: divlog_admin
+      POSTGRES_PASSWORD: divlog123
+      POSTGRES_DB: divlog
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}
