@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   frontend:
     container_name: frontend
@@ -11,7 +9,7 @@ services:
       - 3000:3000
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:4000
-    restart: always
+    restart: no
     depends_on:
       - backend
   backend:
@@ -23,13 +21,13 @@ services:
     ports:
       - 4000:4000
     environment:
-      - DATABASE_URL=postgresql://divlog_admin:divlog123@db:5432/divlog?schema=public
+      - DATABASE_URL=postgresql://divlog_dbuser:divlog123@db:5432/divlog?schema=public
   db:
     container_name: db
-    image: postgres:12
+    image: postgres:latest
     restart: no
     environment:
-      POSTGRES_USER: divlog_admin
+      POSTGRES_USER: divlog_dbuser
       POSTGRES_PASSWORD: divlog123
       POSTGRES_DB: divlog
     ports:

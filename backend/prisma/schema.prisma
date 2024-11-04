@@ -12,3 +12,147 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  divlog_name   String         @db.VarChar(20) @unique
+  license_name  String?        @db.VarChar(75)
+  email         String         @unique @db.VarChar(150)
+  password      String         @db.VarChar(150)
+  certification String?        @db.VarChar(75)
+  cert_org_id   Int?
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+
+  diver_info    DiverInfo?
+  organization  Organization?  @relation(fields: [cert_org_id], references: [id])
+  centers       CenterStaff[]
+  dive_records  DiveRecord[]   @relation("record_owner")
+  buddy_records DiveRecord[]   @relation("record_buddy")
+  supervisor_records DiveRecord[] @relation("record_supervisor")
+
+  @@map("users")
+}
+
+model DiverInfo {
+  id                  String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id             String  @unique @db.Uuid
+  norecord_dive_count Int?
+  height              Float?
+  weight              Float?
+  shoe                Float?
+  measurement_unit    Int?
+  languages           String[]
+  created_at          DateTime @default(now())
+	updated_at          DateTime @updatedAt
+
+  user                User     @relation(fields:[user_id], references: [id])
+
+  @@map("diver_info")
+}
+
+model DiveCenter {
+  id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String       @db.VarChar(75) @unique
+  country_id      Int
+  organization_id Int
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+
+  country         Country      @relation(fields: [country_id], references: [id])
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  center_staffs   CenterStaff[]
+  dive_records    DiveRecord[]
+
+  @@map("dive_centers")
+}
+
+model Organization {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(75) @unique
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  users        User[]
+  dive_centers DiveCenter[]
+
+  @@map("organizations")
+}
+
+model CenterStaff {
+  id             Int        @id @default(autoincrement())
+  user_id        String     @db.Uuid
+  dive_center_id String     @db.Uuid
+  created_at     DateTime   @default(now())
+  updated_at     DateTime   @updatedAt
+
+  user           User       @relation(fields: [user_id], references: [id])
+  dive_center    DiveCenter @relation(fields: [dive_center_id], references: [id])
+
+  @@map("center_staffs")
+}
+
+model DivePurpose {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(75) @unique
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  dive_records DiveRecord[]
+
+  @@map("dive_purposes")
+}
+
+model Country {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(75) @unique
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  dive_centers DiveCenter[]
+  dive_records DiveRecord[]
+
+  @@map("countries")
+}
+
+model DiveRecord {
+  id                  String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id             String       @db.Uuid
+  log_no              Int
+  date                DateTime     @db.Date // To assign Postgres Date type, need to specify with '@db.Date'
+  location            String?      @db.VarChar(150)
+  country_id          Int?
+  purpose_id          Int?
+  course              String?      @db.VarChar(150)
+  weather             String?      @db.VarChar(75)
+  surface_temperature Int?
+  water_temperature   Int?
+  max_depth           Int?
+  visibility          Int?
+  start_time          DateTime?    @db.Date
+  end_time            DateTime?    @db.Date
+  tankpressure_start  Int?
+  tankpressure_end    Int?
+  added_weight        Int?
+  suit                String?      @db.VarChar(75)
+  gears               String?      @db.VarChar(255)
+  buddy_str           String?      @db.VarChar(75)
+  buddy_ref           String?      @db.Uuid
+  supervisor_str      String?      @db.VarChar(75)
+  supervisor_ref      String?      @db.Uuid
+  dive_center_str     String?      @db.VarChar(75)
+  dive_center_id      String?      @db.Uuid
+  notes               String?      @db.VarChar
+  is_draft            Boolean      @default(true)
+  created_at          DateTime     @default(now())
+  updated_at          DateTime     @updatedAt
+
+  owner               User         @relation("record_owner", fields: [user_id], references: [id])
+  country             Country?     @relation(fields: [country_id], references: [id])
+  purpose             DivePurpose? @relation(fields: [purpose_id], references: [id])
+  buddy               User?        @relation("record_buddy", fields: [buddy_ref], references: [id] )
+  supervisor          User?        @relation("record_supervisor", fields: [supervisor_ref], references: [id] )
+  dive_center         DiveCenter?  @relation(fields: [dive_center_id], references: [id])
+
+	@@map("dive_records")
+}
