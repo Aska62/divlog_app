@@ -1,17 +1,13 @@
+import LogoLg from "@/components/LogoLg";
 import LoginBtn from "@/components/LoginBtn";
 import Link from "next/link";
 
 const LoginPage = () => {
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center">
-      <div className="text-center mb-20">
-        <h1 className="font-logo text-darkBlue dark:text-lightBlue text-7xl">
-          DivLog
-        </h1>
-        <p className="font-logo text-sm">PLAN, LOG, CONNECT</p>
-      </div>
+      <LogoLg />
 
-      <form action="#" className="w-64 text-center">
+      <form action="#" className="w-64 text-center mt-20">
         <h2>Login</h2>
         <div className="h-14 my-2 text-start">
           <input
