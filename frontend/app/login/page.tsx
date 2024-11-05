@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const LoginPage = () => {
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center">
+    <main className="w-full h-screen flex flex-col items-center justify-center">
       <div className="text-center mb-20">
         <h1 className="font-logo text-darkBlue dark:text-lightBlue text-7xl">
           DivLog
@@ -41,7 +41,8 @@ const LoginPage = () => {
           <p className="border border-darkBlue dark:border-lightBlue hover:bg-lightBlue dark:hover:bg-lightGray dark:hover:text-darkBlue duration-75 w-64 h-9 rounded-md text-center leading-8" >Register</p>
         </Link>
       </div>
-    </div>
+
+    </main>
   );
 }
 
