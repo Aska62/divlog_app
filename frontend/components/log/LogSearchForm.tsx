@@ -11,7 +11,7 @@ const LogSearchForm = () => {
               type="date"
               name="dateFrom"
               placeholder="Date"
-              className="bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1"
+              className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
             />
           </div>
           <div className="w-full md:w-6/12 flex justify-between mb-3 md:mx-0">
@@ -20,7 +20,7 @@ const LogSearchForm = () => {
               type="date"
               name="dateTo"
               placeholder="Date"
-              className="bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1"
+              className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
             />
           </div>
         </div>
@@ -36,7 +36,7 @@ const LogSearchForm = () => {
               type="number"
               name="logNoFrom"
               placeholder="Log no."
-              className="bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1"
+              className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
             />
           </div>
           <div className="w-full md:w-6/12 flex justify-between mb-3 md:mx-0">
@@ -45,7 +45,7 @@ const LogSearchForm = () => {
               type="number"
               name="logNoTo"
               placeholder="Log no."
-              className="bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1"
+              className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
             />
           </div>
         </div>
@@ -56,9 +56,9 @@ const LogSearchForm = () => {
         <label htmlFor="country">Country/region</label>
         <select
           name="country"
-          className="bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 self-end md:ml-3 text-lightGray"
+          className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 self-end md:ml-3 focus:outline-none"
         >
-          <option value="">Country/region</option>
+          <option value="">--- Please select ---</option>
           <option value="">Country/region</option>
           <option value="">Country/region</option>
           <option value="">Country/region of very long name</option>
@@ -71,7 +71,7 @@ const LogSearchForm = () => {
         <input
           type="text"
           placeholder="Buddy's name"
-          className="bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 px-1 self-end md:ml-3"
+          className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 px-1 self-end md:ml-3 focus:outline-none"
         />
       </div>
 
