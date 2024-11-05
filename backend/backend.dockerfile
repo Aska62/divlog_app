@@ -14,4 +14,4 @@ COPY . .
 
 EXPOSE 4000
 
-CMD [ "node", "index.js" ]
+CMD ["npx", "nodemon", "--legacy-watch", "src/index.js"]
