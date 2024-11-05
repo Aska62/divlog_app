@@ -1,13 +1,14 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import userRoutes from './routes/UserRoutes.js';
 
 dotenv.config();
 
-const prisma = new PrismaClient();
-
 const app = express();
+
+// Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
 
 // json
 app.use(express.json());
