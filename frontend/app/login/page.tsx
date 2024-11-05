@@ -12,6 +12,7 @@ const LoginPage = () => {
       </div>
 
       <form action="#" className="w-64 text-center">
+        <h2>Login</h2>
         <div className="h-14 my-2 text-start">
           <input
             type="email"
