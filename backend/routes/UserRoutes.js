@@ -13,12 +13,12 @@ import {
 
 const router = express.Router();
 
+router.get('/', getAllUsers);
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);
 router.route('/profile').get(getLoginUser).put(updateUser).delete(deleteUser);
-router.get('/all', getAllUsers);
+router.get('/find/:name', getUsersByName);
 router.get('/:id', getUserById);
-router.get('/search/:name', getUsersByName);
 
 export default router;
