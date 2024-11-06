@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import asyncHandler from "../middleware/asyncHandler.js";
+import generateToken from '../utils/generateToken.js';
 
 const prisma = new PrismaClient();
 const saltRounds = 10;
@@ -25,9 +26,10 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (userByName) {
-    res.status(400).json({
+    res.status(400).send({
       error: 'The username is already taken'
     });
+    return;
   }
 
   // Check if users with the same email exists
@@ -38,9 +40,10 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (userByEmail) {
-    res.status(400).json({
+    res.status(400).send({
       error: 'The email address is already registered'
     });
+    return;
   }
 
   // Hash password
@@ -57,22 +60,50 @@ const registerUser = asyncHandler(async (req, res) => {
       }
     });
 
-    res.status(201).json(user);
+    // Set token as a logged in user
+    generateToken(res, user.id);
+
+    res.status(201).json({
+      id: user.id,
+      divlog_name  : user.divlog_name,
+      license_name : user.license_name,
+      certification: user.certification,
+      cert_org_id  : user.cert_org_id
+    });
   } catch (error) {
-    req.status(500).json({
+    res.status(500).send({
       message: error.message
     });
   }
 });
 
-// TODO: Login
 // @desc Login user - auth and set token
 // @route POST /api/users/login
 // @access Public
 const loginUser = async(req, res) => {
-  res.status(200).json({
-    message: "loginUser func"
+  const { email, password } = req.body;
+
+  // Find user
+  const user = await prisma.user.findUnique({
+    where: { email },
   });
+
+  // If user was found and password matches, set token
+  if (user && await bcrypt.compare(password, user.password)) {
+    generateToken(res, user.id);
+
+    res.status(200).json({
+      id: user.id,
+      divlog_name  : user.divlog_name,
+      license_name : user.license_name,
+      certification: user.certification,
+      cert_org_id  : user.cert_org_id
+    });
+  } else {
+    res.status(401).json({
+      message: "The email or password did not match"
+    });
+  }
 }
 
 // TODO: Logout
