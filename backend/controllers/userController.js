@@ -80,7 +80,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @desc Login user - auth and set token
 // @route POST /api/users/login
 // @access Public
-const loginUser = async(req, res) => {
+const loginUser = asyncHandler(async(req, res) => {
   const { email, password } = req.body;
 
   // Find user
@@ -102,17 +102,21 @@ const loginUser = async(req, res) => {
   } else {
     res.status(400).send('Failed to login');
   }
-}
+});
 
 // TODO: Logout
 // @desc Logout user - clear cookie
 // @route POST /api/users/logout
 // @access Private
-const logoutUser = async(req, res) => {
-  res.status(200).json({
-    message: "logoutUser func"
+const logoutUser = asyncHandler(async(req, res) => {
+  // Clear jwt from cookie
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
   });
-}
+
+  res.status(200).json({ message: 'Logged out successfully' });
+});
 
 // TODO: Get logged in user
 // @desc Get user profile

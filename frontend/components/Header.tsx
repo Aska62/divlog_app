@@ -1,12 +1,26 @@
 'use client';
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { CgProfile } from "react-icons/cg";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { MdLogout } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
+import removeSession from '@/actions/removeSession';
+import { toast } from "react-toastify";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    const res = await removeSession();
+    if (res?.success) {
+      router.push('/login');
+    } else {
+      toast.error(res?.error);
+    }
+  }
 
   return (
     <>
@@ -26,6 +40,7 @@ const Header = () => {
             <Link href="#" className="mx-3 hover:text-darkBlueLight">Dive Centers</Link>
             <Link href="#" className="mx-3 hover:text-darkBlueLight">Buddies</Link>
             <Link href="#" className="mx-3 h-6 hover:text-darkBlueLight"><CgProfile className="mx-0 h-6" /></Link>
+            <MdLogout className="mx-3 h-6 hover:text-darkBlueLight hover:cursor-pointer" onClick={handleLogout} />
           </nav>
         </div>
       </header>
