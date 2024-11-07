@@ -1,5 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import userRoutes from './routes/UserRoutes.js';
 
 dotenv.config();
@@ -14,16 +16,20 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 
 // cors
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
+const corsOptions = {
+  origin: process.env.NEXT_APP_URL,
+  optionsSuccessStatus: 200,
+  credentials: true,
+}
+app.use(cors(corsOptions));
+
+// cookie parser
+app.use(cookieParser());
 
 const PORT = process.env.PORT || 4000;
 
 app.get('/', (req, res) => {
+  res.send('test')
 });
 
 app.use('/api/users', userRoutes);

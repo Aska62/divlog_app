@@ -7,8 +7,8 @@ services:
       dockerfile: frontend.dockerfile
     ports:
       - 3000:3000
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    env_file:
+      - ./frontend/.env.development
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -32,10 +32,8 @@ services:
     container_name: db
     image: postgres:latest
     restart: no
-    environment:
-      POSTGRES_USER: divlog_dbuser
-      POSTGRES_PASSWORD: divlog123
-      POSTGRES_DB: divlog
+    env_file:
+      - ./backend/.env
     ports:
       - 5432:5432
     volumes:

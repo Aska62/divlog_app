@@ -100,9 +100,7 @@ const loginUser = async(req, res) => {
       cert_org_id  : user.cert_org_id
     });
   } else {
-    res.status(401).json({
-      message: "The email or password did not match"
-    });
+    res.status(400).send('Failed to login');
   }
 }
 
