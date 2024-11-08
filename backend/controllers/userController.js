@@ -18,6 +18,25 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   }
 
+  const emailRegex = /^[a-zA-Z0-9_.±]+@+[a-zA-Z0-9-]+\.+[a-zA-Z0-9-.]{2,}$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{12,}$/;
+
+  // Error if email doesn't match regex
+  if (!email.match(emailRegex)) {
+    res.status(400).send({
+      error: 'The given input is not email'
+    });
+    return;
+  }
+
+  // Error if password doesn't match regex
+  if (!password.match(passwordRegex)) {
+    res.status(400).send({
+      error: 'Password must be more than 12 letters and contain alphabet and number'
+    });
+    return;
+  }
+
   // Check if users with the same username exists
   const userByName = await prisma.user.findFirst({
     where: {
