@@ -1,11 +1,18 @@
 import axios, { isAxiosError }  from "axios";
+import {UserInfo} from '@/stores/useUser'
 
-type LoginFromType = {
-  success: boolean,
-  error?: string
+type LoginActionStateType = {
+  success?: boolean,
+  userInfo?: UserInfo,
+  error?: string,
 }
 
-async function createSession(previousState:LoginFromType, formData: FormData) {
+type LoginFromType = {
+    email?: string,
+    password?: string,
+  } & LoginActionStateType
+
+async function createSession(_previousState: LoginFromType, formData: FormData):Promise<LoginActionStateType> {
   const email = formData.get("email");
   const password = formData.get("password");
 
@@ -21,17 +28,15 @@ async function createSession(previousState:LoginFromType, formData: FormData) {
       { withCredentials: true }
     );
 
-    if (res) {
-      localStorage.setItem('userInfo', JSON.stringify(res.data));
-      return {
-        success: true,
-        userInfo: res.data
-      };
-    }
+    localStorage.setItem('userInfo', JSON.stringify(res.data));
+    return {
+      success: true,
+      userInfo: res.data
+    };
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       return {
-        error: error.response.data
+        error: String(error.response.data)
       };
     } else {
       return {
