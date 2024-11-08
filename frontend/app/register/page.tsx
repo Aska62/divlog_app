@@ -9,7 +9,7 @@ const RegisterPage = () => {
 
       <form action="#" className="w-64 text-center mt-10">
         <h2>Register</h2>
-        <div className="h-14 mb-10 text-start">
+        <div className="h-14 mt-2 mb-10 text-start">
           <input
             type="email"
             name="email"
