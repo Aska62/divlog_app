@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware'
 import isObjectEmpty from '@/utils/isObjectEmpty';
 
 export type UserInfo = {
@@ -39,14 +40,17 @@ type Action = {
   setIsAuth: (userInfo: UserInfo) => void,
 };
 
-const useUser = create<State & Action>(
+const useUser = create(
+  (persist<State & Action>(
     (set) => ({
       userInfo: {},
       isAuth: false,
       setUser: (userInfo) => set({ userInfo: userInfo }),
       removeUser: () => set({}),
       setIsAuth: (userInfo) => set({isAuth: !isObjectEmpty(userInfo)})
-  })
-)
+    }),
+    { name: 'auth' }
+  ))
+);
 
 export default useUser;

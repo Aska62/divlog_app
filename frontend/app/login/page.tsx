@@ -15,7 +15,7 @@ const LoginPage = () => {
   const setUser = useUser((state) => state.setUser);
   const setIsAuth = useUser((state) => state.setIsAuth);
   const isAuth = useUser((state) => state.isAuth);
-  const userInfo = useUser((state) => state.userInfo)
+  const userInfo = useUser((state) => state.userInfo);
 
   useEffect(() => {
     if (isAuth) {

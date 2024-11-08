@@ -1,13 +1,44 @@
-import LogoLg from "@/components/LogoLg";
+'use client';
+import { useActionState, useEffect } from 'react';
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import registerUser from '@/actions/registerUser';
+import useUser, { isUserInfo } from '@/stores/useUser';
+import LogoLg from "@/components/LogoLg";
 import RegisterBtn from "@/components/RegisterBtn";
 
 const RegisterPage = () => {
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(registerUser, {});
+
+  const setUser = useUser((state) => state.setUser);
+  const setIsAuth = useUser((state) => state.setIsAuth);
+  const isAuth = useUser((state) => state.isAuth);
+  const userInfo = useUser((state) => state.userInfo);
+
+  useEffect(() => {
+    if (isAuth) {
+      router.push('/');
+    }
+
+    if (state && state.userInfo && isUserInfo(state.userInfo)) {
+      setUser(state.userInfo);
+      setIsAuth(state.userInfo);
+
+      router.push('/');
+    }
+
+    if (state?.error) {
+      toast.error(state.error.message);
+    }
+  }, [router, state, isAuth, setIsAuth, setUser, userInfo]);
+
   return (
     <main className="w-full h-fit flex flex-col items-center justify-center mt-16">
       <LogoLg />
 
-      <form action="#" className="w-64 text-center mt-10">
+      <form action={formAction} className="w-64 text-center mt-10">
         <h2>Register</h2>
 
         {/* divlog name */}
@@ -19,7 +50,9 @@ const RegisterPage = () => {
             required
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
-          <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">Please input username</p>
+          {state.error?.divlogName && (
+            <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">{state.error.divlogName}</p>
+          )}
         </div>
 
         {/* email */}
@@ -31,7 +64,9 @@ const RegisterPage = () => {
             required
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
-          <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">Please provide a valid email address</p>
+          {state.error?.email && (
+            <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">{state.error.email}</p>
+          )}
         </div>
 
         {/* password */}
@@ -43,7 +78,9 @@ const RegisterPage = () => {
             required
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
-          {/* <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">Please input password</p> */}
+          {state.error?.password && (
+            <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">{state.error.password}</p>
+          )}
         </div>
 
         {/* password confirmation */}
@@ -55,9 +92,11 @@ const RegisterPage = () => {
             required
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
-          {/* <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">Passwords do not match</p> */}
+          {state.error?.confirmPassword && (
+            <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">{state.error.confirmPassword}</p>
+          )}
         </div>
-        <RegisterBtn />
+        <RegisterBtn isDisabled={isPending} />
       </form>
 
       <div className="text-center my-14">

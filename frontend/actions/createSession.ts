@@ -1,5 +1,6 @@
 import axios, { isAxiosError }  from "axios";
-import {UserInfo} from '@/stores/useUser'
+import { UserInfo } from '@/stores/useUser';
+import { emailRegex, passwordRegex } from "./registerUser";
 
 type LoginActionStateType = {
   success?: boolean,
@@ -16,13 +17,10 @@ type LoginFromType = {
     password?: string,
   } & LoginActionStateType
 
-const emailRegex = /^[a-zA-Z0-9_.±]+@+[a-zA-Z0-9-]+\.+[a-zA-Z0-9-.]{2,}$/;
-const passwordRegex = /[a-z]+[A-Z]+[0-9].{12,}/;
 
 async function createSession(_previousState: LoginFromType, formData: FormData):Promise<LoginActionStateType> {
   const email = formData.get("email");
   const password = formData.get("password");
-
 
   const emailErr = !email ? 'Please input email'
     : !String(email).match(emailRegex) ? 'Not a valid email address'

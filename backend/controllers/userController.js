@@ -104,7 +104,6 @@ const loginUser = asyncHandler(async(req, res) => {
   }
 });
 
-// TODO: Logout
 // @desc Logout user - clear cookie
 // @route POST /api/users/logout
 // @access Private
