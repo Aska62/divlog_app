@@ -10,7 +10,7 @@ import LoginBtn from "@/components/LoginBtn";
 
 const LoginPage = () => {
   const router = useRouter();
-  const [state, formAction] = useActionState(createSession, {});
+  const [state, formAction, isPending] = useActionState(createSession, {});
 
   const setUser = useUser((state) => state.setUser);
   const setIsAuth = useUser((state) => state.setIsAuth);
@@ -58,7 +58,7 @@ const LoginPage = () => {
           />
           {/* <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">Please input password</p> */}
         </div>
-        <LoginBtn />
+        <LoginBtn isDisabled={isPending} />
       </form>
 
       <Link href={'/forgotPassword'} className="mt-4 text-sm underline underline-offset-3 hover:text-eyeCatchDark dark:hover:text-eyeCatch" >Frogot password</Link>
