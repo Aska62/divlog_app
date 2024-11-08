@@ -38,7 +38,7 @@ const LoginPage = () => {
     <main className="w-full h-screen flex flex-col items-center justify-center">
       <LogoLg />
 
-      <form action={formAction} className="w-64 text-center mt-20">
+      <form action={formAction} className="w-64 text-center mt-12">
         <h2>Login</h2>
         <div className="h-14 mt-2 mb-4 text-start">
           <input
