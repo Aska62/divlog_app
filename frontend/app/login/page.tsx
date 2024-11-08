@@ -30,7 +30,7 @@ const LoginPage = () => {
     }
 
     if (state?.error) {
-      toast.error(state.error);
+      toast.error(state.error.message);
     }
   }, [router, state, isAuth, setIsAuth, setUser, userInfo]);
 
@@ -40,23 +40,29 @@ const LoginPage = () => {
 
       <form action={formAction} className="w-64 text-center mt-20">
         <h2>Login</h2>
-        <div className="h-14 my-2 text-start">
+        <div className="h-14 mt-2 mb-4 text-start">
           <input
             type="email"
             name="email"
             placeholder="email"
+            required
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
-          <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">Please provide a valid email address</p>
+          {state.error?.email && (
+            <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">{ state.error.email }</p>
+          )}
         </div>
-        <div className="h-14 my-2 text-left">
+        <div className="h-14 mb-10 text-left">
           <input
             type="password"
             name="password"
             placeholder="password"
+            required
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
-          {/* <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">Please input password</p> */}
+          {state.error?.password && (
+            <p className="text-eyeCatchDark dark:text-eyeCatch text-sm">{ state.error.password }</p>
+          )}
         </div>
         <LoginBtn isDisabled={isPending} />
       </form>
