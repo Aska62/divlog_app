@@ -1,26 +1,38 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { CgProfile } from "react-icons/cg";
-import { RxHamburgerMenu } from "react-icons/rx";
+import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
 import { MdLogout } from "react-icons/md";
-import { RxCross2 } from "react-icons/rx";
-import removeSession from '@/actions/removeSession';
 import { toast } from "react-toastify";
+import removeSession from '@/actions/removeSession';
+import useUser from '@/stores/useUser';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const router = useRouter()
+  const router = useRouter();
+
+  const isAuth = useUser((state) => state.isAuth);
+  const setUser = useUser((state) => state.setUser);
+  const setIsAuth = useUser((state) => state.setIsAuth);
 
   const handleLogout = async () => {
     const res = await removeSession();
     if (res?.success) {
+      setUser({});
+      setIsAuth({});
       router.push('/login');
     } else {
       toast.error(res?.error);
     }
   }
+
+  useEffect(() => {
+    if(!isAuth) {
+      router.replace('/login');
+    }
+  }, [isAuth, router]);
 
   return (
     <>
@@ -54,6 +66,7 @@ const Header = () => {
           <Link href="#" className="mx-auto my-6 hover:text-baseWhite70">Dive Centers</Link>
           <Link href="#" className="mx-auto my-6 hover:text-baseWhite70">Buddies</Link>
           <Link href="#" className="mx-auto my-6 hover:text-baseWhite70">My Page</Link>
+          <MdLogout className="mx-auto my-6 h-6 hover:text-baseWhite70 hover:cursor-pointer" onClick={handleLogout} />
         </nav>
       </div>
     </>

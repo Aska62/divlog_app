@@ -23,7 +23,10 @@ async function createSession(previousState:LoginFromType, formData: FormData) {
 
     if (res) {
       localStorage.setItem('userInfo', JSON.stringify(res.data));
-      return { success: true };
+      return {
+        success: true,
+        userInfo: res.data
+      };
     }
   } catch (error) {
     if (isAxiosError(error) && error.response) {

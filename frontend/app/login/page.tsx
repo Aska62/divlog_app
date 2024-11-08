@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import createSession from '@/actions/createSession';
+import useUser, { isUserInfo } from '@/stores/useUser';
 import LogoLg from "@/components/LogoLg";
 import LoginBtn from "@/components/LoginBtn";
 
@@ -11,15 +12,27 @@ const LoginPage = () => {
   const router = useRouter();
   const [state, formAction] = useActionState(createSession, {});
 
+  const setUser = useUser((state) => state.setUser);
+  const setIsAuth = useUser((state) => state.setIsAuth);
+  const isAuth = useUser((state) => state.isAuth);
+  const userInfo = useUser((state) => state.userInfo)
+
   useEffect(() => {
-    if (state?.success) {
+    if (isAuth) {
+      router.push('/');
+    }
+
+    if (state && state.userInfo && isUserInfo(state.userInfo)) {
+      setUser(state.userInfo);
+      setIsAuth(state.userInfo);
+
       router.push('/');
     }
 
     if (state?.error) {
       toast.error(state.error);
     }
-  }, [router, state]);
+  }, [router, state, isAuth, setIsAuth, setUser, userInfo]);
 
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center">
