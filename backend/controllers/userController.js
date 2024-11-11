@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import asyncHandler from "../middleware/asyncHandler.js";
 import generateToken from '../utils/generateToken.js';
+import sendEmail from '../utils/sendEmail.js';
 
 const prisma = new PrismaClient();
 const saltRounds = 10;
@@ -81,6 +82,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // Set token as a logged in user
     generateToken(res, user.id);
+    sendEmail(email, 'Welcome to DivLog', `Dear ${user.divlog_name}, You have successfully sign up for DivLog! This email is sent to ${user.email}`);
 
     res.status(201).json({
       id: user.id,

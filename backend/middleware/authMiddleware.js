@@ -14,9 +14,10 @@ const protect = asyncHandler(async (req, res, next) => {
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user =  await prisma.user.findById({
+
+      req.user = await prisma.user.findUnique({
         where: {
-          id: decoded.id
+          id: decoded.userId
         },
         select: {
           id: true,
@@ -24,6 +25,7 @@ const protect = asyncHandler(async (req, res, next) => {
           email: true,
         },
       });
+
       next();
     } catch (error) {
       console.log(error);
