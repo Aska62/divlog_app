@@ -225,14 +225,44 @@ const updateUser = async(req, res) => {
   }
 }
 
-// TODO: Delete user
 // @desc Delete user profile
 // @route DELETE /api/users/profile
 // @access Private
 const deleteUser = async(req, res) => {
-  res.status(200).json({
-    message: "deleteUser func"
+  // Find user
+  const user = await prisma.user.findUnique({
+    where: { id: req.user.id },
   });
+
+  if (user) {
+    try {
+      const deleteUser = await prisma.user.delete({
+        where: {
+          id: user.id
+        }
+      });
+
+      // Clear jwt from cookie
+      res.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0),
+      });
+
+      res.status(200).send({
+        message: 'Successfully deleted the user'
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: 'Error while deleting user'
+      })
+    }
+  } else {
+    res.status(400).send({
+      message: "User not found"
+    })
+  }
+
 }
 
 // @desc Get all users
