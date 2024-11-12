@@ -14,12 +14,12 @@ import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.route('/').get(protect, getAllUsers);
+router.route('/').get(getAllUsers);
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.route('/logout').post(protect, logoutUser);
 router.route('/profile').get(protect, getLoginUser).put(protect, updateUser).delete(protect, deleteUser);
-router.route('/find/:name').get(protect, getUsersByName);
-router.route('/:id').get(protect, getUserById);
+router.route('/find/:name').get(getUsersByName);
+router.route('/:id').get(getUserById);
 
 export default router;

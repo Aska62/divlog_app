@@ -262,14 +262,28 @@ const getAllUsers = async(req, res) => {
   }
 }
 
-// TODO: Get user by id
 // @desc Get user by id
 // @route PUT /api/users/:id
 // @access Public
 const getUserById = async(req, res) => {
-  res.status(200).json({
-    message: "getUserById func"
+  const user = await prisma.user.findUnique({
+    where: { id: req.params.id },
+    select: {
+      id: true,
+      divlog_name  : true,
+      license_name : true,
+      certification: true,
+      cert_org_id  : true,
+    },
   });
+
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res.status(400).send({
+      message: 'Failed to find the user'
+    });
+  }
 }
 
 // TODO: Get users by name
