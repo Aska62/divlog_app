@@ -138,15 +138,29 @@ const logoutUser = asyncHandler(async(req, res) => {
   res.status(200).json({ message: 'Logged out successfully' });
 });
 
-// TODO: Get logged in user
 // @desc Get user profile
 // @route GET /api/users/profile
 // @access Private
-const getLoginUser = async(req, res) => {
+const getLoginUser = asyncHandler(async(req, res) => {
+  const user = await prisma.user.findUnique({
+    where: { id: req.user.id },
+  });
+
+  if (user) {
+    res.status(200).json({
+      id           : user.id,
+      divlog_name   : user.divlog_name,
+      license_name  : user.license_name,
+      email        : user.email,
+      certification: user.certification,
+      cert_org_id    : user.cert_org_id,
+    });
+  }
+
   res.status(200).json({
     message: "getLoginUser func"
   });
-}
+});
 
 // TODO: Update user
 // @desc Update user profile
