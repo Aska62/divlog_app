@@ -235,14 +235,31 @@ const deleteUser = async(req, res) => {
   });
 }
 
-// TODO: Get all users
 // @desc Get all users
 // @route PUT /api/users
 // @access Public
 const getAllUsers = async(req, res) => {
-  res.status(200).json({
-    message: "getAllUsers func"
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      divlog_name  : true,
+      license_name : true,
+      certification: true,
+      cert_org_id  : true,
+      created_at   : true,
+    },
+    orderBy: {
+      divlog_name: 'asc'
+    }
   });
+
+  if (users) {
+    res.status(200).json({ users });
+  } else {
+    res.status(500).send({
+      message: 'Failed to find users'
+    });
+  }
 }
 
 // TODO: Get user by id
