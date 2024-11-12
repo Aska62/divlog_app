@@ -61,33 +61,32 @@ const registerUser = asyncHandler(async (req, res) => {
     return;
   }
 
-    // Create validator
-    const registerUserValidator = UserValidator.pick({
-      divlog_name: true,
-      email      : true,
-      password   : true
+  // Create validator
+  const registerUserValidator = UserValidator.pick({
+    divlog_name: true,
+    email      : true,
+    password   : true
+  });
+
+  // Validate
+  const validated = registerUserValidator.safeParse({
+    divlog_name: divlog_name,
+    email      : email,
+    password   : password
+  });
+
+  if (!validated.success) {
+    console.log('Validation error: ', validated.error)
+    res.status(500).send({
+      message: 'Failed in validation'
     });
+  }
 
-    // Validate
-    const validated = registerUserValidator.safeParse({
-      divlog_name: divlog_name,
-      email      : email,
-      password   : password
-    });
+  // Hash password
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hashedPassword = await bcrypt.hash(validated.data.password, salt);
 
-    if (!validated.success) {
-      console.log('Validation error: ', validated.error)
-      res.status(500).send({
-        message: 'Failed in validation'
-      });
-    }
-
-    // Hash password
-    const salt = await bcrypt.genSalt(saltRounds);
-    const hashedPassword = await bcrypt.hash(validated.data.password, salt);
-
-    try {
-
+  try {
     // Store in DB
     const user = await prisma.user.create({
       data: {
