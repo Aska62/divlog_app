@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { z } from 'zod';
 import bcrypt from 'bcrypt';
 import asyncHandler from "../middleware/asyncHandler.js";
 import generateToken from '../utils/generateToken.js';
@@ -6,6 +7,19 @@ import sendEmail from '../utils/sendEmail.js';
 
 const prisma = new PrismaClient();
 const saltRounds = 10;
+
+const emailRegex = /^[a-zA-Z0-9_.±]+@+[a-zA-Z0-9-]+\.+[a-zA-Z0-9-.]{2,}$/;
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{12,}$/;
+
+// Validator
+const UserValidator = z.object({
+  divlog_name  : z.string().max(20),
+  license_name : z.string().max(75),
+  email        : z.string().regex(emailRegex),
+  password     : z.string().regex(passwordRegex),
+  certification: z.string().max(75).nullish(),
+  cert_org_id  : z.number().int().nullish(),
+});
 
 // @desc Register user and set token
 // @route POST /api/users/regisgter
@@ -17,25 +31,6 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400).json({
       error: 'Please provide all necessary values'
     });
-  }
-
-  const emailRegex = /^[a-zA-Z0-9_.±]+@+[a-zA-Z0-9-]+\.+[a-zA-Z0-9-.]{2,}$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{12,}$/;
-
-  // Error if email doesn't match regex
-  if (!email.match(emailRegex)) {
-    res.status(400).send({
-      error: 'The given input is not email'
-    });
-    return;
-  }
-
-  // Error if password doesn't match regex
-  if (!password.match(passwordRegex)) {
-    res.status(400).send({
-      error: 'Password must be more than 12 letters and contain alphabet and number'
-    });
-    return;
   }
 
   // Check if users with the same username exists
@@ -66,23 +61,45 @@ const registerUser = asyncHandler(async (req, res) => {
     return;
   }
 
-  // Hash password
-  const salt = await bcrypt.genSalt(saltRounds);
-  const hashedPassword = await bcrypt.hash(password, salt);
+    // Create validator
+    const registerUserValidator = UserValidator.pick({
+      divlog_name: true,
+      email      : true,
+      password   : true
+    });
 
-  // Store in DB
-  try {
+    // Validate
+    const validated = registerUserValidator.safeParse({
+      divlog_name: divlog_name,
+      email      : email,
+      password   : password
+    });
+
+    if (!validated.success) {
+      console.log('Validation error: ', validated.error)
+      res.status(500).send({
+        message: 'Failed in validation'
+      });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPassword = await bcrypt.hash(validated.data.password, salt);
+
+    try {
+
+    // Store in DB
     const user = await prisma.user.create({
       data: {
-        divlog_name,
-        email,
-        password: hashedPassword,
+        divlog_name: validated.data.divlog_name,
+        email      : validated.data.email,
+        password   : hashedPassword,
       }
     });
 
     // Set token as a logged in user
     generateToken(res, user.id);
-    sendEmail(email, 'Welcome to DivLog', `Dear ${user.divlog_name}, You have successfully sign up for DivLog! This email is sent to ${user.email}`);
+    sendEmail(email, 'Welcome to DivLog', `Dear ${validated.divlog_name}, You have successfully sign up for DivLog! This email is sent to ${validated.email}`);
 
     res.status(201).json({
       id: user.id,
@@ -149,27 +166,64 @@ const getLoginUser = asyncHandler(async(req, res) => {
   if (user) {
     res.status(200).json({
       id           : user.id,
-      divlog_name   : user.divlog_name,
-      license_name  : user.license_name,
+      divlog_name  : user.divlog_name,
+      license_name : user.license_name,
       email        : user.email,
       certification: user.certification,
-      cert_org_id    : user.cert_org_id,
+      cert_org_id  : user.cert_org_id,
     });
+  } else {
+    res.status(400).send('Failed to find user info');
   }
-
-  res.status(200).json({
-    message: "getLoginUser func"
-  });
 });
 
-// TODO: Update user
 // @desc Update user profile
 // @route PUT /api/users/profile
 // @access Private
 const updateUser = async(req, res) => {
-  res.status(200).json({
-    message: "updateUser func"
+  const user = await prisma.user.findUnique({
+    where: { id: req.user.id },
   });
+
+  if (user) {
+    // Create validator
+    const updateProfileValidator = UserValidator.partial();
+
+    // Validate
+    const validated = updateProfileValidator.safeParse(req.body);
+
+    if (validated.success) {
+      try {
+        const updatedUser = await prisma.user.update({
+          where: {
+            id: user.id
+          },
+          data: validated.data
+        });
+
+        res.status(200).json({
+          id           : updatedUser.id,
+          divlog_name  : updatedUser.divlog_name,
+          license_name : updatedUser.license_name,
+          email        : updatedUser.email,
+          certification: updatedUser.certification,
+          cert_org_id  : updatedUser.cert_org_id,
+        });
+      } catch (error) {
+        res.status(500).send({
+          message: 'Failed to update user info'
+        });
+      }
+    } else {
+      res.status(500).send({
+        message: 'Invalid data'
+      });
+    }
+  } else {
+    res.status(400).send({
+      message: 'The user does not exist'
+    });
+  }
 }
 
 // TODO: Delete user
