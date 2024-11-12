@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/UserRoutes.js';
+import diveRecordRoutes from './routes/DiveRecordRoutes.js';
 
 dotenv.config();
 
@@ -28,11 +29,13 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 4000;
 
+// routes settings
 app.get('/', (req, res) => {
   res.send('test')
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/diveRecords', diveRecordRoutes);
 
 // Start server
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
