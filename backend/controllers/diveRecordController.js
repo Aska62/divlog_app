@@ -17,9 +17,14 @@ const getMyDiveRecord = asyncHandler(async (req, res) => {
     res.statu(400).send('Failed to find dive records');
   }
 });
+
+// @desc Get dive records by query
+// @route GET /api/diveRecords/search
+// @access Private
+const searchMyDiveRecords = asyncHandler(async (req, res) => {
   res.status(200).send({
-    message: 'Reached to getMyDiveRecord func'
-  })
+    messag: 'Reached to searchMyDiveRecords func'
+  });
 });
 
 // @desc Add new dive record
@@ -79,6 +84,7 @@ const getDiveRecordByIds = asyncHandler(async (req, res) => {
 
 export {
   getMyDiveRecord,
+  searchMyDiveRecords,
   addDiveRecord,
   editDiveRecord,
   getMyDiveRecordById,
