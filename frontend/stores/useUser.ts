@@ -7,7 +7,7 @@ export type UserInfo = {
   divlog_name?: string,
   license_name?: string,
   certificate?: string,
-  cert_org_id?: string
+  cert_org_id?: number
 };
 
 const userInfoKeys = [
@@ -23,9 +23,14 @@ export const isUserInfo = (value: unknown):value is UserInfo => {
     return false;
   }
 
-  if (Object.entries(value).some(([key, val]) => !userInfoKeys.includes(key) || (val !== null && typeof val !== 'string'))) {
+  if (Object.entries(value).some(([key, val]) =>
+    !userInfoKeys.includes(key)
+    || (key === 'cert_org_id' && val && typeof val !== 'number')
+    || (key !== 'cert_org_id' && val && typeof val !== 'string')
+  )) {
     return false;
   }
+
   return true;
 }
 
