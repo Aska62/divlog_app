@@ -1,5 +1,5 @@
 import axios, { isAxiosError }  from "axios";
-import { UserInfo } from '@/stores/useUser'
+import { UserInfo } from '@/stores/useUser';
 
 type RegisterActionStateType = {
   success?: boolean,
