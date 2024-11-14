@@ -6,19 +6,19 @@ const prisma = new PrismaClient();
 // @desc Get dive record of logged in user
 // @route GET /api/diveRecords
 // @access Private
-const getMyDiveRecord = asyncHandler(async (req, res) => {
-  const diveRecord = await prisma.diveRecord.findMany({
+const getMyDiveRecords = asyncHandler(async (req, res) => {
+  const diveRecords = await prisma.diveRecord.findMany({
     where: { user_id: req.user.id }
   });
 
-  if (diveRecord) {
-    res.status(200).json(diveRecord);
+  if (diveRecords) {
+    res.status(200).json(diveRecords);
   } else {
     res.statu(400).send('Failed to find dive records');
   }
 });
 
-// @desc Get dive records by query
+// @desc Get dive records by query TODO:
 // @route GET /api/diveRecords/search
 // @access Private
 const searchMyDiveRecords = asyncHandler(async (req, res) => {
@@ -27,7 +27,7 @@ const searchMyDiveRecords = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc Add new dive record
+// @desc Add new dive record TODO:
 // @route POST /api/diveRecords
 // @access Private
 const addDiveRecord = asyncHandler(async (req, res) => {
@@ -40,13 +40,22 @@ const addDiveRecord = asyncHandler(async (req, res) => {
 // @route GET /api/diveRecords/:id
 // @access Private
 const getMyDiveRecordById = asyncHandler(async (req, res) => {
-  res.status(200).send({
-    message: 'Reached to getDiveRecord func'
-  })
+  const diveRecord = await prisma.diveRecord.findUnique({
+    where: {
+      id: req.params.id,
+      user_id: req.user.id,
+    }
+  });
+
+  if (diveRecord) {
+    res.status(200).json(diveRecord);
+  } else {
+    res.statu(400).send('Failed to find dive record');
+  }
 });
 
 
-// @desc Edit dive record
+// @desc Edit dive record TODO:
 // @route Put /api/diveRecords/:id
 // @access Private
 const editDiveRecord = asyncHandler(async (req, res) => {
@@ -55,7 +64,7 @@ const editDiveRecord = asyncHandler(async (req, res) => {
   })
 });
 
-// @desc Delete dive record
+// @desc Delete dive record TODO:
 // @route Delete /api/diveRecords/:id
 // @access Private
 const deleteDiveRecord = asyncHandler(async (req, res) => {
@@ -64,7 +73,7 @@ const deleteDiveRecord = asyncHandler(async (req, res) => {
   })
 });
 
-// @desc Get dive records by user id
+// @desc Get dive records by user id TODO:
 // @route GET /api/diveRecords/view/:userId
 // @access Public
 const getDiveRecordsByUserId = asyncHandler(async (req, res) => {
@@ -73,7 +82,7 @@ const getDiveRecordsByUserId = asyncHandler(async (req, res) => {
   })
 });
 
-// @desc Get dive record by dive record id
+// @desc Get dive record by dive record id TODO:
 // @route GET /api/diveRecords/view/:userId/:recordId
 // @access Public
 const getDiveRecordByIds = asyncHandler(async (req, res) => {
@@ -83,7 +92,7 @@ const getDiveRecordByIds = asyncHandler(async (req, res) => {
 });
 
 export {
-  getMyDiveRecord,
+  getMyDiveRecords,
   searchMyDiveRecords,
   addDiveRecord,
   editDiveRecord,
