@@ -6,7 +6,7 @@ import generateToken from '../utils/generateToken.js';
 import sendEmail from '../utils/sendEmail.js';
 
 const prisma = new PrismaClient();
-const saltRounds = 10;
+const saltRounds = process.env.PASSWORD_SALT_ROUND;
 
 const emailRegex = /^[a-zA-Z0-9_.±]+@+[a-zA-Z0-9-]+\.+[a-zA-Z0-9-.]{2,}$/;
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{12,}$/;
