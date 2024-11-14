@@ -7,6 +7,16 @@ const prisma = new PrismaClient();
 // @route GET /api/diveRecords
 // @access Private
 const getMyDiveRecord = asyncHandler(async (req, res) => {
+  const diveRecord = await prisma.diveRecord.findMany({
+    where: { user_id: req.user.id }
+  });
+
+  if (diveRecord) {
+    res.status(200).json(diveRecord);
+  } else {
+    res.statu(400).send('Failed to find dive records');
+  }
+});
   res.status(200).send({
     message: 'Reached to getMyDiveRecord func'
   })
