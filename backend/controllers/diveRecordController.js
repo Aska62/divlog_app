@@ -45,6 +45,33 @@ const getMyDiveRecordCount = asyncHandler(async (req, res) => {
   }
 });
 
+
+// @desc Get dive record of logged in user
+// @route GET /api/diveRecords
+// @access Private
+const getLastDiveRecord = asyncHandler(async (req, res) => {
+  const diveRecord = await prisma.diveRecord.findFirst({
+    where: {
+      user_id: req.user.id,
+      is_draft: false,
+    },
+    include: {
+      country: {
+        select: { name: true },
+      },
+    },
+    orderBy: {
+      start_time: 'desc',
+    }
+  });
+
+  if (diveRecord) {
+    res.status(200).json(diveRecord);
+  } else {
+    res.statu(400).send('Failed to find dive record');
+  }
+});
+
 // @desc Get dive records by query TODO:
 // @route GET /api/diveRecords/search
 // @access Private
@@ -121,6 +148,7 @@ const getDiveRecordByIds = asyncHandler(async (req, res) => {
 export {
   getMyDiveRecords,
   getMyDiveRecordCount,
+  getLastDiveRecord,
   searchMyDiveRecords,
   addDiveRecord,
   editDiveRecord,
