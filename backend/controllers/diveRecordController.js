@@ -76,9 +76,20 @@ const getLastDiveRecord = asyncHandler(async (req, res) => {
 // @route GET /api/diveRecords/search
 // @access Private
 const searchMyDiveRecords = asyncHandler(async (req, res) => {
-  res.status(200).send({
-    messag: 'Reached to searchMyDiveRecords func'
+  const diveRecords = await prisma.diveRecord.findMany({
+    where: { user_id: req.user.id },
+    include: {
+      country: {
+        select: { name: true },
+      },
+    },
   });
+
+  if (diveRecords) {
+    res.status(200).json(diveRecords);
+  } else {
+    res.statu(400).send('Failed to find dive records');
+  }
 });
 
 // @desc Add new dive record TODO:

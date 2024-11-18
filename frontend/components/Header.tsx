@@ -36,7 +36,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-baseWhite dark:bg-baseBlack py-4 w-full fixed top-0 shadow-dl">
+      <header className="bg-baseWhite dark:bg-baseBlack z-10 py-4 w-full fixed top-0 shadow-dl">
         <div className="w-full flex justify-between align-middle">
           <Link href="/" className="ml-3 hover:text-darkBlueLight">
             <h1 className="font-logo text-xl font-bold">DivLog</h1>

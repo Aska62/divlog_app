@@ -1,5 +1,8 @@
 'use client';
+import { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import axios from "axios";
+import { isDiveRecordArray, DiveRecord } from '@/types/diveRecordTypes';
 import Heading from "@/components/Heading";
 import LogCard from "@/components/log/LogCard";
 import AddNewLogBtn from "@/components/log/AddNewLogBtn";
@@ -9,6 +12,8 @@ const LogBokPage = () => {
   const searchParams = useSearchParams();
   const pathName = usePathname();
   const router = useRouter();
+
+  const [diveRecords, setDiveRecords] = useState<[DiveRecord]>([]);
 
   // Date: from
   const handleDateFromChange = (val: string): void => {
@@ -92,6 +97,18 @@ const LogBokPage = () => {
   const handleClear = (): void => {
     router.replace(`${pathName}`);
   }
+
+  useEffect(() => {
+    const getLogData = async() => {
+      const logRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/search`, { withCredentials: true });
+
+      if (isDiveRecordArray(logRes.data)) {
+        setDiveRecords(logRes.data);
+      }
+    }
+
+    getLogData();
+  }, []);
 
   return (
     <>
@@ -222,13 +239,21 @@ const LogBokPage = () => {
       </form>
 
       <div className="w-full max-w-5xl mx-auto flex flex-col items-center md:flex-row md:justify-center md:flex-wrap pt-4 pb-10">
-        <LogCard />
-        <LogCard />
-        <LogCard />
-        <LogCard />
-        <div className="w-60 h-44 border border-darkBlue dark:border-lightBlue rounded-md shadow-dl mx-6 my-8 md:justify-self-end">
-          last card
-        </div>
+        { diveRecords && diveRecords.length > 0 ? (
+          diveRecords.map((record) => (
+            <LogCard
+              key={record.id}
+              id={record.id}
+              log_no={record.log_no}
+              date={record.date}
+              location={record.location}
+              is_draft={record.is_draft}
+              country_name={record.country?.name}
+            />
+          ))
+        ) : (
+          <div>No dive logged on DivLog yet</div>
+        )}
       </div>
     </>
   );

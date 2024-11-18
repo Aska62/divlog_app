@@ -9,7 +9,6 @@ export type CountryType = {
 }
 
 export const isCountryType = (val:unknown): val is CountryType => {
-  console.log('isCountryType func', {val})
   if (!val || !isObject(val) || isObjectEmpty(val)) {
     return false;
   }

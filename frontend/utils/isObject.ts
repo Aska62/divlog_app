@@ -1,5 +1,5 @@
 const isObject = (value:unknown) => {
-  if(!value || typeof value !== 'object') {
+  if(!value || typeof value !== 'object' || Array.isArray(value)) {
     return false;
   }
 

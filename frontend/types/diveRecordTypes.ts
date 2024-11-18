@@ -1,5 +1,6 @@
 import isObject from "@/utils/isObject";
 import isObjectEmpty from "@/utils/isObjectEmpty";
+import isArray from "@/utils/isArray";
 
 export type DiveRecord = {
   id                  : string,
@@ -54,5 +55,17 @@ export const isDiveRecord = (val: unknown): val is DiveRecord => {
     return false;
   }
 
+  return true;
+}
+
+export const isDiveRecordArray = (val:unknown): val is [DiveRecord] => {
+  if (!val || !isArray(val)) {
+    return false;
+  };
+
+  const wrongEntry = val.filter((entry) => !isDiveRecord(entry));
+  if (wrongEntry.length > 0) {
+    return false;
+  }
   return true;
 }
