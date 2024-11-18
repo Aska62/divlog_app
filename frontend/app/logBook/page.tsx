@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useDebouncedCallback } from 'use-debounce';
 import axios from "axios";
 import { isDiveRecordArray, DiveRecord } from '@/types/diveRecordTypes';
 import Heading from "@/components/Heading";
@@ -16,7 +17,7 @@ const LogBokPage = () => {
   const [diveRecords, setDiveRecords] = useState<[DiveRecord?]>([]);
 
   // Date: from
-  const handleDateFromChange = (val: string): void => {
+  const handleDateFromChange = useDebouncedCallback((val: string): void => {
     const params = new URLSearchParams(searchParams);
 
     if (val) {
@@ -26,10 +27,10 @@ const LogBokPage = () => {
     }
 
     router.replace(`${pathName}/?${params.toString()}`);
-  }
+  }, 300);
 
   // Date: to
-  const handleDateToChange = (val: string): void => {
+  const handleDateToChange = useDebouncedCallback((val: string): void => {
     const params = new URLSearchParams(searchParams);
 
     if (val) {
@@ -39,10 +40,10 @@ const LogBokPage = () => {
     }
 
     router.replace(`${pathName}/?${params.toString()}`);
-  }
+  }, 300);
 
    // Log no: from
-  const handleLogNoFromChange = (val: string): void => {
+  const handleLogNoFromChange = useDebouncedCallback((val: string): void => {
     const params = new URLSearchParams(searchParams);
 
     if (val) {
@@ -52,10 +53,10 @@ const LogBokPage = () => {
     }
 
     router.replace(`${pathName}/?${params.toString()}`);
-  }
+  }, 300);
 
   // Log no: to
-  const handleLogNoToChange = (val: string): void => {
+  const handleLogNoToChange = useDebouncedCallback((val: string): void => {
     const params = new URLSearchParams(searchParams);
 
     if (val) {
@@ -65,10 +66,10 @@ const LogBokPage = () => {
     }
 
     router.replace(`${pathName}/?${params.toString()}`);
-  }
+  }, 300);
 
   // Country
-  const handleCountryChange = (val: string): void => {
+  const handleCountryChange = useDebouncedCallback((val: string): void => {
     const params = new URLSearchParams(searchParams);
 
     if (val) {
@@ -78,10 +79,10 @@ const LogBokPage = () => {
     }
 
     router.replace(`${pathName}/?${params.toString()}`);
-  }
+  }, 300);
 
   // Status
-  const handleStatusChange = (val: string): void => {
+  const handleStatusChange = useDebouncedCallback((val: string): void => {
     const params = new URLSearchParams(searchParams);
 
     if (val) {
@@ -91,7 +92,7 @@ const LogBokPage = () => {
     }
 
     router.replace(`${pathName}/?${params.toString()}`);
-  }
+  }, 300);
 
   // Clear
   const handleClear = (): void => {
@@ -100,7 +101,25 @@ const LogBokPage = () => {
 
   useEffect(() => {
     const getLogData = async() => {
-      const logRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/search`, { withCredentials: true });
+      const dateFrom = searchParams.get('dateFrom')?.toString();
+      const dateTo = searchParams.get('dateTo')?.toString();
+      const logNoFrom = searchParams.get('logNoFrom')?.toString();
+      const logNoTo = searchParams.get('logNoTo')?.toString();
+      const country = searchParams.get('country')?.toString();
+      const status = searchParams.get('status')?.toString();
+
+      const params = {
+        dateFrom,
+        dateTo,
+        logNoFrom,
+        logNoTo,
+        country,
+        status,
+      }
+
+      const logRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/search`,
+        { params, withCredentials: true }
+      );
 
       if (isDiveRecordArray(logRes.data)) {
         setDiveRecords(logRes.data);
@@ -108,7 +127,7 @@ const LogBokPage = () => {
     }
 
     getLogData();
-  }, []);
+  }, [searchParams]);
 
   return (
     <>

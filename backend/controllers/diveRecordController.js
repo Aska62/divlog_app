@@ -76,13 +76,52 @@ const getLastDiveRecord = asyncHandler(async (req, res) => {
 // @route GET /api/diveRecords/search
 // @access Private
 const searchMyDiveRecords = asyncHandler(async (req, res) => {
+  const { dateFrom, dateTo, logNoFrom, logNoTo, country, status } = req.query;
+
+  const where = { user_id: req.user.id };
+
+  const dateConditions = (dateFrom && dateTo) ? {
+      gte: new Date(dateFrom),
+      lte: new Date(dateTo)
+    }
+    : dateFrom ? { gte: new Date(dateFrom) }
+    : dateTo && { lte: new Date(dateTo) }
+
+  if (dateConditions) {
+    where.date = dateConditions;
+  }
+
+  const logNoConditions = (logNoFrom && logNoTo) ? {
+    gte: Number(logNoFrom),
+    lte: Number(logNoTo)
+  }
+  : logNoFrom ? { gte: Number(logNoFrom) }
+  : logNoTo && { lte: Number(logNoTo) }
+
+  if (logNoConditions) {
+    where.log_no = logNoConditions;
+  }
+
+  if (country) {
+    where.country_code = Number(country);
+  }
+
+  if (Number(status) === 2 ) {
+    where.is_draft = false;
+  } else if (Number(status) === 3) {
+    where.is_draft = true;
+  }
+
   const diveRecords = await prisma.diveRecord.findMany({
-    where: { user_id: req.user.id },
+    where,
     include: {
       country: {
         select: { name: true },
       },
     },
+    orderBy: {
+      log_no: 'desc',
+    }
   });
 
   if (diveRecords) {

@@ -20,7 +20,7 @@ const CountryOptions = () => {
 
   const options = useMemo(() => {
     if (!isObjectEmpty(countries)) {
-      return Object.entries(countries).map(([i, country]) => {
+      return Object.entries(countries).map(([, country]) => {
         if (isCountryType(country)) {
           return (
             <option value={country.id} key={country.id}>{ country.name }</option>
