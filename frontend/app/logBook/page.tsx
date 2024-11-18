@@ -13,7 +13,7 @@ const LogBokPage = () => {
   const pathName = usePathname();
   const router = useRouter();
 
-  const [diveRecords, setDiveRecords] = useState<[DiveRecord]>([]);
+  const [diveRecords, setDiveRecords] = useState<[DiveRecord?]>([]);
 
   // Date: from
   const handleDateFromChange = (val: string): void => {
@@ -239,7 +239,7 @@ const LogBokPage = () => {
       </form>
 
       <div className="w-full max-w-5xl mx-auto flex flex-col items-center md:flex-row md:justify-center md:flex-wrap pt-4 pb-10">
-        { diveRecords && diveRecords.length > 0 ? (
+        { isDiveRecordArray(diveRecords) && diveRecords.length > 0 ?
           diveRecords.map((record) => (
             <LogCard
               key={record.id}
@@ -250,7 +250,7 @@ const LogBokPage = () => {
               is_draft={record.is_draft}
               country_name={record.country?.name}
             />
-          ))
+          )
         ) : (
           <div>No dive logged on DivLog yet</div>
         )}
