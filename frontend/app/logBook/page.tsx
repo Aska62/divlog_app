@@ -4,6 +4,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import axios from "axios";
 import { isDiveRecordArray, DiveRecord } from '@/types/diveRecordTypes';
+import isObjectEmpty from "@/utils/isObjectEmpty";
 import Heading from "@/components/Heading";
 import LogCard from "@/components/log/LogCard";
 import AddNewLogBtn from "@/components/log/AddNewLogBtn";
@@ -95,7 +96,8 @@ const LogBokPage = () => {
   }, 300);
 
   // Clear
-  const handleClear = (): void => {
+  const handleClear = (e:React.MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault();
     router.replace(`${pathName}`);
   }
 
@@ -117,8 +119,10 @@ const LogBokPage = () => {
         status,
       }
 
+      const conditions = isObjectEmpty(params) ?  { withCredentials: true } :  { params, withCredentials: true }
+
       const logRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/search`,
-        { params, withCredentials: true }
+        conditions
       );
 
       if (isDiveRecordArray(logRes.data)) {
@@ -250,7 +254,7 @@ const LogBokPage = () => {
         </div>
 
         <button
-          onClick={handleClear}
+          onClick={(e) => handleClear(e)}
           className="self-end bg-lightGray dark:bg-lightBlue hover:bg-darkBlue dark:hover:bg-lightGray duration-75 text-baseWhite dark:text-baseBlack px-2 rounded-md"
         >
           Clear
