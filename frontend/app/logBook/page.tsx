@@ -62,9 +62,8 @@ const LogBokPage = () => {
     router.replace(`${pathName}/?${params.toString()}`);
   }
 
-
   // Country
-  const handleCountryChange = (val: number): void => {
+  const handleCountryChange = (val: string): void => {
     const params = new URLSearchParams(searchParams);
 
     if (val) {
@@ -74,6 +73,24 @@ const LogBokPage = () => {
     }
 
     router.replace(`${pathName}/?${params.toString()}`);
+  }
+
+  // Status
+  const handleStatusChange = (val: string): void => {
+    const params = new URLSearchParams(searchParams);
+
+    if (val) {
+      params.set('status', String(val));
+    } else {
+      params.delete('status');
+    }
+
+    router.replace(`${pathName}/?${params.toString()}`);
+  }
+
+  // Clear
+  const handleClear = (): void => {
+    router.replace(`${pathName}`);
   }
 
   return (
@@ -143,26 +160,17 @@ const LogBokPage = () => {
           </div>
         </div>
 
-        {/* Country/region TODO:handleCountryChange */}
         <div className="w-full mb-4 flex flex-col md:flex-row md:justify-between">
           <label htmlFor="country">Country/region</label>
           <select
             name="country"
             className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 self-end md:ml-3 focus:outline-none"
+            onChange={(e) => handleCountryChange(e.target.value)}
+            defaultValue={searchParams.get('country')?.toString()}
           >
             <option value="">--- Please select ---</option>
             <CountryOptions />
           </select>
-        </div>
-
-        {/* Buddy */}
-        <div className="w-full mb-4 flex flex-col md:flex-row md:justify-between">
-          <label htmlFor="buddy">Buddy</label>
-          <input
-            type="text"
-            placeholder="Buddy's name"
-            className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 px-1 self-end md:ml-3 focus:outline-none"
-          />
         </div>
 
         {/* Log status */}
@@ -170,21 +178,45 @@ const LogBokPage = () => {
           <p className="mr-12">Status</p>
           <div className="flex ">
             <div className="mr-6">
-              <input type="radio" name="status" id="all" value="all" />
+              <input
+                type="radio"
+                name="status"
+                id="all"
+                value="1"
+                onChange={(e) => handleStatusChange(e.target.value)}
+                checked={!searchParams.get('status') || searchParams.get('status')?.toString() === '1'}
+              />
               <label htmlFor="all" className="ml-2">All</label>
             </div>
             <div className="mr-6">
-              <input type="radio" name="status" id="nonDraft" value="nonDraft" />
+              <input
+                type="radio"
+                name="status"
+                id="nonDraft"
+                value="2"
+                onChange={(e) => handleStatusChange(e.target.value)}
+                checked={searchParams.get('status')?.toString() === '2'}
+              />
               <label htmlFor="nonDraft" className="ml-2">Non-Draft</label>
             </div>
             <div className="mr-6">
-              <input type="radio" name="status" id="draft" value="draft" />
+              <input
+                type="radio"
+                name="status"
+                id="draft"
+                value="3"
+                onChange={(e) => handleStatusChange(e.target.value)}
+                checked={searchParams.get('status')?.toString() === '3'}
+              />
               <label htmlFor="draft" className="ml-2">Draft</label>
             </div>
           </div>
         </div>
 
-        <button className="self-end bg-lightGray dark:bg-lightBlue hover:bg-darkBlue dark:hover:bg-lightGray duration-75 text-baseWhite dark:text-baseBlack px-2 rounded-md">
+        <button
+          onClick={handleClear}
+          className="self-end bg-lightGray dark:bg-lightBlue hover:bg-darkBlue dark:hover:bg-lightGray duration-75 text-baseWhite dark:text-baseBlack px-2 rounded-md"
+        >
           Clear
         </button>
       </form>
