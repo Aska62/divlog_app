@@ -12,10 +12,8 @@ const RegisterPage = () => {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(registerUser, {});
 
-  const setUser = useUser((state) => state.setUser);
   const setIsAuth = useUser((state) => state.setIsAuth);
-  const isAuth = useUser((state) => state.isAuth);
-  const userInfo = useUser((state) => state.userInfo);
+  const isAuth = useUser.getState().isAuth;
 
   useEffect(() => {
     if (isAuth) {
@@ -23,8 +21,7 @@ const RegisterPage = () => {
     }
 
     if (state && state.userInfo && isUserInfo(state.userInfo)) {
-      setUser(state.userInfo);
-      setIsAuth(state.userInfo);
+      setIsAuth();
 
       router.push('/');
     }
@@ -32,7 +29,7 @@ const RegisterPage = () => {
     if (state?.error) {
       toast.error(state.error.message);
     }
-  }, [router, state, isAuth, setIsAuth, setUser, userInfo]);
+  }, [router, state, isAuth, setIsAuth]);
 
   return (
     <main className="w-full h-fit flex flex-col items-center justify-center mt-16">

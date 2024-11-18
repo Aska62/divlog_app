@@ -13,15 +13,13 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  const isAuth = useUser((state) => state.isAuth);
-  const setUser = useUser((state) => state.setUser);
+  const isAuth = useUser.getState().isAuth;
   const setIsAuth = useUser((state) => state.setIsAuth);
 
   const handleLogout = async () => {
     const res = await removeSession();
     if (res?.success) {
-      setUser({});
-      setIsAuth({});
+      setIsAuth();
       router.push('/login');
     } else {
       toast.error(res?.error);

@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware'
-import isObjectEmpty from '@/utils/isObjectEmpty';
 
 export type UserInfo = {
   id?: string,
@@ -35,26 +34,25 @@ export const isUserInfo = (value: unknown):value is UserInfo => {
 }
 
 type State = {
-  userInfo?: UserInfo
   isAuth: boolean
 };
 
 type Action = {
-  setUser: (userInfo: UserInfo) => void,
-  removeUser: () => void,
-  setIsAuth: (userInfo: UserInfo) => void,
+  setIsAuth: () => void,
 };
 
 const useUser = create(
   (persist<State & Action>(
     (set) => ({
-      userInfo: {},
       isAuth: false,
-      setUser: (userInfo) => set({ userInfo: userInfo }),
-      removeUser: () => set({}),
-      setIsAuth: (userInfo) => set({isAuth: !isObjectEmpty(userInfo)})
+      setIsAuth: () => {
+        const userSession =  localStorage.getItem('userInfo') || null;
+        set({ isAuth: !!userSession });
+      }
     }),
-    { name: 'auth' }
+    {
+      name: 'userAuthStatus',
+    }
   ))
 );
 
