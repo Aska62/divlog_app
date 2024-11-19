@@ -1,5 +1,5 @@
-import isNumber from "./isNumber";
-import isString from "./isString";
+import isNumber from "../isNumber";
+import isString from "../isString";
 
 const formatDate = (d:Date):string => {
   const date = new Date(d);

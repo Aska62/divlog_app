@@ -72,7 +72,7 @@ const getLastDiveRecord = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc Get dive records by query TODO:
+// @desc Get dive records by query
 // @route GET /api/diveRecords/search
 // @access Private
 const searchMyDiveRecords = asyncHandler(async (req, res) => {
@@ -148,7 +148,15 @@ const getMyDiveRecordById = asyncHandler(async (req, res) => {
     where: {
       id: req.params.id,
       user_id: req.user.id,
-    }
+    },
+    include: {
+      country: {
+        select: { name: true },
+      },
+      purpose: {
+        select: {name: true},
+      }
+    },
   });
 
   if (diveRecord) {

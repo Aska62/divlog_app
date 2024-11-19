@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import isNumber from '@/utils/isNumber';
 import isObjectEmpty from "@/utils/isObjectEmpty";
-import formatDate from '@/utils/formatDate';
+import formatDate from '@/utils/dateTime/formatDate';
 import { isDiveRecord, DiveRecord } from '@/types/diveRecordTypes';
 
 const WelcomeMessage = () => {

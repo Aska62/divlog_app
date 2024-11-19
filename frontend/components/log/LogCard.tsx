@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { DiveRecord } from '@/types/diveRecordTypes';
-import formatDate from '@/utils/formatDate';
+import formatDate from '@/utils/dateTime/formatDate';
 
 type LogCardProps = {'country_name'?: string} & Pick<DiveRecord,
   | 'id'
