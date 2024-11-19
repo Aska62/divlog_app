@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import axios from "axios";
-import { isDiveRecordArray, DiveRecord } from '@/types/diveRecordTypes';
+import { isDiveRecordHighlightArray, DiveRecordHighlight } from '@/types/diveRecordTypes';
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import Heading from "@/components/Heading";
 import LogCard from "@/components/log/LogCard";
@@ -15,7 +15,7 @@ const LogBokPage = () => {
   const pathName = usePathname();
   const router = useRouter();
 
-  const [diveRecords, setDiveRecords] = useState<[DiveRecord?]>([]);
+  const [diveRecords, setDiveRecords] = useState<[DiveRecordHighlight?]>([]);
 
   // Date: from
   const handleDateFromChange = useDebouncedCallback((val: string): void => {
@@ -125,7 +125,7 @@ const LogBokPage = () => {
         conditions
       );
 
-      if (isDiveRecordArray(logRes.data)) {
+      if (isDiveRecordHighlightArray(logRes.data)) {
         setDiveRecords(logRes.data);
       }
     }
@@ -262,7 +262,7 @@ const LogBokPage = () => {
       </form>
 
       <div className="w-full max-w-5xl mx-auto flex flex-col items-center md:flex-row md:justify-center md:flex-wrap pt-4 pb-10">
-        { isDiveRecordArray(diveRecords) && diveRecords.length > 0 ?
+        { isDiveRecordHighlightArray(diveRecords) && diveRecords.length > 0 ?
           diveRecords.map((record) => (
             <LogCard
               key={record.id}
@@ -275,7 +275,7 @@ const LogBokPage = () => {
             />
           )
         ) : (
-          <div>No dive logged on DivLog yet</div>
+          <div>No dive logged on DivLog</div>
         )}
       </div>
     </>

@@ -4,11 +4,11 @@ import axios from "axios";
 import isNumber from '@/utils/isNumber';
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import formatDate from '@/utils/dateTime/formatDate';
-import { isDiveRecord, DiveRecord } from '@/types/diveRecordTypes';
+import { isDiveRecordHighlight, DiveRecordHighlight } from '@/types/diveRecordTypes';
 
 const WelcomeMessage = () => {
   const [logCount, setLogCount] = useState<number>(0);
-  const [lastDive, setLastDive] = useState<Partial<DiveRecord>>({});
+  const [lastDive, setLastDive] = useState<Partial<DiveRecordHighlight>>({});
 
   useEffect(() => {
     const getLogData = async() => {
@@ -22,7 +22,7 @@ const WelcomeMessage = () => {
 
       const lastRecordRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/last`, { withCredentials: true });
 
-      if (isDiveRecord(lastRecordRes.data))  {
+      if (isDiveRecordHighlight(lastRecordRes.data))  {
         setLastDive(lastRecordRes.data);
       } else {
         setLastDive({});

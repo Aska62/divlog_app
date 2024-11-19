@@ -2,7 +2,7 @@
 import { useEffect, useState, use } from "react";
 import axios from "axios";
 import { toast } from 'react-toastify';
-import { DiveRecord, isDiveRecord } from '@/types/diveRecordTypes';
+import { DiveRecordDetail, isDiveRecordDetail } from '@/types/diveRecordTypes';
 import formatDate from "@/utils/dateTime/formatDate";
 import formatTime from '@/utils/dateTime/formatTime';
 import calculateTimeGap from '@/utils/dateTime/calculateTimeGap';
@@ -15,7 +15,7 @@ type LogPageProps = {
 
 const LogPage:React.FC<LogPageProps> = ({ params }) => {
   const { id } = use(params);
-  const [diveRecord, setDiveRecord] = useState<Partial<DiveRecord>>({});
+  const [diveRecord, setDiveRecord] = useState<Partial<DiveRecordDetail>>({});
 
   useEffect(() => {
     const fetchLog = async () => {
@@ -38,7 +38,7 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
 
   return (
     <>
-    { isDiveRecord(diveRecord) ? (
+    { diveRecord && isDiveRecordDetail(diveRecord) ? (
       <>
         <Heading pageTitle={`Log No. ${diveRecord.log_no}`} />
 
@@ -161,19 +161,25 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
           {/* Buddy */}
           <div className="flex items-baseline my-3">
             <p className="text-sm mr-2">Buddy </p>
-            <p className="text-lg">Maxim Veramosa</p>
+            <p className="text-lg">
+              { diveRecord.buddy ? diveRecord.buddy.divlog_name : diveRecord.buddy_str ? diveRecord.buddy_str : '' }
+            </p>
           </div>
 
-          {/* Instructor */}
+          {/* Supervisor */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Instructor </p>
-            <p className="text-lg">Shawn Wan Leonard</p>
+            <p className="text-sm mr-2">Supervisor </p>
+            <p className="text-lg">
+              { diveRecord.supervisor ? diveRecord.supervisor.divlog_name : diveRecord.supervisor_str ? diveRecord.supervisor_str : '' }
+            </p>
           </div>
 
           {/* Dive center */}
           <div className="flex items-baseline my-3">
             <p className="text-sm mr-2">Dive center </p>
-            <p className="text-lg">DivLog Divers Colong</p>
+            <p className="text-lg">
+              { diveRecord.dive_center ? diveRecord.dive_center.name : diveRecord.dive_center_str ? diveRecord.dive_center_str : '' }
+            </p>
           </div>
 
           {/* Note */}

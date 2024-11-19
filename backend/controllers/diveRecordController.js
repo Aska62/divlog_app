@@ -8,7 +8,21 @@ const prisma = new PrismaClient();
 // @access Private
 const getMyDiveRecords = asyncHandler(async (req, res) => {
   const diveRecords = await prisma.diveRecord.findMany({
-    where: { user_id: req.user.id }
+    where: { user_id: req.user.id },
+    select: {
+      id: true,
+      user_id: true,
+      log_no: true,
+      date: true,
+      location: true,
+      country_id: true,
+      is_draft: true,
+      country: {
+        select: {
+          name: true,
+        }
+      }
+    }
   });
 
   if (diveRecords) {
@@ -55,9 +69,18 @@ const getLastDiveRecord = asyncHandler(async (req, res) => {
       user_id: req.user.id,
       is_draft: false,
     },
-    include: {
+    select: {
+      id: true,
+      user_id: true,
+      log_no: true,
+      date: true,
+      location: true,
+      country_id: true,
+      is_draft: true,
       country: {
-        select: { name: true },
+        select: {
+          name: true,
+        }
       },
     },
     orderBy: {
@@ -114,7 +137,14 @@ const searchMyDiveRecords = asyncHandler(async (req, res) => {
 
   const diveRecords = await prisma.diveRecord.findMany({
     where,
-    include: {
+    select: {
+      id: true,
+      user_id: true,
+      log_no: true,
+      date: true,
+      location: true,
+      country_id: true,
+      is_draft: true,
       country: {
         select: { name: true },
       },
@@ -154,7 +184,25 @@ const getMyDiveRecordById = asyncHandler(async (req, res) => {
         select: { name: true },
       },
       purpose: {
-        select: {name: true},
+        select: { name: true },
+      },
+      buddy: {
+        select: {
+          id: true,
+          divlog_name: true,
+        },
+      },
+      supervisor: {
+        select: {
+          id: true,
+          divlog_name: true,
+        }
+      },
+      dive_center: {
+        select: {
+          id: true,
+          name: true,
+        }
       }
     },
   });
