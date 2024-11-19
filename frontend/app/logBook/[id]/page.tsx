@@ -51,43 +51,43 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
 
           {/* Date */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">On </p>
+            <p className="text-sm mr-2">Date: </p>
             <p className="text-lg">{ formatDate(diveRecord.date) }</p>
           </div>
 
           {/* Location + Country/region */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">At </p>
+            <p className="text-sm mr-2">Location: </p>
             <p className="text-lg">{ diveRecord.location }, {diveRecord.country?.name}</p>
           </div>
 
           {/* Purpose */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">For </p>
+            <p className="text-sm mr-2">Purpose: </p>
             <p className="text-lg">{ diveRecord.purpose?.name}</p>
           </div>
 
           {/* Course */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Course </p>
+            <p className="text-sm mr-2">Course: </p>
             <p className="text-lg">{ diveRecord.course }</p>
           </div>
 
           {/* Weather */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Weather </p>
+            <p className="text-sm mr-2">Weather: </p>
             <p className="text-lg">{ diveRecord.weather }</p>
           </div>
 
           {/* Temperatuer */}
           <div className="my-3 md:flex md:items-baseline">
-            <p className="text-sm mr-2">Temperatuer</p>
+            <p className="text-sm mr-2">Temperatuer:</p>
             <div className="flex items-baseline ml-3">
               <div className="flex items-baseline mr-3">
                 <p className="text-sm mr-1">Surface </p>
                 <p className="text-lg">{ diveRecord.surface_temperature ? diveRecord.surface_temperature : '-'} &#176;C</p>
               </div>
-              <div className="flex items-baseline">
+              <div className="flex items-baseline ml-3">
                 <p className="text-sm mr-1">Water </p>
                 <p className="text-lg">{ diveRecord.water_temperature ? diveRecord.water_temperature : '-' } &#176;C</p>
               </div>
@@ -96,13 +96,13 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
 
           {/* Time */}
           <div className="my-3 md:flex md:items-baseline">
-            <p className="text-sm mr-2">Time </p>
+            <p className="text-sm mr-2">Time: </p>
             <div className="flex items-baseline ml-3">
               <div className="flex items-baseline mr-3">
                 <p className="text-sm mr-1">From </p>
                 <p className="text-lg">{ diveRecord.start_time ? formatTime(diveRecord.start_time) : '--:--'}</p>
               </div>
-              <div className="flex items-baseline">
+              <div className="flex items-baseline ml-3">
                 <p className="text-sm mr-1">Till </p>
                 <p className="text-lg">{ diveRecord.end_time ? formatTime(diveRecord.end_time) : '--:--'}</p>
               </div>
@@ -113,7 +113,7 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
                 { diveRecord.start_time && diveRecord.end_time &&
                   <>
                     <p className="text-sm mr-1">Duration </p>
-                    <p className="text-lg">{`${calculateTimeGap(diveRecord.end_time, diveRecord.end_time)} mins`}</p>
+                    <p className="text-lg">{`${calculateTimeGap(diveRecord.start_time, diveRecord.end_time)} mins`}</p>
                   </>
                 }
               </div>
@@ -122,7 +122,7 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
 
           {/* Tank pressure */}
           <div className="my-3 md:flex md:items-baseline">
-            <p className="text-sm mr-2">Tank pressure </p>
+            <p className="text-sm mr-2">Tank pressure: </p>
             <div className="flex items-baseline ml-3">
               <div className="flex items-baseline mr-3">
                 <p className="text-sm mr-1">Start </p>
@@ -137,31 +137,31 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
 
           {/* Weight */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Added weight </p>
+            <p className="text-sm mr-2">Added weight: </p>
             <p className="text-lg">{ diveRecord.added_weight ? diveRecord.added_weight : '-' } kg</p>
           </div>
 
           {/* Suit */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Suit </p>
+            <p className="text-sm mr-2">Suit: </p>
             <p className="text-lg">{ diveRecord.suit }</p>
           </div>
 
           {/* Max depth */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Max depth </p>
+            <p className="text-sm mr-2">Max depth: </p>
             <p className="text-lg">{ diveRecord.max_depth ? diveRecord.max_depth : '-' } m</p>
           </div>
 
           {/* Visibility */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Visibility </p>
+            <p className="text-sm mr-2">Visibility: </p>
             <p className="text-lg">{ diveRecord.visibility ? diveRecord.visibility : '-' } m</p>
           </div>
 
           {/* Buddy */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Buddy </p>
+            <p className="text-sm mr-2">Buddy: </p>
             { diveRecord.buddy ? (
               <Link
                 href={`/user/${diveRecord.buddy.id}`}
@@ -178,7 +178,7 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
 
           {/* Supervisor */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Supervisor </p>
+            <p className="text-sm mr-2">Supervisor: </p>
             { diveRecord.supervisor ? (
               <Link
                 href={`/user/${diveRecord.supervisor.id}`}
@@ -195,7 +195,7 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
 
           {/* Dive center */}
           <div className="flex items-baseline my-3">
-            <p className="text-sm mr-2">Dive center </p>
+            <p className="text-sm mr-2">Dive center: </p>
             {diveRecord.dive_center ? (
               <Link
                 href={`/diveCenter/${diveRecord.dive_center.id}`}
