@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, use } from "react";
+import Link from "next/link";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { DiveRecordDetail, isDiveRecordDetail } from '@/types/diveRecordTypes';
@@ -161,25 +162,52 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
           {/* Buddy */}
           <div className="flex items-baseline my-3">
             <p className="text-sm mr-2">Buddy </p>
-            <p className="text-lg">
-              { diveRecord.buddy ? diveRecord.buddy.divlog_name : diveRecord.buddy_str ? diveRecord.buddy_str : '' }
-            </p>
+            { diveRecord.buddy ? (
+              <Link
+                href={`/user/${diveRecord.buddy.id}`}
+                className="text-lg hover:text-eyeCatch"
+              >
+                  { diveRecord.buddy.divlog_name }
+              </Link>
+            ) : (
+              <p className="text-lg">
+                { diveRecord.buddy_str ? diveRecord.buddy_str : '' }
+              </p>
+            )}
           </div>
 
           {/* Supervisor */}
           <div className="flex items-baseline my-3">
             <p className="text-sm mr-2">Supervisor </p>
-            <p className="text-lg">
-              { diveRecord.supervisor ? diveRecord.supervisor.divlog_name : diveRecord.supervisor_str ? diveRecord.supervisor_str : '' }
-            </p>
+            { diveRecord.supervisor ? (
+              <Link
+                href={`/user/${diveRecord.supervisor.id}`}
+                className="text-lg hover:text-eyeCatch"
+              >
+                  { diveRecord.supervisor.divlog_name }
+              </Link>
+            ) : (
+              <p className="text-lg">
+                { diveRecord.supervisor_str ? diveRecord.supervisor_str : '' }
+              </p>
+            )}
           </div>
 
           {/* Dive center */}
           <div className="flex items-baseline my-3">
             <p className="text-sm mr-2">Dive center </p>
-            <p className="text-lg">
-              { diveRecord.dive_center ? diveRecord.dive_center.name : diveRecord.dive_center_str ? diveRecord.dive_center_str : '' }
-            </p>
+            {diveRecord.dive_center ? (
+              <Link
+                href={`/diveCenter/${diveRecord.dive_center.id}`}
+                className="text-lg hover:text-eyeCatch"
+              >
+                  { diveRecord.dive_center.name }
+              </Link>
+            ) : (
+              <p className="text-lg">
+                { diveRecord.dive_center_str ? diveRecord.dive_center_str : '' }
+              </p>
+            )}
           </div>
 
           {/* Note */}
