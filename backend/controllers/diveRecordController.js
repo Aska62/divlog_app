@@ -9,16 +9,28 @@ const prisma = new PrismaClient();
 const getMyDiveRecords = asyncHandler(async (req, res) => {
   const diveRecords = await prisma.diveRecord.findMany({
     where: { user_id: req.user.id },
-    select: {
-      id: true,
-      user_id: true,
-      log_no: true,
-      date: true,
-      location: true,
-      country_id: true,
-      is_draft: true,
+    include: {
       country: {
+        select: { name: true },
+      },
+      purpose: {
+        select: { name: true },
+      },
+      buddy: {
         select: {
+          id: true,
+          divlog_name: true,
+        },
+      },
+      supervisor: {
+        select: {
+          id: true,
+          divlog_name: true,
+        }
+      },
+      dive_center: {
+        select: {
+          id: true,
           name: true,
         }
       }

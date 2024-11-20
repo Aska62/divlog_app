@@ -1,8 +1,7 @@
 'use client';
-import { useEffect, useState, use } from "react";
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 import axios from "axios";
-import { toast } from 'react-toastify';
 import { DiveRecordDetail, isDiveRecordDetail } from '@/types/diveRecordTypes';
 import formatDate from "@/utils/dateTime/formatDate";
 import formatTime from '@/utils/dateTime/formatTime';
@@ -15,27 +14,24 @@ type LogPageProps = {
 }
 
 const LogPage:React.FC<LogPageProps> = ({ params }) => {
-  const { id } = use(params);
   const [diveRecord, setDiveRecord] = useState<Partial<DiveRecordDetail>>({});
 
   useEffect(() => {
-    const fetchLog = async () => {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/${id}`,
+    const fetchLogRecord = async () => {
+      const { id } = await params;
+      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/${id}`,
         { withCredentials: true })
+        .then((res) => {
+          setDiveRecord(res.data);
+        })
         .catch((err) => {
-          console.log('Error: ', err)
+          console.log('Error fetching dive records: ', err);
+          setDiveRecord({});
         });
-
-      if (res?.data) {
-        setDiveRecord(res.data);
-      } else {
-        setDiveRecord({});
-        toast.error('The log not found');
-      }
     }
 
-    fetchLog();
-  }, [id]);
+    fetchLogRecord();
+  }, [params]);
 
   return (
     <>
@@ -46,7 +42,7 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
         <div className="w-10/12 max-w-md h-fit mx-auto mb-12">
           <div className={`${diveRecord.is_draft ? "flex justify-between items-center" : "text-end"}`}>
             { diveRecord.is_draft && (<p className="w-1/2 bg-eyeCatchDark text-baseWhite text-center font-bold px-2 mt-3">This is DRAFT</p>)}
-            <EditLogBtn id={id} />
+            <EditLogBtn id={diveRecord.id} />
           </div>
 
           {/* Date */}
