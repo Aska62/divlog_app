@@ -542,7 +542,7 @@ async function main() {
   const diveRecord4 = {
     user_id: aska.id,
     log_no: 4,
-    date: new Date('2023-12-29'), // TODO: must follow ISO-8601 DateTime.
+    date: new Date('2023-12-29'),
     location: 'Blue Cave, Miyako',
     country_id: japan.id,
     purpose_id: recreational.id,

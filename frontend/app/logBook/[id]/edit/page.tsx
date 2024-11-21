@@ -6,6 +6,8 @@ import { getNumDate } from "@/utils/dateTime/formatDate";
 import formatTime from '@/utils/dateTime/formatTime';
 import Heading from "@/components/Heading";
 import UpdateLogBtn from "@/components/log/UpdateLogBtn";
+import CountryOptions from '@/components/CountryOptions';
+import DivePurposeOptions from '@/components/log/DivePurposeOptions';
 
 type EditLogProps = {
   params: Promise<{ id: string }>
@@ -48,7 +50,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="number"
                 name="logNo"
                 placeholder="Log no."
-                defaultValue={diveRecord.log_no}
+                defaultValue={ diveRecord.log_no }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
             <p className="text-eyeCatchDark text-end">error arimasu</p>
@@ -77,35 +79,42 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="text"
                 name="location"
                 placeholder="Location"
+                defaultValue={ diveRecord.location }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end"></p>
             </div>
           </div>
 
-          {/* Country */}
+          {/* Country TODO: default select */}
           <div className="w-full h-14 my-3 flex justify-between items-start">
             <label htmlFor="logNo" className="w-24 text-wrap">Country/ Region</label>
             <div className="w-8/12">
-              <select name="purpose" id="country_region" className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none">
+              <select
+                name="purpose"
+                id="country_region"
+                defaultValue={ diveRecord.country_id }
+                className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
+              >
                 <option value="" > --- Please select --- </option>
-                <option value="1" >Thailand</option>
-                <option value="2" >Phillipines</option>
-                <option value="3" >Indonesia</option>
+                <CountryOptions />
               </select>
               <p className="text-eyeCatchDark text-end"></p>
             </div>
           </div>
 
-          {/* Purpose */}
+          {/* Purpose TODO: default select */}
           <div className="w-full h-14 my-3 flex justify-between items-start">
             <label htmlFor="logNo" className="w-24 text-wrap">Purpose</label>
             <div className="w-8/12">
-              <select name="purpose" id="purpose" className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none">
-                <option value="" > --- Select purpose --- </option>
-                <option value="1" >Recreational</option>
-                <option value="2" >Training</option>
-                <option value="3" >Technical</option>
+              <select
+                name="purpose"
+                id="purpose"
+                defaultValue={ diveRecord.purpose_id }
+                className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
+              >
+                <option value="" > --- Please select --- </option>
+                <DivePurposeOptions />
               </select>
               <p className="text-eyeCatchDark text-end"></p>
             </div>
@@ -119,8 +128,9 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="text"
                 name="course"
                 placeholder="Course"
+                defaultValue={ diveRecord.course }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end"></p>
             </div>
           </div>
@@ -133,6 +143,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="text"
                 name="weather"
                 placeholder="Weather"
+                defaultValue={ diveRecord.weather }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
               <p className="text-eyeCatchDark text-end"></p>
@@ -147,6 +158,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="number"
                 name="surfaceTemperature"
                 placeholder="Surface temperature"
+                defaultValue={ diveRecord.surface_temperature }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
               <p className="text-eyeCatchDark text-end">error arimasu</p>
@@ -161,8 +173,9 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="number"
                 name="waterTemperature"
                 placeholder="Water temperature"
+                defaultValue={ diveRecord.water_temperature }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end">error arimasu</p>
             </div>
           </div>
@@ -174,8 +187,9 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               <input
                 type="time"
                 name="startTime"
+                defaultValue={ diveRecord.start_time && formatTime(diveRecord.start_time) }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end"></p>
             </div>
           </div>
@@ -187,8 +201,9 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               <input
                 type="time"
                 name="endTime"
+                defaultValue={ diveRecord.end_time && formatTime(diveRecord.end_time) }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end"></p>
             </div>
           </div>
@@ -201,8 +216,9 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="number"
                 name="tankPresureStart"
                 placeholder="Tank pressure start"
+                defaultValue={ diveRecord.tankpressure_start }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end"></p>
             </div>
           </div>
@@ -215,6 +231,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="number"
                 name="tankPresureEnd"
                 placeholder="Tank pressure end"
+                defaultValue={ diveRecord.tankpressure_end }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
               <p className="text-eyeCatchDark text-end"></p>
@@ -229,6 +246,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="number"
                 name="weight"
                 placeholder="Weight added"
+                defaultValue={ diveRecord.added_weight }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
               <p className="text-eyeCatchDark text-end">{}</p>
@@ -243,8 +261,9 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="text"
                 name="suit"
                 placeholder="Suit"
+                defaultValue={ diveRecord.suit }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end">{}</p>
             </div>
           </div>
@@ -257,6 +276,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="number"
                 name="maxDepth"
                 placeholder="Max depth"
+                defaultValue={ diveRecord.max_depth }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
               <p className="text-eyeCatchDark text-end">{}</p>
@@ -271,13 +291,14 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="number"
                 name="visibility"
                 placeholder="Visibility"
+                defaultValue={ diveRecord.visibility }
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end">{}</p>
             </div>
           </div>
 
-          {/* Buddy */}
+          {/* Buddy TODO:*/}
           <div className="w-full h-14 my-3 flex justify-between items-start">
             <label htmlFor="buddy" className="w-24 text-wrap">Buddy</label>
             <div className="w-8/12">
@@ -286,12 +307,12 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="buddy"
                 placeholder="Buddy"
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end">{}</p>
             </div>
           </div>
 
-          {/* Instructor */}
+          {/* Instructor TODO:*/}
           <div className="w-full h-14 my-3 flex justify-between items-start">
             <label htmlFor="instructor" className="w-24 text-wrap">Instructor</label>
             <div className="w-8/12">
@@ -305,7 +326,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
             </div>
           </div>
 
-          {/* Dive Center */}
+          {/* Dive Center TODO: */}
           <div className="w-full h-14 my-3 flex justify-between items-start">
             <label htmlFor="diveCenter" className="w-24 text-wrap">Dive Center</label>
             <div className="w-8/12">
@@ -327,8 +348,9 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="note"
                 id="note"
                 placeholder="Dive Center"
+                defaultValue={ diveRecord.notes }
                 className="w-full h-60 bg-lightBlue dark:bg-baseWhite px-2 mt-2 rounded text-black focus:outline-none"
-                />
+              />
               <p className="text-eyeCatchDark text-end">{}</p>
             </div>
           </div>
@@ -339,6 +361,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               <input
                 type="checkbox"
                 name="isDraft"
+                defaultChecked={ diveRecord.is_draft }
               />
               <label htmlFor="isDraft" className="w-24 text-wrap ml-2">Save as draft</label>
             </div>

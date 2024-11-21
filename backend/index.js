@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import userRoutes from './routes/UserRoutes.js';
 import diveRecordRoutes from './routes/DiveRecordRoutes.js';
 import countryRoutes from './routes/CountryRoutes.js';
+import divePurposeRoutes from './routes/DivePurposeRoutes.js';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/diveRecords', diveRecordRoutes);
 app.use('/api/countries', countryRoutes);
+app.use('/api/divePurposes', divePurposeRoutes);
 
 // Start server
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
