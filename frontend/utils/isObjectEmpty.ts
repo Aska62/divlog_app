@@ -1,4 +1,4 @@
-const isObjectEmpty = (value:unknown) => {
+const isObjectEmpty = (value:unknown): value is {} => {
   if(!value || typeof value !== 'object') {
     return true;
   }

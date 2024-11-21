@@ -319,7 +319,7 @@ const getUserById = async(req, res) => {
 }
 
 // @desc Get user by name
-// @route PUT /api/users/find/name
+// @route PUT /api/users/find/:name
 // @access Public
 const getUsersByName = async(req, res) => {
   const users = await prisma.user.findMany({
@@ -327,14 +327,16 @@ const getUsersByName = async(req, res) => {
       OR: [
         {
           divlog_name: {
-            startsWith: `_${req.params.name}`,
+            contains: `${req.params.name}`,
+            mode: 'insensitive',
           }
         },
         {
-          divlog_name: {
-            endsWith: `${req.params.name}_`,
+          license_name: {
+            contains: `${req.params.name}`,
+            mode: 'insensitive',
           }
-        }
+        },
       ]
     },
     select: {

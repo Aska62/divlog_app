@@ -1,4 +1,4 @@
-const isObject = (value:unknown) => {
+const isObject = (value:unknown): value is object => {
   if(!value || typeof value !== 'object' || Array.isArray(value)) {
     return false;
   }
