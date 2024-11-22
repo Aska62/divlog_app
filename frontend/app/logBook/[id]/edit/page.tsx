@@ -62,63 +62,29 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
   }, [params]);
 
   // Switch buddy input methods
-  const onBuddyChooseClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const switchBuddyInput = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
-    setModalType(modalTypeBuddy);
-    if (isBuddyById) {
-      setIsModalVisible(!isModalVisible);
-    } else {
-      setIsBuddyById(true);
-    }
-  }
-
-  const onBuddyInputClick = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    setIsModalVisible(false);
-    setIsBuddyById(false);
-    setModalType(0);
+    setIsBuddyById(!isBuddyById);
   }
 
   // Switch supervisor input methods
-  const onSupervisorChooseClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const switchSupervisorInput = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
-    setModalType(modalTypeSupervisor);
-    if (isSupervisorById) {
-      setIsModalVisible(!isModalVisible);
-    } else {
-      setIsSupervisorById(true);
-    }
-  }
-
-  const onSupervisorInputClick = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    setIsModalVisible(false);
-    setIsSupervisorById(false);
-    setModalType(0);
+    setIsSupervisorById(!isSupervisorById);
   }
 
   // Switch dive center input methods
-  const onDiveCenterChooseClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const switchDiveCenterInput = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
-    setModalType(modalTypeDiveCenter);
-    if (isDiveCenterById) {
-      setIsModalVisible(!isModalVisible);
-    } else {
-      setIsDiveCenterById(true);
-    }
+    setIsDiveCenterById(!isDiveCenterById);
   }
 
-  const onDiveCenterInputClick = (e: MouseEvent<HTMLButtonElement>) => {
+  // Open search modal
+  const openSearchModal = (e: MouseEvent<HTMLButtonElement>, modalType) => {
     e.preventDefault();
 
-    setIsModalVisible(false);
-    setIsDiveCenterById(false);
-    setModalType(0);
+    setModalType(modalType);
+    setIsModalVisible(true);
   }
 
   return (
@@ -396,11 +362,12 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               <label htmlFor="diveCenter" className="md:w-24 text-wrap mb-1">Buddy</label>
               <div className='flex md:flex-col'>
                 <button
-                  onClick={(e) => onBuddyChooseClick(e)}
-                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 mr-3 md:mb-2 ${ isBuddyById && 'bg-darkBlueLight hover:opacity-75 hover:cursor-pointer transition duration-75' }`}
+                  onClick={(e) => switchBuddyInput(e)}
+                  disabled={isBuddyById}
+                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 mr-3 md:mb-2 ${ isBuddyById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
                 >{ isBuddyById ? 'Click to search' : 'Choose on DivLog'}</button>
                 <button
-                  onClick={(e) => onBuddyInputClick(e)}
+                  onClick={(e) => switchBuddyInput(e)}
                   disabled={!isBuddyById}
                   className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 ${ !isBuddyById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
                 >Input</button>
@@ -408,7 +375,16 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
             </div>
             <div className="w-full md:w-8/12">
               { isBuddyById ? (
-                <p>{ diveRecord.buddy?.divlog_name }</p> // TODO:display buddyChoice
+                <div
+                  className='flex flex-row-reverse items-end justify-between'
+                >
+                  <button
+                    onClick={(e) => openSearchModal(e, modalTypeBuddy)}
+                    disabled={!isBuddyById}
+                    className='rounded-md md:w-fit px-2 ml-3 md:mb-2 bg-red-400 text-baseWhite text-lg font-semibold'
+                  >Search</button>
+                  <p>{ diveRecord.buddy?.divlog_name }</p>
+                </div>
               ) : (
                 <>
                   <input
@@ -430,11 +406,12 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
             <label htmlFor="diveCenter" className="md:w-24 text-wrap mb-1">Supervisor</label>
               <div className='flex md:flex-col'>
                 <button
-                  onClick={(e) => onSupervisorChooseClick(e)}
-                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 mr-3 md:mb-2 ${ isSupervisorById && 'bg-darkBlueLight hover:opacity-75 hover:cursor-pointer transition duration-75' }`}
-                >{ isSupervisorById ? 'Click to search' : 'Choose on DivLog'}</button>
+                  onClick={(e) => switchSupervisorInput(e)}
+                  disabled={isSupervisorById}
+                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 mr-3 md:mb-2 ${ isSupervisorById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
+                >Choose on DivLog</button>
                 <button
-                  onClick={(e) => onSupervisorInputClick(e)}
+                  onClick={(e) => switchSupervisorInput(e)}
                   disabled={!isSupervisorById}
                   className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 ${ !isSupervisorById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
                 >Input</button>
@@ -443,7 +420,16 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
 
             <div className="w-full md:w-8/12">
               { isSupervisorById ? (
-                <p>{ diveRecord.supervisor?.divlog_name }</p>
+                <div
+                  className='flex flex-row-reverse items-end justify-between'
+                >
+                  <button
+                    onClick={(e) => openSearchModal(e, modalTypeSupervisor)}
+                    disabled={!isSupervisorById}
+                    className='rounded-md md:w-fit px-2 ml-3 md:mb-2 bg-red-400 text-baseWhite text-lg font-semibold'
+                  >Search</button>
+                  <p>{ diveRecord.supervisor?.divlog_name }</p>
+                </div>
               ) : (
                 <>
                 {/* TODO:display supervisorChoice */}
@@ -466,11 +452,12 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               <label htmlFor="diveCenter" className="md:w-24 text-wrap mb-1">Dive Center</label>
               <div className='flex md:flex-col'>
                 <button
-                  onClick={(e) => onDiveCenterChooseClick(e)}
-                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 mr-3 md:mb-2 ${ isDiveCenterById && 'bg-darkBlueLight hover:opacity-75 hover:cursor-pointer transition duration-75' }`}
+                  onClick={(e) => switchDiveCenterInput(e)}
+                  disabled={isDiveCenterById}
+                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 mr-3 md:mb-2 ${ isDiveCenterById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
                 >{ isDiveCenterById ? 'Click to search' : 'Choose on DivLog'}</button>
                 <button
-                  onClick={(e) => onDiveCenterInputClick(e)}
+                  onClick={(e) => switchDiveCenterInput(e)}
                   disabled={!isDiveCenterById}
                   className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 ${ !isDiveCenterById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
                 >Input</button>
@@ -479,7 +466,16 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
 
             <div className="w-full md:w-8/12">
               { isDiveCenterById ? (
-                <p>{ diveRecord.dive_center?.name }</p>
+                <div
+                  className='flex flex-row-reverse items-end justify-between'
+                >
+                  <button
+                    onClick={(e) => openSearchModal(e, modalTypeDiveCenter)}
+                    disabled={!isDiveCenterById}
+                    className='rounded-md md:w-fit px-2 ml-3 md:mb-2 bg-red-400 text-baseWhite text-lg font-semibold'
+                  >Search</button>
+                  <p>{ diveRecord.dive_center?.name }</p>
+                </div>
               ) : (
                 <>
                   {/* TODO:display diveCenterChoice */}
