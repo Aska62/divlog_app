@@ -69,7 +69,7 @@ const isDiveCenterOption = (val: unknown): val is DiveCenterOption => {
 
 type SearchModalProps = {
   type: ModalTypes | 0,
-  setData: React.Dispatch<React.SetStateAction<ChoiceStateValue>> | false;
+  setData: React.Dispatch<React.SetStateAction<Partial<ChoiceStateValue>>> | false;
   setIsModalVisible: React.Dispatch<React.SetStateAction<false>>;
 }
 

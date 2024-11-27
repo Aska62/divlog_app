@@ -4,7 +4,11 @@ import axios from "axios";
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import { isDivePurposeType } from '@/types/divePurposeTypes';
 
-const DivePurposeOptions = () => {
+type DivePurposeOptionsProps = {
+  selected?: number
+}
+
+const DivePurposeOptions = ({ selected }: DivePurposeOptionsProps) => {
   const [purposes, setPurposes] = useState<Partial<{id: number, name: string}>>({});
 
   useEffect(() => {
@@ -23,7 +27,9 @@ const DivePurposeOptions = () => {
       return Object.entries(purposes).map(([, purpose]) => {
         if (isDivePurposeType(purpose)) {
           return (
-            <option value={purpose.id} key={purpose.id}>{ purpose.name }</option>
+            <option value={purpose.id} key={purpose.id} selected={Number(purpose.id) === selected}>
+              { purpose.name }
+            </option>
           );
         }
       }

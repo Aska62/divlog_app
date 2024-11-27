@@ -5,7 +5,7 @@ import {
   getLastDiveRecord,
   searchMyDiveRecords,
   addDiveRecord,
-  editDiveRecord,
+  updateDiveRecord,
   getMyDiveRecordById,
   deleteDiveRecord,
   getDiveRecordsByUserId,
@@ -21,6 +21,6 @@ router.route('/count').get(protect, getMyDiveRecordCount);
 router.route('/search').get(protect, searchMyDiveRecords);
 router.route('/view/:userId').get(getDiveRecordsByUserId);
 router.route('/view/:userId/:recordId').get(getDiveRecordByIds);
-router.route('/:id').get(protect, getMyDiveRecordById).put(protect, editDiveRecord).delete(protect, deleteDiveRecord);
+router.route('/:id').get(protect, getMyDiveRecordById).put(protect, updateDiveRecord).delete(protect, deleteDiveRecord);
 
 export default router;

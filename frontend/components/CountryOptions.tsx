@@ -4,7 +4,11 @@ import axios from "axios";
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import { isCountryType } from '@/types/countryTypes';
 
-const CountryOptions = () => {
+type CountryOptionsProps = {
+  selected?: number
+}
+
+const CountryOptions = ({ selected } : CountryOptionsProps) => {
   const [countries, setCountries] = useState<Partial<{id: number, name: string}>>({});
 
   useEffect(() => {
@@ -23,7 +27,9 @@ const CountryOptions = () => {
       return Object.entries(countries).map(([, country]) => {
         if (isCountryType(country)) {
           return (
-            <option value={country.id} key={country.id}>{ country.name }</option>
+            <option value={country.id} key={country.id} selected={ Number(country.id) === selected } >
+              { country.name }
+            </option>
           );
         }
       }

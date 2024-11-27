@@ -227,10 +227,10 @@ const getMyDiveRecordById = asyncHandler(async (req, res) => {
 });
 
 
-// @desc Edit dive record TODO:
+// @desc Update dive record TODO:
 // @route Put /api/diveRecords/:id
 // @access Private
-const editDiveRecord = asyncHandler(async (req, res) => {
+const updateDiveRecord = asyncHandler(async (req, res) => {
   res.status(200).send({
     message: 'Reached to editDiveRecord func'
   })
@@ -269,7 +269,7 @@ export {
   getLastDiveRecord,
   searchMyDiveRecords,
   addDiveRecord,
-  editDiveRecord,
+  updateDiveRecord,
   getMyDiveRecordById,
   deleteDiveRecord,
   getDiveRecordsByUserId,
