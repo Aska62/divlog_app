@@ -237,7 +237,6 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               <select
                 name="country_id"
                 id="country_id"
-                defaultValue={ diveRecord.country_id }
                 onChange={(e) => handleInputChange(e)}
                 className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
               >
@@ -254,7 +253,6 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               <select
                 name="purpose_id"
                 id="purpose_id"
-                defaultValue={ diveRecord.purpose_id }
                 onChange={(e) => handleInputChange(e)}
                 className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
               >
@@ -652,7 +650,6 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="is_draft"
                 id="is_draft"
                 checked={ diveRecord.is_draft }
-                defaultChecked={ diveRecord.is_draft }
                 onChange={handleCheck}
               />
               <label htmlFor="is_draft" className="w-24 text-wrap ml-2">Save as draft</label>

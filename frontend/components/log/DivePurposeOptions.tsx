@@ -27,7 +27,11 @@ const DivePurposeOptions = ({ selected }: DivePurposeOptionsProps) => {
       return Object.entries(purposes).map(([, purpose]) => {
         if (isDivePurposeType(purpose)) {
           return (
-            <option value={purpose.id} key={purpose.id} selected={Number(purpose.id) === selected}>
+            <option
+              value={ purpose.id }
+              key={ purpose.id }
+              selected={ Number(purpose.id) === selected }
+            >
               { purpose.name }
             </option>
           );
@@ -35,7 +39,7 @@ const DivePurposeOptions = ({ selected }: DivePurposeOptionsProps) => {
       }
     )
     }
-  }, [purposes]);
+  }, [purposes, selected]);
 
   return (
     <>

@@ -27,7 +27,11 @@ const CountryOptions = ({ selected } : CountryOptionsProps) => {
       return Object.entries(countries).map(([, country]) => {
         if (isCountryType(country)) {
           return (
-            <option value={country.id} key={country.id} selected={ Number(country.id) === selected } >
+            <option
+              value={ country.id }
+              key={ country.id }
+              selected={ Number(country.id) === selected }
+            >
               { country.name }
             </option>
           );
@@ -35,7 +39,7 @@ const CountryOptions = ({ selected } : CountryOptionsProps) => {
       }
     )
     }
-  }, [countries]);
+  }, [countries, selected]);
 
   return (
     <>
