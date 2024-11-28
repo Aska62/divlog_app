@@ -20,7 +20,7 @@ const getAllCountries = asyncHandler(async (req, res) => {
   if (countries) {
     res.status(200).json(countries);
   } else {
-    res.statu(400).send('Failed to fetch countries');
+    res.status(400).send('Failed to fetch countries');
   }
 });
 

@@ -40,7 +40,7 @@ const getMyDiveRecords = asyncHandler(async (req, res) => {
   if (diveRecords) {
     res.status(200).json(diveRecords);
   } else {
-    res.statu(400).send('Failed to find dive records');
+    res.status(400).send('Failed to find dive records');
   }
 });
 
@@ -64,7 +64,7 @@ const getMyDiveRecordCount = asyncHandler(async (req, res) => {
   if (recordDiveCount) {
     res.status(200).json({
       total: noRecordDiveCount.norecord_dive_count + recordDiveCount._count.id,
-      wthoutRecord: noRecordDiveCount.norecord_dive_count,
+      withoutRecord: noRecordDiveCount.norecord_dive_count,
     });
   } else {
     res.status(400).send('Failed to get record count');
@@ -103,7 +103,7 @@ const getLastDiveRecord = asyncHandler(async (req, res) => {
   if (diveRecord) {
     res.status(200).json(diveRecord);
   } else {
-    res.statu(400).send('Failed to find dive record');
+    res.status(400).send('Failed to find dive record');
   }
 });
 
@@ -169,7 +169,7 @@ const searchMyDiveRecords = asyncHandler(async (req, res) => {
   if (diveRecords) {
     res.status(200).json(diveRecords);
   } else {
-    res.statu(400).send('Failed to find dive records');
+    res.status(400).send('Failed to find dive records');
   }
 });
 
@@ -222,7 +222,7 @@ const getMyDiveRecordById = asyncHandler(async (req, res) => {
   if (diveRecord) {
     res.status(200).json(diveRecord);
   } else {
-    res.statu(400).send('Failed to find dive record');
+    res.status(400).send('Failed to find dive record');
   }
 });
 
