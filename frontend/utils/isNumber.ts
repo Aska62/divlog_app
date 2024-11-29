@@ -1,5 +1,5 @@
 const isNumber = (val:unknown): val is number => {
-  if (!val || typeof val !== 'number') {
+  if (typeof val !== 'number') {
     return false;
   }
 

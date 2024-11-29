@@ -1,5 +1,7 @@
 'use client';
-import { useState, useEffect, MouseEvent } from 'react';
+import { useState, useEffect, MouseEvent, useActionState } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 import axios from "axios";
 import {
   DiveRecordDetail,
@@ -9,11 +11,14 @@ import {
 import { getNumDate } from "@/utils/dateTime/formatDate";
 import formatTime from '@/utils/dateTime/formatTime';
 import combineDateTime from '@/utils/dateTime/combineDateTime';
+import isNumber from '@/utils/isNumber';
+import { isKeyWithNumVal } from '@/types/diveRecordTypes';
+import updateDiveRecord from '@/actions/diveRecord/updateDiveRecord';
 import Heading from "@/components/Heading";
-import UpdateLogBtn from "@/components/log/UpdateLogBtn";
 import CountryOptions from '@/components/CountryOptions';
 import DivePurposeOptions from '@/components/log/DivePurposeOptions';
 import SearchModal from '@/components/log/SearchModal';
+import UpdateLogBtn from '@/components/log/UpdateLogBtn';
 
 type EditLogProps = {
   params: Promise<{ id: string }>
@@ -27,14 +32,15 @@ export const modalTypeDiveCenter = 3;
 export type ChoiceStateValue = { id: string, name: string };
 
 const EditLog:React.FC<EditLogProps> = ({ params }) => {
+  const router = useRouter();
+
+  const [state, formAction, isPending] = useActionState(updateDiveRecord, {}); // TODO:err
+
   const [diveRecord, setDiveRecord] = useState<Partial<DiveRecordDetail>>({});
 
   const [isBuddyById, setIsBuddyById] = useState<boolean>(true);
   const [isSupervisorById, setIsSupervisorById] = useState<boolean>(true);
   const [isDiveCenterById, setIsDiveCenterById] = useState<boolean>(true);
-
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [modalType, setModalType] = useState<ModalTypes | 0>(1);
 
   const [buddyRef, setBuddyRef] = useState<Partial<ChoiceStateValue>>({
     id: diveRecord.buddy_ref,
@@ -48,6 +54,9 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     id: diveRecord.dive_center_id,
     name: diveRecord.dive_center?.name
   });
+
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<ModalTypes | 0>(1);
 
   type ErrMsg = Record<
     Exclude<DiveRecordDetailKey,
@@ -104,6 +113,17 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     fetchLogRecord();
   }, [params]);
 
+  useEffect(() => {
+    if (state.success) {
+      router.push(`/logBook/${diveRecord.id}`);
+      toast.success('The log successfully updated');
+    }
+
+    if (state.error?.message) {
+      toast.error(state.error.message);
+    }
+  }, [state, router, diveRecord]);
+
   // Switch buddy input methods
   const switchBuddyInput = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -137,24 +157,74 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
 
     const { id, value } = e.target;
     const newRecordVal: { [x:string]: string | number | Date } = {[id]: value};
-
-    if (id === 'date') {
-      if (diveRecord.start_time) {
-        newRecordVal['start_time'] = combineDateTime(new Date(value), formatTime(diveRecord.start_time));
+    console.log('handleInputChange', {id, value})
+    if (id === 'log_no') {
+      const msg = !value ? 'Please input log no'
+        : Number(value) <= 0 ? 'Log no must be greater than 0'
+        : !isNumber(Number(value)) ? 'Please input number'
+        : '';
+      setErrorMsg({...errorMsg, ...{ log_no: msg }});
+    } else if (id === 'date') {
+      const msg = !value ? 'Please input date' : '';
+      setErrorMsg({...errorMsg, ...{ date: msg }});
+      if (!!value) {
+        if (diveRecord.start_time) {
+          newRecordVal['start_time'] = combineDateTime(new Date(value), formatTime(diveRecord.start_time));
+        }
+        if (diveRecord.end_time) {
+          newRecordVal['end_time'] = combineDateTime(new Date(value), formatTime(diveRecord.end_time));
+        }
       }
-      if (diveRecord.end_time) {
-        newRecordVal['end_time'] = combineDateTime(new Date(value), formatTime(diveRecord.end_time));
-      }
-    }
-    if (id === 'start_time') {
+    } else if (id === 'start_time') {
       const newStartTime = combineDateTime(diveRecord.date || new Date(), value);
       newRecordVal.start_time = newStartTime;
-    }
-    if (id === 'end_time') {
+
+      if (diveRecord.end_time && newStartTime > new Date(diveRecord.end_time)) {
+        setErrorMsg({...errorMsg, ...{
+          start_time: 'Start time must be before end time',
+          end_time: 'End time must be after start time'
+        }})
+      } else {
+        setErrorMsg({...errorMsg, ...{
+          start_time: '',
+          end_time: '',
+        }});
+      }
+    } else if (id === 'end_time') {
       const newEndTime = combineDateTime(diveRecord.date || new Date(), value)
       newRecordVal.end_time = newEndTime;
-    }
 
+      if (diveRecord.start_time && new Date(diveRecord.start_time) > newEndTime) {
+        setErrorMsg({...errorMsg, ...{
+          start_time: 'Start time must be before end time',
+          end_time: 'End time must be after start time',
+        }});
+      } else {
+        setErrorMsg({...errorMsg, ...{
+          start_time: '',
+          end_time: ''
+        }});
+      }
+    } else if (id === 'buddy_ref') {
+      newRecordVal.buddy_str = '';
+    } else if (id === 'buddy_str') {
+      newRecordVal.buddy_ref = '';
+    } else if (id === 'supervisor_ref') {
+      newRecordVal.supervisor_str = '';
+    } else if (id === 'supervisor_str') {
+      newRecordVal.supervisor_ref = '';
+    } else if (id === 'dive_center_id') {
+      newRecordVal.dive_center_str = '';
+    } else if (id === 'dive_center_str') {
+      newRecordVal.dive_center_id = '';
+    } else if (isKeyWithNumVal(id)) {
+      const msg = !value ? ''
+        : !isNumber(Number(value)) ? 'Please input number'
+        : Number(value) < 0 ? 'The value should not be below zero'
+        : ''
+      setErrorMsg({...errorMsg, ...{ [id]: msg }});
+    }
+    console.log(diveRecord)
     setDiveRecord({ ...diveRecord, ...newRecordVal });
   }
 
@@ -163,10 +233,6 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     setDiveRecord({ ...diveRecord, ...isDraft });
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('handleSubmit func')
-  }
 
   return (
     <>
@@ -174,7 +240,8 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
       <>
         <Heading pageTitle={`Edit Log No. ${diveRecord.log_no}`} />
 
-        <form action="#" className="w-11/12 max-w-xl h-fit mx-auto my-12">
+        <form action={formAction} className="w-11/12 max-w-xl h-fit mx-auto my-12">
+          <input type="hidden" name="id" value={ diveRecord.id } />
           <p className="w-10/12 md:w-full text-center md:text-left mb-8 text-eyeCatchDark">* mandatory</p>
 
           {/* Log number */}
@@ -188,7 +255,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="log_no"
                 id="log_no"
                 placeholder="Log no."
-                defaultValue={ diveRecord.log_no }
+                value={ diveRecord.log_no && diveRecord.log_no }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -206,7 +273,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="date"
                 name="date"
                 id="date"
-                defaultValue={ diveRecord.date && getNumDate(diveRecord.date)}
+                value={ diveRecord.date && getNumDate(diveRecord.date)}
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -223,7 +290,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="location"
                 id="location"
                 placeholder="Location"
-                defaultValue={ diveRecord.location }
+                value={ diveRecord.location && diveRecord.location }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -237,9 +304,11 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               <select
                 name="country_id"
                 id="country_id"
+                value={ diveRecord.country_id && diveRecord.country_id }
                 onChange={(e) => handleInputChange(e)}
                 className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
               >
+                {/* TODO: */}
                 <option value="" > --- Please select --- </option>
                 <CountryOptions selected={ diveRecord.country_id } />
               </select>
@@ -253,9 +322,11 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               <select
                 name="purpose_id"
                 id="purpose_id"
+                value={ diveRecord.purpose_id && diveRecord.purpose_id }
                 onChange={(e) => handleInputChange(e)}
                 className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
               >
+                {/* TODO: */}
                 <option value="" > --- Please select --- </option>
                 <DivePurposeOptions selected={ diveRecord.purpose_id } />
               </select>
@@ -272,7 +343,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="course"
                 id="course"
                 placeholder="Course"
-                defaultValue={ diveRecord.course }
+                value={ diveRecord.course && diveRecord.course }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -289,7 +360,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="weather"
                 id="weather"
                 placeholder="Weather"
-                defaultValue={ diveRecord.weather }
+                value={ diveRecord.weather && diveRecord.weather }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -306,7 +377,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="surface_temperature"
                 id="surface_temperature"
                 placeholder="Surface temperature"
-                defaultValue={ diveRecord.surface_temperature }
+                value={ diveRecord.surface_temperature && diveRecord.surface_temperature }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -323,7 +394,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="water_temperature"
                 id="water_temperature"
                 placeholder="Water temperature"
-                defaultValue={ diveRecord.water_temperature }
+                value={ diveRecord.water_temperature && diveRecord.water_temperature }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -332,14 +403,14 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
           </div>
 
           {/* Start time */}
-          <div className="w-10/12 md:w-full h-20 md:h-14 my-3 mx-auto flex flex-col md:flex-row justify-startr md:justify-between md:items-start">
+          <div className="w-10/12 md:w-full h-20 md:h-14 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-start">
             <label htmlFor="start_time" className="md:w-24 text-wrap">Start time<span className="text-eyeCatchDark">*</span></label>
             <div className="w-full md:w-8/12">
               <input
                 type="time"
                 name="start_time"
                 id="start_time"
-                defaultValue={ diveRecord.start_time && formatTime(diveRecord.start_time) }
+                value={ diveRecord.start_time && formatTime(diveRecord.start_time) }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -355,7 +426,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="time"
                 name="end_time"
                 id="end_time"
-                defaultValue={ diveRecord.end_time && formatTime(diveRecord.end_time) }
+                value={ diveRecord.end_time && formatTime(diveRecord.end_time) }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -372,7 +443,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="tankpressure_start"
                 id="tankpressure_start"
                 placeholder="Tank pressure start"
-                defaultValue={ diveRecord.tankpressure_start }
+                value={ diveRecord.tankpressure_start && diveRecord.tankpressure_start }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -389,7 +460,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="tankpressure_end"
                 id="tankpressure_end"
                 placeholder="Tank pressure end"
-                defaultValue={ diveRecord.tankpressure_end }
+                value={ diveRecord.tankpressure_end && diveRecord.tankpressure_end }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -399,14 +470,14 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
 
           {/* Weight */}
           <div className="w-10/12 md:w-full h-20 md:h-14 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-start">
-            <label htmlFor="weight" className="md:w-24 text-wrap">Weight added</label>
+            <label htmlFor="added_weight" className="md:w-24 text-wrap">Weight added</label>
             <div className="w-full md:w-8/12">
               <input
                 type="number"
-                name="weight"
-                id="weight"
+                name="added_weight"
+                id="added_weight"
                 placeholder="Weight added"
-                defaultValue={ diveRecord.added_weight }
+                value={ diveRecord.added_weight && diveRecord.added_weight }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -423,7 +494,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="suit"
                 id="suit"
                 placeholder="Suit"
-                defaultValue={ diveRecord.suit }
+                value={ diveRecord.suit && diveRecord.suit }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -440,7 +511,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="max_depth"
                 id="max_depth"
                 placeholder="Max depth"
-                defaultValue={ diveRecord.max_depth }
+                value={ diveRecord.max_depth && diveRecord.max_depth }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -457,7 +528,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="visibility"
                 id="visibility"
                 placeholder="Visibility"
-                defaultValue={ diveRecord.visibility }
+                value={ diveRecord.visibility && diveRecord.visibility }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
@@ -497,7 +568,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                     type="hidden"
                     name="buddy_ref"
                     id="buddy_ref"
-                    value={ buddyRef.id }
+                    value={ buddyRef.id && buddyRef.id }
                     onChange={(e) => handleInputChange(e)}
                   />
                 </div>
@@ -508,7 +579,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                     name="buddy_str"
                     id="buddy_str"
                     placeholder="Buddy"
-                    defaultValue={ diveRecord.buddy_str }
+                    value={ diveRecord.buddy_str && diveRecord.buddy_str }
                     onChange={(e) => handleInputChange(e)}
                     className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
                   />
@@ -551,7 +622,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                     type="hidden"
                     name="supervisor_ref"
                     id="supervisor_ref"
-                    value={ supervisorRef.id }
+                    value={ supervisorRef.id && supervisorRef.id }
                     onChange={(e) => handleInputChange(e)}
                   />
                 </div>
@@ -562,7 +633,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                     name="supervisor_str"
                     id="supervisor_str"
                     placeholder="Supervisor"
-                    defaultValue={ diveRecord.supervisor_str }
+                    value={ diveRecord.supervisor_str && diveRecord.supervisor_str }
                     onChange={(e) => handleInputChange(e)}
                     className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
                   />
@@ -605,7 +676,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                     type="hidden"
                     name="dive_center_id"
                     id="dive_center_id"
-                    value={ diveCenterRef.id }
+                    value={ diveCenterRef.id && diveCenterRef.id }
                     onChange={(e) => handleInputChange(e)}
                   />
                 </div>
@@ -616,7 +687,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                     name="dive_center_str"
                     id="dive_center_str"
                     placeholder="DiveCenter"
-                    defaultValue={ diveRecord.dive_center_str }
+                    value={ diveRecord.dive_center_str && diveRecord.dive_center_str }
                     onClick={(e) => handleInputChange(e)}
                     className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
                   />
@@ -634,7 +705,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 name="notes"
                 id="notes"
                 placeholder="Note"
-                defaultValue={ diveRecord.notes }
+                value={ diveRecord.notes && diveRecord.notes }
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-60 bg-lightBlue dark:bg-baseWhite px-2 mt-2 rounded text-black focus:outline-none"
               />
@@ -643,7 +714,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
           </div>
 
           {/* Is draft */}
-          <div className="ww-10/12 md:w-full h-20 md:h-14 my-3 mx-auto flex flex-col md:flex-row justify-center md:justify-between md:items-start">
+          <div className="w-10/12 md:w-full h-20 md:h-14 my-3 mx-auto flex flex-col md:flex-row justify-center md:justify-between md:items-start">
             <div className="w-full md:w-8/12">
               <input
                 type="checkbox"
@@ -657,8 +728,8 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
             <p className="text-eyeCatchDark text-end">{ errorMsg.is_draft }</p>
           </div>
 
-          <div className="w-full text-center mb-28">
-            <UpdateLogBtn />
+          <div className='w-full text-center mb-28'>
+            <UpdateLogBtn isDisabled={isPending} />
           </div>
         </form>
 

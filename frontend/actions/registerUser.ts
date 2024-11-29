@@ -13,7 +13,7 @@ type RegisterActionStateType = {
   },
 }
 
-type RegiserFromType = {
+type RegisterFromType = {
   divLogName?: string,
   email?: string,
   password?: string,
@@ -23,7 +23,7 @@ type RegiserFromType = {
 export const emailRegex = /^[a-zA-Z0-9_.±]+@+[a-zA-Z0-9-]+\.+[a-zA-Z0-9-.]{2,}$/;
 export const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{12,}$/;
 
-async function registerUser(_previousState: RegiserFromType, formData: FormData):Promise<RegisterActionStateType> {
+async function registerUser(_previousState: RegisterFromType, formData: FormData):Promise<RegisterActionStateType> {
   const divLogName = String(formData.get("divlogName"));
   const email = String(formData.get("email"));
   const password = String(formData.get("password"));
