@@ -21,17 +21,6 @@ type UserOption = {
   license_name?: string,
 }
 
-const isUserOption = (val: unknown): val is UserOption => {
-  if (!isObject(val) || isObjectEmpty(val)) {
-    return false;
-  }
-
-  const keys = ['id', 'divLog_name', 'license_name'];
-  const wrongEntry = Object.entries(val).filter(([k, v]) => !keys.includes(k) || !isString(v));
-
-  return wrongEntry.length === 0;
-}
-
 type CountryName = { name: string };
 
 const isCountryName = (val:unknown): val is CountryName => {
@@ -39,7 +28,7 @@ const isCountryName = (val:unknown): val is CountryName => {
     return false;
   }
 
-  return val['name'] && isString(val['name'])
+  return Object.entries(val).some(([k, v]) => k === 'name' && isString(v));
 }
 
 type DiveCenterOption = {
@@ -143,7 +132,7 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
           >
             <div className="flex flex-col items-start">
               {isDiveCenterOption(option) ? (
-                <>center da
+                <>
                   <p className="text-md">{ option.name }</p>
                   <p className="text-sm" >{ option.country?.name }</p>
                 </>
