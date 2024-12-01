@@ -1,36 +1,39 @@
 'use client';
 import { useMemo, useState, useEffect } from "react";
 import axios from "axios";
-import isObjectEmpty from "@/utils/isObjectEmpty";
 import { isCountryType } from '@/types/countryTypes';
 
+export type CountryOptionList = Array<{id: number, name: string}>
+
 type CountryOptionsProps = {
-  selected?: number
+  setCountryList?:  React.Dispatch<React.SetStateAction<CountryOptionList>>
 }
 
-const CountryOptions = ({ selected } : CountryOptionsProps) => {
-  const [countries, setCountries] = useState<Partial<{id: number, name: string}>>({});
+const CountryOptions = ({ setCountryList }: CountryOptionsProps) => {
+  const [countries, setCountries] = useState<CountryOptionList>([]);
 
   useEffect(() => {
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/countries`)
       .then((res) => {
-        setCountries(res.data)
+        setCountries(res.data);
+        if (!!setCountryList) {
+          setCountryList(res.data);
+        }
       })
       .catch((err) => {
         console.log('Error fetching countries: ', err);
       })
 
-  }, []);
+  }, [setCountryList]);
 
   const options = useMemo(() => {
-    if (!isObjectEmpty(countries)) {
-      return Object.entries(countries).map(([, country]) => {
+    if (countries.length > 0) {
+      return countries.map((country) => {
         if (isCountryType(country)) {
           return (
             <option
               value={ country.id }
               key={ country.id }
-              selected={ Number(country.id) === selected }
             >
               { country.name }
             </option>
@@ -39,7 +42,7 @@ const CountryOptions = ({ selected } : CountryOptionsProps) => {
       }
     )
     }
-  }, [countries, selected]);
+  }, [countries]);
 
   return (
     <>

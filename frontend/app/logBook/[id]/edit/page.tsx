@@ -15,8 +15,8 @@ import isNumber from '@/utils/isNumber';
 import { isKeyWithNumVal } from '@/types/diveRecordTypes';
 import updateDiveRecord from '@/actions/diveRecord/updateDiveRecord';
 import Heading from "@/components/Heading";
-import CountryOptions from '@/components/CountryOptions';
-import DivePurposeOptions from '@/components/log/DivePurposeOptions';
+import CountryOptions, { CountryOptionList } from '@/components/CountryOptions';
+import DivePurposeOptions, { DivePurposeOptionList } from '@/components/log/DivePurposeOptions';
 import SearchModal from '@/components/log/SearchModal';
 import UpdateLogBtn from '@/components/log/UpdateLogBtn';
 
@@ -37,6 +37,8 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
   const [state, formAction, isPending] = useActionState(updateDiveRecord, {}); // TODO:err
 
   const [diveRecord, setDiveRecord] = useState<Partial<DiveRecordDetail>>({});
+  const [countryList, setCountryList] = useState<CountryOptionList>([]);
+  const [purposeList, setPurposeList] = useState<DivePurposeOptionList>([]);
 
   const [isBuddyById, setIsBuddyById] = useState<boolean>(true);
   const [isSupervisorById, setIsSupervisorById] = useState<boolean>(true);
@@ -301,17 +303,18 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
           <div className="w-10/12 md:w-full h-20 md:h-14 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-start">
             <label htmlFor="country_id" className="md:w-24 text-wrap">Country/ Region</label>
             <div className="w-full md:w-8/12">
-              <select
-                name="country_id"
-                id="country_id"
-                value={ diveRecord.country_id && diveRecord.country_id }
-                onChange={(e) => handleInputChange(e)}
-                className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
-              >
-                {/* TODO: */}
-                <option value="" > --- Please select --- </option>
-                <CountryOptions selected={ diveRecord.country_id } />
-              </select>
+              {countryList && (
+                <select
+                  name="country_id"
+                  id="country_id"
+                  value={ diveRecord.country_id }
+                  onChange={(e) => handleInputChange(e)}
+                  className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
+                >
+                  <option value="" > --- Please select --- </option>
+                  <CountryOptions setCountryList={ setCountryList} />
+                </select>
+              )}
               <p className="text-eyeCatchDark text-end">{ errorMsg.country_id }</p>
             </div>
           </div>
@@ -319,17 +322,18 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
           <div className="w-10/12 md:w-full h-20 md:h-14 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-start">
             <label htmlFor="purpose_id" className="md:w-24 text-wrap">Purpose</label>
             <div className="w-full md:w-8/12">
-              <select
-                name="purpose_id"
-                id="purpose_id"
-                value={ diveRecord.purpose_id && diveRecord.purpose_id }
-                onChange={(e) => handleInputChange(e)}
-                className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
-              >
-                {/* TODO: */}
-                <option value="" > --- Please select --- </option>
-                <DivePurposeOptions selected={ diveRecord.purpose_id } />
-              </select>
+              { purposeList && (
+                <select
+                  name="purpose_id"
+                  id="purpose_id"
+                  value={ diveRecord.purpose_id && diveRecord.purpose_id }
+                  onChange={(e) => handleInputChange(e)}
+                  className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
+                >
+                  <option value="" > --- Please select --- </option>
+                  <DivePurposeOptions setPurposeList={ setPurposeList } />
+                </select>
+              )}
               <p className="text-eyeCatchDark text-end">{ errorMsg.purpose_id }</p>
             </div>
           </div>

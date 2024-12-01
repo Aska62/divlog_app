@@ -1,36 +1,39 @@
 'use client';
 import { useMemo, useState, useEffect } from "react";
 import axios from "axios";
-import isObjectEmpty from "@/utils/isObjectEmpty";
 import { isDivePurposeType } from '@/types/divePurposeTypes';
 
+export type DivePurposeOptionList = Array<{id: number, name: string}>
+
 type DivePurposeOptionsProps = {
-  selected?: number
+  setPurposeList?:  React.Dispatch<React.SetStateAction<DivePurposeOptionList>>
 }
 
-const DivePurposeOptions = ({ selected }: DivePurposeOptionsProps) => {
-  const [purposes, setPurposes] = useState<Partial<{id: number, name: string}>>({});
+const DivePurposeOptions = ({ setPurposeList }: DivePurposeOptionsProps) => {
+  const [purposes, setPurposes] = useState<DivePurposeOptionList>([]);
 
   useEffect(() => {
     axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/divePurposes`)
       .then((res) => {
-        setPurposes(res.data)
+        setPurposes(res.data);
+        if (!!setPurposeList) {
+          setPurposeList(res.data);
+        }
       })
       .catch((err) => {
         console.log('Error fetching purposes: ', err);
       })
 
-  }, []);
+  }, [setPurposeList]);
 
   const options = useMemo(() => {
-    if (!isObjectEmpty(purposes)) {
-      return Object.entries(purposes).map(([, purpose]) => {
+    if (purposes.length > 0) {
+      return purposes.map((purpose) => {
         if (isDivePurposeType(purpose)) {
           return (
             <option
               value={ purpose.id }
               key={ purpose.id }
-              selected={ Number(purpose.id) === selected }
             >
               { purpose.name }
             </option>
@@ -39,7 +42,7 @@ const DivePurposeOptions = ({ selected }: DivePurposeOptionsProps) => {
       }
     )
     }
-  }, [purposes, selected]);
+  }, [purposes]);
 
   return (
     <>
