@@ -10,7 +10,7 @@ import { getNumDate } from "@/utils/dateTime/formatDate";
 import formatTime from '@/utils/dateTime/formatTime';
 import combineDateTime from '@/utils/dateTime/combineDateTime';
 import isNumber from '@/utils/isNumber';
-import isObjectValEmpty from '@/utils/isObjectValuEmpty';
+import isObjectValEmpty from '@/utils/isObjectValEmpty';
 import { isKeyWithNumVal } from '@/types/diveRecordTypes';
 import Heading from "@/components/Heading";
 import CountryOptions, { CountryOptionList } from '@/components/CountryOptions';
@@ -195,7 +195,7 @@ const AddLog = () => {
         : Number(value) < 0 ? 'The value should not be below zero'
         : ''
     }
-    console.log(diveRecord);
+
     setErrorMsg({...errorMsg, ...newErrMsg});
     setIsInputError(!isObjectValEmpty({...errorMsg, ...newErrMsg}));
     setDiveRecord({ ...diveRecord, ...newRecordVal });

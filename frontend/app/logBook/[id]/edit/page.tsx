@@ -12,6 +12,7 @@ import { getNumDate } from "@/utils/dateTime/formatDate";
 import formatTime from '@/utils/dateTime/formatTime';
 import combineDateTime from '@/utils/dateTime/combineDateTime';
 import isNumber from '@/utils/isNumber';
+import isObjectValEmpty from '@/utils/isObjectValEmpty';
 import { isKeyWithNumVal } from '@/types/diveRecordTypes';
 import updateDiveRecord from '@/actions/diveRecord/updateDiveRecord';
 import Heading from "@/components/Heading";
@@ -66,6 +67,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     >, string
   >;
 
+  const [isInputError, setIsInputError] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<ErrMsg>({
     log_no: '',
     date: '',
@@ -162,17 +164,15 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     e.preventDefault();
     const { id, value } = e.target;
     const newRecordVal: { [x:string]: string | number | Date } = {[id]: value};
-    console.log('handleInputChange', {id, value})
+    const newErrMsg = { [id]: '' };
 
     if (id === 'log_no') {
-      const msg = !value ? 'Please input log no'
+      newErrMsg.log_no = !value ? 'Please input log no'
         : Number(value) <= 0 ? 'Log no must be greater than 0'
         : !isNumber(Number(value)) ? 'Please input number'
         : '';
-      setErrorMsg({...errorMsg, ...{ log_no: msg }});
     } else if (id === 'date') {
-      const msg = !value ? 'Please input date' : '';
-      setErrorMsg({...errorMsg, ...{ date: msg }});
+      newErrMsg.date = !value ? 'Please input date' : '';
       if (!!value) {
         if (diveRecord.start_time) {
           newRecordVal['start_time'] = combineDateTime(new Date(value), formatTime(diveRecord.start_time));
@@ -186,30 +186,22 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
       newRecordVal.start_time = newStartTime;
 
       if (diveRecord.end_time && newStartTime > new Date(diveRecord.end_time)) {
-        setErrorMsg({...errorMsg, ...{
-          start_time: 'Start time must be before end time',
-          end_time: 'End time must be after start time'
-        }})
+        newErrMsg.start_time = 'Start time must be before end time';
+        newErrMsg.end_time = 'End time must be after start time'
       } else {
-        setErrorMsg({...errorMsg, ...{
-          start_time: '',
-          end_time: '',
-        }});
+        newErrMsg.start_time = '';
+        newErrMsg.end_time = '';
       }
     } else if (id === 'end_time') {
       const newEndTime = combineDateTime(diveRecord.date || new Date(), value)
       newRecordVal.end_time = newEndTime;
 
       if (diveRecord.start_time && new Date(diveRecord.start_time) > newEndTime) {
-        setErrorMsg({...errorMsg, ...{
-          start_time: 'Start time must be before end time',
-          end_time: 'End time must be after start time',
-        }});
+        newErrMsg.start_time = 'Start time must be before end time';
+        newErrMsg.end_time = 'End time must be after start time'
       } else {
-        setErrorMsg({...errorMsg, ...{
-          start_time: '',
-          end_time: ''
-        }});
+        newErrMsg.start_time = '';
+        newErrMsg.end_time = '';
       }
     } else if (id === 'buddy_ref') {
       newRecordVal.buddy_str = '';
@@ -224,13 +216,14 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     } else if (id === 'dive_center_str') {
       newRecordVal.dive_center_id = '';
     } else if (isKeyWithNumVal(id)) {
-      const msg = !value ? ''
+      newErrMsg[id] = !value ? ''
         : !isNumber(Number(value)) ? 'Please input number'
         : Number(value) < 0 ? 'The value should not be below zero'
         : ''
-      setErrorMsg({...errorMsg, ...{ [id]: msg }});
     }
 
+    setErrorMsg({...errorMsg, ...newErrMsg});
+    setIsInputError(!isObjectValEmpty({...errorMsg, ...newErrMsg}));
     setDiveRecord({ ...diveRecord, ...newRecordVal });
   }
 
@@ -239,6 +232,24 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     setDiveRecord({ ...diveRecord, ...isDraft });
   }
 
+  const clearSelect = (e:MouseEvent<HTMLButtonElement>, modalType:ModalTypes):void  => {
+    e.preventDefault();
+
+    switch(modalType) {
+      case modalTypeBuddy:
+        setBuddyRef({id: '', name: ''});
+        setDiveRecord({ ...diveRecord, ...{ buddy_ref: '' } });
+        break;
+      case modalTypeSupervisor:
+        setSupervisorRef({id: '', name: ''});
+        setDiveRecord({ ...diveRecord, ...{ supervisor_ref: '' } });
+        break;
+      case modalTypeDiveCenter:
+        setDiveCenterRef({id: '', name: ''});
+        setDiveRecord({ ...diveRecord, ...{ dive_center_id: '' } });
+        break;
+    }
+  }
 
   return (
     <>
@@ -545,33 +556,42 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
           </div>
 
           {/* Buddy */}
-          <div className="w-10/12 md:w-full h-32 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between">
-            <div className='w-full md:w-4/12 md:h-2/3 flex flex-col justify-between md:items-start mb-2'>
-              <label htmlFor={`${isBuddyById ? 'buddy_ref' : 'buddy_str'}`} className="md:w-24 text-wrap mb-1">Buddy</label>
-              <div className='flex md:flex-col'>
-                <button
-                  onClick={(e) => switchBuddyInput(e)}
-                  disabled={isBuddyById}
-                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 mr-3 md:mb-2 ${ isBuddyById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
-                >{ isBuddyById ? 'Click to search' : 'Choose on DivLog'}</button>
-                <button
-                  onClick={(e) => switchBuddyInput(e)}
-                  disabled={!isBuddyById}
-                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 ${ !isBuddyById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
-                >Input</button>
-              </div>
+          <div className="w-10/12 md:w-full h-32 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-center">
+            <div className='w-full md:w-4/12 md:h-2/3 flex justify-between md:flex-col md:justify-center mb-2'>
+              <label
+                htmlFor={`${isBuddyById ? 'buddy_ref' : 'buddy_str'}`}
+                className="md:w-24 text-wrap mb-1 mr-3">
+                Buddy
+              </label>
+              <button
+                onClick={(e) => switchBuddyInput(e)}
+                className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2`}
+              >
+                {isBuddyById ? 'Manual Input' : 'Choose on DivLog'}
+              </button>
             </div>
             <div className="w-full md:w-8/12">
               { isBuddyById ? (
-                <div
-                  className='flex flex-row-reverse items-end justify-between'
-                >
-                  <button
-                    onClick={(e) => openSearchModal(e, modalTypeBuddy)}
-                    disabled={!isBuddyById}
-                    className='rounded-md md:w-fit px-2 ml-3 md:mb-2 bg-red-400 text-baseWhite text-lg font-semibold'
-                  >Search</button>
-                  <p>{ buddyRef.name }</p>
+                <div className='flex flex-col-reverse items-start justify-between'>
+                  <div className='flex flex-row justify-start w-full mt-2'>
+                    <button
+                      onClick={(e) => openSearchModal(e, modalTypeBuddy)}
+                      disabled={!isBuddyById}
+                      className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
+                    >
+                      Search
+                    </button>
+                    <button
+                      onClick={(e) => clearSelect(e, modalTypeBuddy)}
+                      disabled={!isBuddyById}
+                      className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <p className='h-8 w-full bg-lightBlue opacity-80 text-black px-2 py-1 rounded-md'>
+                    { buddyRef.name }
+                  </p>
                   <input
                     type="hidden"
                     name="buddy_ref"
@@ -595,34 +615,44 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
           </div>
 
           {/* Supervisor */}
-          <div className="w-10/12 md:w-full h-32 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between">
-            <div className='w-full md:w-4/12 md:h-2/3 flex flex-col justify-between md:items-start mb-2'>
-            <label htmlFor={`${isSupervisorById ? 'supervisor_ref' : 'supervisor_str'}`} className="md:w-24 text-wrap mb-1">Supervisor</label>
+          <div className="w-10/12 md:w-full h-32 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-center">
+            <div className='w-full md:w-4/12 md:h-2/3 flex justify-between md:flex-col md:justify-center mb-2'>
+              <label
+                htmlFor={`${isSupervisorById ? 'supervisor_ref' : 'supervisor_str'}`}
+                className="md:w-24 text-wrap mb-1 mr-3"
+              >
+                Supervisor
+              </label>
               <div className='flex md:flex-col'>
                 <button
                   onClick={(e) => switchSupervisorInput(e)}
-                  disabled={isSupervisorById}
-                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 mr-3 md:mb-2 ${ isSupervisorById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
-                >Choose on DivLog</button>
-                <button
-                  onClick={(e) => switchSupervisorInput(e)}
-                  disabled={!isSupervisorById}
-                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 ${ !isSupervisorById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
-                >Input</button>
+                  className='bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2'
+                >{isSupervisorById ? 'Manual Input' : 'Choose on DivLog'}</button>
               </div>
             </div>
 
             <div className="w-full md:w-8/12">
               { isSupervisorById ? (
-                <div
-                  className='flex flex-row-reverse items-end justify-between'
-                >
-                  <button
-                    onClick={(e) => openSearchModal(e, modalTypeSupervisor)}
-                    disabled={!isSupervisorById}
-                    className='rounded-md md:w-fit px-2 ml-3 md:mb-2 bg-red-400 text-baseWhite text-lg font-semibold'
-                  >Search</button>
-                  <p>{ supervisorRef.name }</p>
+                <div className='flex flex-col-reverse items-start justify-between md:mt-6'>
+                  <div className='flex flex-row justify-start w-full mt-2'>
+                    <button
+                      onClick={(e) => openSearchModal(e, modalTypeSupervisor)}
+                      disabled={!isSupervisorById}
+                      className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
+                    >
+                      Search
+                    </button>
+                    <button
+                      onClick={(e) => clearSelect(e, modalTypeBuddy)}
+                      disabled={!isSupervisorById}
+                      className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <p className='h-8 w-full bg-lightBlue opacity-80 text-black px-2 py-1 rounded-md'>
+                    { supervisorRef.name }
+                  </p>
                   <input
                     type="hidden"
                     name="supervisor_ref"
@@ -646,34 +676,46 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
           </div>
 
           {/* Dive Center */}
-          <div className="w-10/12 md:w-full h-32 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between">
-            <div className='w-full md:w-4/12 md:h-2/3 flex flex-col justify-between md:items-start mb-2'>
-              <label htmlFor={`${ isDiveCenterById ? 'dive_center_id' : 'dive_center_str' }`} className="md:w-24 text-wrap mb-1">Dive Center</label>
-              <div className='flex md:flex-col'>
-                <button
-                  onClick={(e) => switchDiveCenterInput(e)}
-                  disabled={isDiveCenterById}
-                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 mr-3 md:mb-2 ${ isDiveCenterById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
-                >{ isDiveCenterById ? 'Click to search' : 'Choose on DivLog'}</button>
-                <button
-                  onClick={(e) => switchDiveCenterInput(e)}
-                  disabled={!isDiveCenterById}
-                  className={`bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 ${ !isDiveCenterById && 'bg-lightGray dark:bg-lightGray dark:text-baseWhite hover:cursor-default' }`}
-                >Input</button>
-              </div>
+          <div className="w-10/12 md:w-full h-32 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-center">
+            <div className='w-full md:w-4/12 md:h-2/3 flex justify-between md:flex-col md:justify-center mb-2'>
+              <label
+                htmlFor={`${ isDiveCenterById ? 'dive_center_id' : 'dive_center_str' }`}
+                className="md:w-24 text-wrap mb-1 mr-3"
+              >
+                Dive Center
+              </label>
+              <button
+                onClick={(e) => switchDiveCenterInput(e)}
+                className='bg-darkBlue dark:bg-lightBlue text-baseWhite dark:text-darkBlue rounded-md md:w-fit px-2 md:mb-2'
+              >
+                {isDiveCenterById ? 'Manual Input' : 'Choose on DivLog'}
+              </button>
             </div>
 
             <div className="w-full md:w-8/12">
               { isDiveCenterById ? (
                 <div
-                  className='flex flex-row-reverse items-end justify-between'
+                  className='flex flex-col-reverse justify-between md:mt-6'
                 >
+                <div className='flex flex-row justify-start md:justify-start w-full mt-2'>
                   <button
                     onClick={(e) => openSearchModal(e, modalTypeDiveCenter)}
                     disabled={!isDiveCenterById}
-                    className='rounded-md md:w-fit px-2 ml-3 md:mb-2 bg-red-400 text-baseWhite text-lg font-semibold'
-                  >Search</button>
-                  <p>{ diveCenterRef.name }</p>
+                    className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
+                  >
+                    Search
+                  </button>
+                  <button
+                    onClick={(e) => clearSelect(e, modalTypeBuddy)}
+                    disabled={!isDiveCenterById}
+                    className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
+                  >
+                    Clear
+                  </button>
+                </div>
+                  <p className='h-8 w-full bg-lightBlue opacity-80 text-black px-2 py-1 rounded-md'>
+                    { diveCenterRef.name }
+                  </p>
                   <input
                     type="hidden"
                     name="dive_center_id"
@@ -728,7 +770,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
           </div>
 
           <div className='w-full text-center mb-28'>
-            <UpdateLogBtn isDisabled={isPending} />
+            <UpdateLogBtn isDisabled={isInputError || isPending} />
           </div>
         </form>
 
