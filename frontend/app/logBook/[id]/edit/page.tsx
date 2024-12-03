@@ -230,7 +230,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
         : ''
       setErrorMsg({...errorMsg, ...{ [id]: msg }});
     }
-    console.log(diveRecord)
+
     setDiveRecord({ ...diveRecord, ...newRecordVal });
   }
 

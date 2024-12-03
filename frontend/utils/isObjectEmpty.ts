@@ -1,6 +1,6 @@
 const isObjectEmpty = (value:unknown): value is {never: never} => {
   if(!value || typeof value !== 'object') {
-    return true;
+    return false;
   }
 
   return Object.keys(value).length === 0;

@@ -1,46 +1,9 @@
 import axios, { isAxiosError } from "axios";
-import { DiveRecordDetail } from "@/types/diveRecordTypes";
 import combineDateTime from "@/utils/dateTime/combineDateTime";
 import isNumString from "@/utils/isNumString";
+import { DiveRecordStateType } from '@/actions/diveRecord/updateDiveRecord';
 
-export type DiveRecordStateType = Partial<DiveRecordDetail> & {
-  success?: boolean,
-  error?: Partial<Record<
-    | 'log_no'
-    | 'date'
-    | 'location'
-    | 'country_id'
-    | 'purpose_id'
-    | 'course'
-    | 'weather'
-    | 'surface_temperature'
-    | 'water_temperature'
-    | 'max_depth'
-    | 'visibility'
-    | 'start_time'
-    | 'end_time'
-    | 'tankpressure_start'
-    | 'tankpressure_end'
-    | 'added_weight'
-    | 'suit'
-    | 'gears'
-    | 'buddy_str'
-    | 'buddy_ref'
-    | 'supervisor_str'
-    | 'supervisor_ref'
-    | 'dive_center_str'
-    | 'dive_center_id'
-    | 'notes'
-    | 'is_draft'
-    | 'message',
-    string
-  >>,
-  message?: string,
-  diveRecordId?: boolean,
-}
-
-async function updateDiveRecord(_previousState: DiveRecordStateType, formData: FormData):Promise<DiveRecordStateType> {
-  const id = formData.get('id');
+async function addDiveRecord(_previousState: DiveRecordStateType, formData: FormData):Promise<DiveRecordStateType> {
   const date = new Date(String(formData.get('date'))) || null;
   const starTime = formData.get('start_time') || null;
   const startDateTime =  starTime ? combineDateTime(new Date(date), String(starTime)) : null;
@@ -77,15 +40,15 @@ async function updateDiveRecord(_previousState: DiveRecordStateType, formData: F
   }
 
   try {
-    const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/${id}`,
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords`,
       { ...data },
       { withCredentials: true }
     );
 
     return {
       success: true,
-      message: res.data
-      // message: 'Successfully updated the record',
+      message: 'Successfully added new record',
+      diveRecordId: res.data.id
     }
 
   } catch (error) {
@@ -105,4 +68,4 @@ async function updateDiveRecord(_previousState: DiveRecordStateType, formData: F
   }
 }
 
-export default updateDiveRecord;
+export default addDiveRecord;
