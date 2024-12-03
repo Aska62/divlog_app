@@ -34,7 +34,7 @@ export type ChoiceStateValue = { id: string, name: string };
 const EditLog:React.FC<EditLogProps> = ({ params }) => {
   const router = useRouter();
 
-  const [state, formAction, isPending] = useActionState(updateDiveRecord, {}); // TODO:err
+  const [state, formAction, isPending] = useActionState(updateDiveRecord, {});
 
   const [diveRecord, setDiveRecord] = useState<Partial<DiveRecordDetail>>({});
   const [countryList, setCountryList] = useState<CountryOptionList>([]);

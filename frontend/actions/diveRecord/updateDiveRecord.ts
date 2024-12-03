@@ -3,8 +3,8 @@ import { DiveRecordDetail } from "@/types/diveRecordTypes";
 import combineDateTime from "@/utils/dateTime/combineDateTime";
 import isNumString from "@/utils/isNumString";
 
-type DiveRecordStateType = {
-  success: boolean,
+type DiveRecordStateType = Partial<DiveRecordDetail> & {
+  success?: boolean,
   error?: Partial<Record<
     | 'log_no'
     | 'date'
@@ -35,12 +35,10 @@ type DiveRecordStateType = {
     | 'message',
     string
   >>,
-  message: string,
+  message?: string,
 }
 
-type DiveRecordFormType = DiveRecordDetail & DiveRecordStateType
-
-async function updateDiveRecord(_previousState: DiveRecordFormType, formData: FormData):Promise<DiveRecordStateType> {
+async function updateDiveRecord(_previousState: DiveRecordStateType, formData: FormData):Promise<DiveRecordStateType> {
   const id = formData.get('id');
   const date = new Date(String(formData.get('date'))) || null;
   const starTime = formData.get('start_time') || null;
