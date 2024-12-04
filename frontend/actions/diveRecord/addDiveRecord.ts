@@ -61,7 +61,7 @@ async function addDiveRecord(_previousState: DiveRecordStateType, formData: Form
     } else {
       return {
         success: false,
-        message: 'Update failed',
+        message: 'Registration failed',
       }
     }
   }

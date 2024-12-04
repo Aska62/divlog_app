@@ -84,17 +84,15 @@ async function updateDiveRecord(_previousState: DiveRecordStateType, formData: F
 
     return {
       success: true,
-      message: res.data
-      // message: 'Successfully updated the record',
+      message: res.data.message,
     }
 
   } catch (error) {
-    console.log('Error: ', error);
     if (isAxiosError(error) && error.response) {
-      console.log(error.response.data)
       return {
         success: false,
-        message: error.response.data,
+        message: error.response.data.message,
+        error: error.response.data.error,
       };
     } else {
       return {

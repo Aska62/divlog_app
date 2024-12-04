@@ -92,15 +92,12 @@ const AddLog = () => {
   });
 
   useEffect(() => {
-      if (state.success) {
-        console.log('success!')
-        router.push(`/logBook/${state.diveRecordId}`);
-        toast.success('Successfully added new log');
-      } else if (state.message) {
-        console.log('error msg!')
-        toast.error(state.message);
-      }
-
+    if (state.success) {
+      router.push(`/logBook/${state.diveRecordId}`);
+      toast.success('Successfully added new log');
+    } else if (state.message) {
+      toast.error(state.message);
+    }
   }, [state, router]);
 
   // Switch buddy input methods

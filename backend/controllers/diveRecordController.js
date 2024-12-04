@@ -370,7 +370,7 @@ const addDiveRecord = asyncHandler(async (req, res) => {
     });
     res.status(201).json(newDiveRecord);
   } catch (error) {
-    console.log('error', error)
+    console.log('error', error);
     res.status(500).send({
       message: error.message
     });
@@ -480,11 +480,11 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
     suit,
     gears,
     buddy_str,
-    buddy_ref,
+    buddy_ref: buddy_ref && buddy_ref.length > 0 ? buddy_ref : null,
     supervisor_str,
-    supervisor_ref,
+    supervisor_ref: supervisor_ref && supervisor_ref.length > 0 ? supervisor_ref : null,
     dive_center_str,
-    dive_center_id,
+    dive_center_id: dive_center_id && dive_center_id.length > 0 ? dive_center_id : null,
     notes,
     is_draft,
   });
@@ -492,8 +492,9 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
   if (!validated.success) {
     res.status(500).send({
       message: 'Failed in validation',
-      error: validated.error.ZodError.reduce((prev, error) => { // TODO:
-        return {...prev, ...{[error.path]: error.message}}
+      error: validated.error.errors.reduce((prev, error) => {
+        const newErrVal = {[error.path[0]]: error.message};
+        return prev = {...prev, ...newErrVal}
       }, {})
     });
   }
@@ -516,7 +517,8 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
       validated.data.country_id = country.id;
     } else {
       res.status(500).send({
-        message: 'The country code does not exist',
+        message: 'Failed in validation',
+        error: {country_id: 'The country id does not exist'}
       });
     }
   }
@@ -531,7 +533,8 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
       validated.data.purpose_id = purpose.id;
     } else {
       res.status(500).send({
-        message: 'The purpose code does not exist',
+        message: 'Failed in validation',
+        error: {purpose_id: 'The purpose id does not exist'}
       });
     }
   }
@@ -546,7 +549,8 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
       validated.data.buddy_ref = buddyRef.id;
     } else {
       res.status(500).send({
-        message: 'The buddy does not exist',
+        message: 'Failed in validation',
+        error: {buddy_ref: 'The buddy does not exist'}
       });
     }
   }
@@ -561,7 +565,8 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
       validated.data.supervisor_ref = supervisorRef.id;
     } else {
       res.status(500).send({
-        message: 'The supervisor does not exist',
+        message: 'Failed in validation',
+        error: {supervisor_ref: 'The supervisor does not exist'}
       });
     }
   }
@@ -576,7 +581,8 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
       validated.data.dive_center_id = diveCenterRef.id;
     } else {
       res.status(500).send({
-        message: 'The dive center does not exist',
+        message: 'Failed in validation',
+        error: {dive_center_id: 'The dive center does not exist'}
       });
     }
   }
@@ -591,6 +597,7 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
 
     res.status(201).json(updatedDiveRecord);
   } catch (error) {
+    console.log('error', error);
     res.status(500).send({
       message: error.message
     });

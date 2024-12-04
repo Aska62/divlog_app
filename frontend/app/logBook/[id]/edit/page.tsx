@@ -121,10 +121,8 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     if (state.success) {
       router.push(`/logBook/${diveRecord.id}`);
       toast.success('The log successfully updated');
-    }
-
-    if (state.error?.message) {
-      toast.error(state.error.message);
+    } else if (state.message) {
+      toast.error(state.message);
     }
   }, [state, router, diveRecord]);
 
@@ -276,7 +274,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-            <p className="text-eyeCatchDark text-end">{ errorMsg.log_no }</p>
+            <p className="text-eyeCatchDark text-end">{ errorMsg.log_no || state.error?.log_no }</p>
             </div>
           </div>
 
@@ -294,7 +292,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.date }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.date || state.error?.date }</p>
             </div>
           </div>
 
@@ -311,7 +309,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.location }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.location || state.error?.location }</p>
             </div>
           </div>
 
@@ -330,7 +328,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                   <CountryOptions setCountryList={ setCountryList} />
                 </select>
               )}
-              <p className="text-eyeCatchDark text-end">{ errorMsg.country_id }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.country_id || state.error?.country_id }</p>
             </div>
           </div>
 
@@ -349,7 +347,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                   <DivePurposeOptions setPurposeList={ setPurposeList } />
                 </select>
               )}
-              <p className="text-eyeCatchDark text-end">{ errorMsg.purpose_id }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.purpose_id || state.error?.purpose_id }</p>
             </div>
           </div>
 
@@ -366,7 +364,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.course }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.course || state.error?.course }</p>
             </div>
           </div>
 
@@ -383,7 +381,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.weather }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.weather || state.error?.weather }</p>
             </div>
           </div>
 
@@ -400,7 +398,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.surface_temperature }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.surface_temperature || state.error?.surface_temperature }</p>
             </div>
           </div>
 
@@ -417,7 +415,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.water_temperature }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.water_temperature || state.error?.water_temperature }</p>
             </div>
           </div>
 
@@ -433,7 +431,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.start_time }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.start_time || state.error?.start_time }</p>
             </div>
           </div>
 
@@ -449,7 +447,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.end_time }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.end_time || state.error?.end_time }</p>
             </div>
           </div>
 
@@ -466,7 +464,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.tankpressure_start }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.tankpressure_start || state.error?.tankpressure_start }</p>
             </div>
           </div>
 
@@ -483,7 +481,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.tankpressure_end }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.tankpressure_end || state.error?.tankpressure_end }</p>
             </div>
           </div>
 
@@ -500,7 +498,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.added_weight }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.added_weight || state.error?.added_weight }</p>
             </div>
           </div>
 
@@ -517,7 +515,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.suit }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.suit || state.error?.suit }</p>
             </div>
           </div>
 
@@ -534,7 +532,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.gears }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.gears || state.error?.gears }</p>
             </div>
           </div>
 
@@ -551,7 +549,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.max_depth }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.max_depth || state.error?.max_depth }</p>
             </div>
           </div>
 
@@ -568,13 +566,13 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{ errorMsg.visibility }</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.visibility || state.error?.visibility }</p>
             </div>
           </div>
 
           {/* Buddy */}
-          <div className="w-10/12 md:w-full h-32 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-center">
-            <div className='w-full md:w-4/12 md:h-2/3 flex justify-between md:flex-col md:justify-center mb-2'>
+          <div className="w-10/12 md:w-full h-28 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-start">
+            <div className='w-full md:w-4/12 md:h-2/3 flex justify-between md:flex-col md:justify-start mb-2'>
               <label
                 htmlFor={`${isBuddyById ? 'buddy_ref' : 'buddy_str'}`}
                 className="md:w-24 text-wrap mb-1 mr-3">
@@ -587,28 +585,34 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 {isBuddyById ? 'Manual Input' : 'Choose on DivLog'}
               </button>
             </div>
-            <div className="w-full md:w-8/12">
+
+            <div className="w-full md:w-8/12 md:flex md:flex-col md:justify-between">
               { isBuddyById ? (
-                <div className='flex flex-col-reverse items-start justify-between'>
-                  <div className='flex flex-row justify-start w-full mt-2'>
-                    <button
-                      onClick={(e) => openSearchModal(e, modalTypeBuddy)}
-                      disabled={!isBuddyById}
-                      className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
-                    >
-                      Search
-                    </button>
-                    <button
-                      onClick={(e) => clearSelect(e, modalTypeBuddy)}
-                      disabled={!isBuddyById}
-                      className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
-                    >
-                      Clear
-                    </button>
-                  </div>
+                <div className='flex flex-col items-start justify-between'>
                   <p className='h-8 w-full bg-lightBlue opacity-80 text-black px-2 py-1 rounded-md'>
                     { buddyRef.name }
                   </p>
+                  <div className='w-full flex justify-between'>
+                    <div className='flex flex-row justify-start h-6 mt-2'>
+                      <button
+                        onClick={(e) => openSearchModal(e, modalTypeBuddy)}
+                        disabled={!isBuddyById}
+                        className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
+                      >
+                        Search
+                      </button>
+                      <button
+                        onClick={(e) => clearSelect(e, modalTypeBuddy)}
+                        disabled={!isBuddyById}
+                        className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    <p className="text-eyeCatchDark text-end">
+                      { state.error?.buddy_ref || errorMsg.buddy_ref }
+                    </p>
+                  </div>
                   <input
                     type="hidden"
                     name="buddy_ref"
@@ -617,23 +621,27 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                   />
                 </div>
               ) : (
-                <input
-                  type="text"
-                  name="buddy_str"
-                  id="buddy_str"
-                  placeholder="Buddy"
-                  value={ diveRecord.buddy_str || '' }
-                  onChange={(e) => handleInputChange(e)}
-                  className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+                <>
+                  <input
+                    type="text"
+                    name="buddy_str"
+                    id="buddy_str"
+                    placeholder="Buddy"
+                    value={ diveRecord.buddy_str || '' }
+                    onChange={(e) => handleInputChange(e)}
+                    className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
+                  />
+                  <p className="text-eyeCatchDark text-end">
+                    { state.error?.buddy_str || errorMsg.buddy_str }
+                  </p>
+                </>
               )}
-              <p className="text-eyeCatchDark text-end">{ !isBuddyById && errorMsg.buddy_str }</p>
             </div>
           </div>
 
           {/* Supervisor */}
-          <div className="w-10/12 md:w-full h-32 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-center">
-            <div className='w-full md:w-4/12 md:h-2/3 flex justify-between md:flex-col md:justify-center mb-2'>
+          <div className="w-10/12 md:w-full h-28 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-start">
+            <div className='w-full md:w-4/12 md:h-2/3 flex justify-between md:flex-col md:justify-start mb-2'>
               <label
                 htmlFor={`${isSupervisorById ? 'supervisor_ref' : 'supervisor_str'}`}
                 className="md:w-24 text-wrap mb-1 mr-3"
@@ -648,28 +656,33 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               </div>
             </div>
 
-            <div className="w-full md:w-8/12">
+            <div className="w-full md:w-8/12 md:flex md:flex-col md:justify-between">
               { isSupervisorById ? (
-                <div className='flex flex-col-reverse items-start justify-between md:mt-6'>
-                  <div className='flex flex-row justify-start w-full mt-2'>
-                    <button
-                      onClick={(e) => openSearchModal(e, modalTypeSupervisor)}
-                      disabled={!isSupervisorById}
-                      className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
-                    >
-                      Search
-                    </button>
-                    <button
-                      onClick={(e) => clearSelect(e, modalTypeBuddy)}
-                      disabled={!isSupervisorById}
-                      className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
-                    >
-                      Clear
-                    </button>
-                  </div>
+                <div className='flex flex-col items-start justify-between'>
                   <p className='h-8 w-full bg-lightBlue opacity-80 text-black px-2 py-1 rounded-md'>
                     { supervisorRef.name }
                   </p>
+                  <div className='w-full flex justify-between'>
+                    <div className='flex flex-row justify-start h-6 mt-2'>
+                      <button
+                        onClick={(e) => openSearchModal(e, modalTypeSupervisor)}
+                        disabled={!isSupervisorById}
+                        className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
+                      >
+                        Search
+                      </button>
+                      <button
+                        onClick={(e) => clearSelect(e, modalTypeSupervisor)}
+                        disabled={!isSupervisorById}
+                        className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    <p className="text-eyeCatchDark text-end">
+                      { state.error?.supervisor_ref || errorMsg.supervisor_ref }
+                    </p>
+                  </div>
                   <input
                     type="hidden"
                     name="supervisor_ref"
@@ -678,23 +691,27 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                   />
                 </div>
               ) : (
-                <input
-                  type="text"
-                  name="supervisor_str"
-                  id="supervisor_str"
-                  placeholder="Supervisor"
-                  value={ diveRecord.supervisor_str || '' }
-                  onChange={(e) => handleInputChange(e)}
-                  className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+                <>
+                  <input
+                    type="text"
+                    name="supervisor_str"
+                    id="supervisor_str"
+                    placeholder="Supervisor"
+                    value={ diveRecord.supervisor_str || '' }
+                    onChange={(e) => handleInputChange(e)}
+                    className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
+                  />
+                  <p className="text-eyeCatchDark text-end">
+                    { state.error?.supervisor_str || errorMsg.supervisor_str }
+                  </p>
+                </>
               )}
-              <p className="text-eyeCatchDark text-end">{ !isSupervisorById && errorMsg.supervisor_str }</p>
             </div>
           </div>
 
           {/* Dive Center */}
-          <div className="w-10/12 md:w-full h-32 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-center">
-            <div className='w-full md:w-4/12 md:h-2/3 flex justify-between md:flex-col md:justify-center mb-2'>
+          <div className="w-10/12 md:w-full h-28 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-start">
+            <div className='w-full md:w-4/12 md:h-2/3 flex justify-between md:flex-col md:justify-start mb-2'>
               <label
                 htmlFor={`${ isDiveCenterById ? 'dive_center_id' : 'dive_center_str' }`}
                 className="md:w-24 text-wrap mb-1 mr-3"
@@ -709,30 +726,33 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               </button>
             </div>
 
-            <div className="w-full md:w-8/12">
+            <div className="w-full md:w-8/12 md:flex md:flex-col md:justify-between">
               { isDiveCenterById ? (
-                <div
-                  className='flex flex-col-reverse justify-between md:mt-6'
-                >
-                <div className='flex flex-row justify-start md:justify-start w-full mt-2'>
-                  <button
-                    onClick={(e) => openSearchModal(e, modalTypeDiveCenter)}
-                    disabled={!isDiveCenterById}
-                    className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
-                  >
-                    Search
-                  </button>
-                  <button
-                    onClick={(e) => clearSelect(e, modalTypeBuddy)}
-                    disabled={!isDiveCenterById}
-                    className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
-                  >
-                    Clear
-                  </button>
-                </div>
+                <div className='flex flex-col items-start justify-between'>
                   <p className='h-8 w-full bg-lightBlue opacity-80 text-black px-2 py-1 rounded-md'>
                     { diveCenterRef.name }
                   </p>
+                  <div className='w-full flex justify-between'>
+                    <div className='flex flex-row justify-start h-6 mt-2'>
+                      <button
+                        onClick={(e) => openSearchModal(e, modalTypeDiveCenter)}
+                        disabled={!isDiveCenterById}
+                        className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
+                      >
+                        Search
+                      </button>
+                      <button
+                        onClick={(e) => clearSelect(e, modalTypeDiveCenter)}
+                        disabled={!isDiveCenterById}
+                        className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
+                      >
+                        Clear
+                      </button>
+                    </div>
+                    <p className="text-eyeCatchDark text-end">
+                      { state.error?.dive_center_id || errorMsg.dive_center_id }
+                    </p>
+                  </div>
                   <input
                     type="hidden"
                     name="dive_center_id"
@@ -741,17 +761,21 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                   />
                 </div>
               ) : (
-                <input
-                  type="text"
-                  name="dive_center_str"
-                  id="dive_center_str"
-                  placeholder="DiveCenter"
-                  value={ diveRecord.dive_center_str || '' }
-                  onChange={(e) => handleInputChange(e)}
-                  className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
-                />
+                <>
+                  <input
+                    type="text"
+                    name="dive_center_str"
+                    id="dive_center_str"
+                    placeholder="DiveCenter"
+                    value={ diveRecord.dive_center_str || '' }
+                    onChange={(e) => handleInputChange(e)}
+                    className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
+                  />
+                  <p className="text-eyeCatchDark text-end">
+                    { state.error?.dive_center_str || errorMsg.dive_center_str }
+                  </p>
+                </>
               )}
-              <p className="text-eyeCatchDark text-end">{ !isDiveCenterById && errorMsg.dive_center_str }</p>
             </div>
           </div>
 
@@ -767,7 +791,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 onChange={(e) => handleInputChange(e)}
                 className="w-full h-60 bg-lightBlue dark:bg-baseWhite px-2 mt-2 rounded text-black focus:outline-none"
               />
-              <p className="text-eyeCatchDark text-end">{}</p>
+              <p className="text-eyeCatchDark text-end">{ errorMsg.notes || state.error?.notes }</p>
             </div>
           </div>
 
@@ -783,7 +807,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
               />
               <label htmlFor="is_draft" className="w-24 text-wrap ml-2">Save as draft</label>
             </div>
-            <p className="text-eyeCatchDark text-end">{ errorMsg.is_draft }</p>
+            <p className="text-eyeCatchDark text-end">{ errorMsg.is_draft || state.error?.is_draft }</p>
           </div>
 
           <div className='w-full text-center mb-28'>
