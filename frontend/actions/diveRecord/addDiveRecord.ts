@@ -52,12 +52,11 @@ async function addDiveRecord(_previousState: DiveRecordStateType, formData: Form
     }
 
   } catch (error) {
-    console.log('Error: ', error);
     if (isAxiosError(error) && error.response) {
-      console.log(error.response.data)
       return {
         success: false,
-        message: error.response.data,
+        message: error.response.data.message,
+        error: error.response.data.error,
       };
     } else {
       return {

@@ -204,13 +204,177 @@ const searchMyDiveRecords = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc Add new dive record TODO:
+// @desc Add new dive record
 // @route POST /api/diveRecords
 // @access Private
 const addDiveRecord = asyncHandler(async (req, res) => {
-  res.status(200).send({
-    message: 'Reached to addDiveRecord func'
-  })
+  const {
+    log_no,
+    date,
+    location,
+    country_id,
+    purpose_id,
+    course,
+    weather,
+    surface_temperature,
+    water_temperature,
+    max_depth,
+    visibility,
+    start_time,
+    end_time,
+    tankpressure_start,
+    tankpressure_end,
+    added_weight,
+    suit,
+    gears,
+    buddy_str,
+    buddy_ref,
+    supervisor_str,
+    supervisor_ref,
+    dive_center_str,
+    dive_center_id,
+    notes,
+    is_draft,
+  } = req.body;
+
+  const validated = DiveRecordValidator.safeParse({
+    user_id: req.user.id,
+    log_no: log_no && Number(log_no),
+    date: new Date(date),
+    location,
+    country_id: country_id && Number(country_id),
+    purpose_id: purpose_id && Number(purpose_id),
+    course,
+    weather,
+    surface_temperature: surface_temperature && Number(surface_temperature),
+    water_temperature: water_temperature && Number(water_temperature),
+    max_depth: max_depth && Number(max_depth),
+    visibility: visibility && Number(visibility),
+    start_time: start_time && new Date(start_time),
+    end_time: end_time && new Date(end_time),
+    tankpressure_start: tankpressure_start && Number(tankpressure_start),
+    tankpressure_end: tankpressure_end && Number(tankpressure_end),
+    added_weight: added_weight && Number(added_weight),
+    suit,
+    gears,
+    buddy_str,
+    buddy_ref: buddy_ref && buddy_ref.length > 0 ? buddy_ref : null,
+    supervisor_str,
+    supervisor_ref: supervisor_ref && supervisor_ref.length > 0 ? supervisor_ref : null,
+    dive_center_str,
+    dive_center_id: dive_center_id && dive_center_id.length > 0 ? dive_center_id : null,
+    notes,
+    is_draft,
+  });
+
+  if (!validated.success) {
+    res.status(500).send({
+      message: 'Failed in validation',
+      error: validated.error.errors.reduce((prev, error) => {
+        const newErrVal = {[error.path[0]]: error.message};
+        return prev = {...prev, ...newErrVal}
+      }, {})
+    });
+    return;
+  }
+
+  // Check if the country exists
+  if (validated.data.country_id) {
+    const country = await prisma.country.findUnique({
+      where: { id: validated.data.country_id }
+    });
+
+    if (country) {
+      validated.data.country_id = country.id;
+    } else {
+      res.status(500).send({
+        message: 'Failed in validation',
+        error: {country_id: 'The country id does not exist'}
+      });
+      return;
+    }
+  }
+
+  // Check if the purpose exists
+  if (validated.data.purpose_id) {
+    const purpose = await prisma.divePurpose.findUnique({
+      where: { id: validated.data.purpose_id }
+    });
+
+    if (purpose) {
+      validated.data.purpose_id = purpose.id;
+    } else {
+      res.status(500).send({
+        message: 'Failed in validation',
+        error: {purpose_id: 'The purpose code does not exist'}
+      });
+      return;
+    }
+  }
+
+  // Check if the buddy ref is registered user id
+  if (validated.data.buddy_ref) {
+    const buddyRef = await prisma.user.findUnique({
+      where: { id: validated.data.buddy_ref }
+    });
+
+    if (buddyRef) {
+      validated.data.buddy_ref = buddyRef.id;
+    } else {
+      res.status(500).send({
+        message: 'Failed in validation',
+        error: {buddy_ref: 'The buddy does not exist'}
+      });
+      return;
+    }
+  }
+
+  // Check if the supervisor ref is registered user id
+  if (validated.data.supervisor_ref) {
+    const supervisorRef = await prisma.user.findUnique({
+      where: { id: validated.data.supervisor_ref }
+    });
+
+    if (supervisorRef) {
+      validated.data.supervisor_ref = supervisorRef.id;
+    } else {
+      res.status(500).send({
+        message: 'Failed in validation',
+        error: {buddy_ref: 'The supervisor does not exist'}
+      });
+      return;
+    }
+  }
+
+  // Check if the dive center id is registered dive center id
+  if (validated.data.dive_center_id) {
+    const diveCenterRef = await prisma.diveCenter.findUnique({
+      where: { id: validated.data.dive_center_id }
+    });
+
+    if (diveCenterRef) {
+      validated.data.dive_center_id = diveCenterRef.id;
+    } else {
+      res.status(500).send({
+        message: 'Failed in validation',
+        error: {buddy_ref: 'The dive center does not exist'}
+      });
+      return;
+    }
+  }
+
+  try {
+    console.log('try adding data')
+    const newDiveRecord = await prisma.diveRecord.create({
+      data: validated.data,
+    });
+    res.status(201).json(newDiveRecord);
+  } catch (error) {
+    console.log('error', error)
+    res.status(500).send({
+      message: error.message
+    });
+  }
 });
 
 // @desc get login user's dive record by id
@@ -416,7 +580,7 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
       });
     }
   }
-  console.log('final data', validated.data)
+
   try {
     const updatedDiveRecord = await prisma.diveRecord.update({
       where: {

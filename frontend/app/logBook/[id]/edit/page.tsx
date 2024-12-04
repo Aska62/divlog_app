@@ -30,7 +30,7 @@ export const modalTypeBuddy = 1;
 export const modalTypeSupervisor = 2;
 export const modalTypeDiveCenter = 3;
 
-export type ChoiceStateValue = { id: string, name: string };
+export type ChoiceStateValue = { id: string | null, name: string | null };
 
 const EditLog:React.FC<EditLogProps> = ({ params }) => {
   const router = useRouter();
@@ -518,6 +518,23 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
               />
               <p className="text-eyeCatchDark text-end">{ errorMsg.suit }</p>
+            </div>
+          </div>
+
+          {/* Gears */}
+          <div className="w-10/12 md:w-full h-20 md:h-14 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-start">
+            <label htmlFor="gears" className="md:w-24 text-wrap">Gears</label>
+            <div className="w-full md:w-8/12">
+              <input
+                type="text"
+                name="gears"
+                id="gears"
+                placeholder="Gears"
+                value={ diveRecord.gears || '' }
+                onChange={(e) => handleInputChange(e)}
+                className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
+              />
+              <p className="text-eyeCatchDark text-end">{ errorMsg.gears }</p>
             </div>
           </div>
 
