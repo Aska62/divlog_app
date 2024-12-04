@@ -67,7 +67,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     >, string
   >;
 
-  const [isInputError, setIsInputError] = useState<boolean>(true);
+  const [isInputError, setIsInputError] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<ErrMsg>({
     log_no: '',
     date: '',
@@ -802,7 +802,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
                 type="checkbox"
                 name="is_draft"
                 id="is_draft"
-                checked={ diveRecord.is_draft || true }
+                checked={ diveRecord.is_draft }
                 onChange={handleCheck}
               />
               <label htmlFor="is_draft" className="w-24 text-wrap ml-2">Save as draft</label>

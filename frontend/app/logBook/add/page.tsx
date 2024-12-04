@@ -775,7 +775,7 @@ const AddLog = () => {
                 type="checkbox"
                 name="is_draft"
                 id="is_draft"
-                checked={ diveRecord.is_draft || true }
+                checked={ diveRecord.is_draft }
                 onChange={handleCheck}
               />
               <label htmlFor="is_draft" className="w-24 text-wrap ml-2">Save as draft</label>
