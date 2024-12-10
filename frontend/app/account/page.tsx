@@ -1,30 +1,18 @@
 'use client';
 import { useState, useEffect } from 'react';
-import axios from "axios";
 import Heading from "@/components/Heading";
 import EditAccountBtn from '@/components/account/EditAccountBtn';
+import { getUserProfile, UserProfile } from '@/actions/user/getUserProfile';
 
-export type UserProfile = {
-  id            : string,
-  divlog_name   : string,
-  license_name? : string,
-  email         : string,
-  certification?: string,
-  cert_org_id?  : number,
-}
 const ProfilePage = () => {
   const [user, setUser] = useState<Partial<UserProfile>>({});
 
   useEffect(() => {
     const getUser = async() => {
-      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`,
-        { withCredentials: true })
-        .then((res) => {
-          setUser(res.data);
-        })
-        .catch((error) => {
-          console.log('Error fetching user data:', error)
-        });
+      const user = await getUserProfile();
+      if (user) {
+        setUser(user);
+      }
     }
     getUser();
   }, []);
