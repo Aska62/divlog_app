@@ -240,7 +240,7 @@ const Header = () => {
                 className="flex items-center w-full px-2 mb-1 hover:text-baseWhite70"
               >
                 <p className={`mr-2 rounded-sm hover:cursor-pointer ${visibleMenuBox === menuContentIds.account && 'text-baseWhite70'}`}>
-                  My Page
+                  Account
                 </p>
                 <IoIosArrowDown className={`${visibleMenuBox === menuContentIds.account && 'rotate-180'} duration-150`} />
               </div>
