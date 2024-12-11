@@ -8,7 +8,7 @@ import { getUserProfile, UserProfile } from '@/actions/user/getUserProfile';
 import { emailRegex } from '@/actions/registerUser';
 import updateUserProfile from '@/actions/user/updateUserProfile';
 import Heading from "@/components/Heading";
-import OrganizationOptions from '@/components/OrganizationOptions';
+import OrganizationOptions, { OrganizationListType } from '@/components/OrganizationOptions';
 
 const EditProfilePage = () => {
   const router = useRouter();
@@ -16,6 +16,8 @@ const EditProfilePage = () => {
   const [state, formAction, isPending] = useActionState(updateUserProfile, {});
 
   const [user, setUser] = useState<Partial<UserProfile>>({});
+
+  const [organizationList, setOrganizationList] = useState<OrganizationListType>([]);
 
   useEffect(() => {
     const getUser = async() => {
@@ -159,7 +161,7 @@ const EditProfilePage = () => {
         <div className="w-10/12 md:w-full h-20 md:h-14 my-3 mx-auto flex flex-col md:flex-row justify-start md:justify-between md:items-start">
           <label htmlFor="cert_org_id" className="md:w-24 text-wrap">Certificate issuer</label>
           <div className="w-full md:w-8/12">
-            {/* {countryList && ( */}
+            {organizationList && (
               <select
                 name="cert_org_id"
                 id="cert_org_id"
@@ -168,9 +170,9 @@ const EditProfilePage = () => {
                 className="bg-lightBlue dark:bg-baseWhite w-full h-8 px-2 rounded-sm text-black focus:outline-none"
               >
                 <option value="" > --- Please select --- </option>
-                <OrganizationOptions />
+                <OrganizationOptions setOrganizationList={ setOrganizationList } />
               </select>
-            {/* )} */}
+            )}
             <p className="text-eyeCatchDark text-end">{ errorMsg.cert_org_id || state.error?.cert_org_id }</p>
           </div>
         </div>
