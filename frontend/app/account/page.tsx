@@ -53,7 +53,7 @@ const ProfilePage = () => {
         {/* Certificate issuer */}
         <div className="items-baseline mb-8">
           <p className="text-sm mr-2">Certificate issuer: </p>
-          <p className="text-lg">{user.cert_org_id}</p>
+          <p className="text-lg">{user.organization?.name}</p>
         </div>
       </div>
     </>

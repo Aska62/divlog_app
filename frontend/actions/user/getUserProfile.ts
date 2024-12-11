@@ -7,6 +7,10 @@ export type UserProfile = {
   email         : string,
   certification?: string,
   cert_org_id?  : number,
+  organization? : {
+    id: number,
+    name: string,
+  }
 }
 
 export async function getUserProfile():Promise<UserProfile | void> {

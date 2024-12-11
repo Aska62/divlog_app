@@ -160,6 +160,14 @@ const logoutUser = asyncHandler(async(req, res) => {
 const getLoginUser = asyncHandler(async(req, res) => {
   const user = await prisma.user.findUnique({
     where: { id: req.user.id },
+    include: {
+      organization: {
+        select: {
+          id: true,
+          name: true,
+        }
+      }
+    }
   });
 
   if (user) {
@@ -170,6 +178,7 @@ const getLoginUser = asyncHandler(async(req, res) => {
       email        : user.email,
       certification: user.certification,
       cert_org_id  : user.cert_org_id,
+      organization : user.organization,
     });
   } else {
     res.status(400).send('Failed to find user info');
