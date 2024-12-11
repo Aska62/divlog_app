@@ -1,12 +1,7 @@
 import axios from "axios";
+import { UserType } from "@/types/userTypes";
 
-export type UserProfile = {
-  id            : string,
-  divlog_name   : string,
-  license_name? : string,
-  email         : string,
-  certification?: string,
-  cert_org_id?  : number,
+export type UserProfile = UserType & {
   organization? : {
     id: number,
     name: string,

@@ -1,13 +1,20 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useActionState } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 import isNumString from '@/utils/isNumString';
 import isObjectValEmpty from '@/utils/isObjectValEmpty';
 import { getUserProfile, UserProfile } from '@/actions/user/getUserProfile';
 import { emailRegex } from '@/actions/registerUser';
+import updateUserProfile from '@/actions/user/updateUserProfile';
 import Heading from "@/components/Heading";
 import OrganizationOptions from '@/components/OrganizationOptions';
 
 const EditProfilePage = () => {
+  const router = useRouter();
+
+  const [state, formAction, isPending] = useActionState(updateUserProfile, {});
+
   const [user, setUser] = useState<Partial<UserProfile>>({});
 
   useEffect(() => {
@@ -19,6 +26,15 @@ const EditProfilePage = () => {
     }
     getUser();
   }, []);
+
+  useEffect(() => {
+    if (state.success) {
+      router.push(`/account`);
+      toast.success('Profile successfully updated');
+    } else {
+      toast.error(state.message);
+    }
+  }, [state, router, user]);
 
   type ErrMsg = Record<
     'divlog_name' | 'license_name' | 'email' | 'certification' | 'cert_org_id', string
@@ -64,7 +80,7 @@ const EditProfilePage = () => {
     <>
       <Heading pageTitle="Edit Profile" />
 
-      <form className="w-11/12 max-w-xl h-fit mx-auto my-12">
+      <form action={formAction} className="w-11/12 max-w-xl h-fit mx-auto my-12">
         <p className="w-10/12 md:w-full text-center md:text-left mb-8 text-eyeCatchDark">* mandatory</p>
 
         {/* User name */}
@@ -82,8 +98,7 @@ const EditProfilePage = () => {
               onChange={(e) => handleInputChange(e)}
               className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
             />
-          <p className="text-eyeCatchDark text-end">{ errorMsg.divlog_name }</p>
-          {/* || state.error?.divlog_name  */}
+          <p className="text-eyeCatchDark text-end">{ errorMsg.divlog_name || state.error?.divlog_name }</p>
           </div>
         </div>
 
@@ -101,8 +116,7 @@ const EditProfilePage = () => {
               onChange={(e) => handleInputChange(e)}
               className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
             />
-            <p className="text-eyeCatchDark text-end">{ errorMsg.license_name }</p>
-            {/* || state.error?.license_name  */}
+            <p className="text-eyeCatchDark text-end">{ errorMsg.license_name || state.error?.license_name }</p>
           </div>
         </div>
 
@@ -121,8 +135,7 @@ const EditProfilePage = () => {
               onChange={(e) => handleInputChange(e)}
               className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
             />
-            <p className="text-eyeCatchDark text-end">{ errorMsg.email }</p>
-            {/* || state.error?.email */}
+            <p className="text-eyeCatchDark text-end">{ errorMsg.email || state.error?.email }</p>
           </div>
         </div>
 
@@ -139,8 +152,7 @@ const EditProfilePage = () => {
               onChange={(e) => handleInputChange(e)}
               className="w-full h-8 bg-lightBlue dark:bg-baseWhite px-2 rounded text-black focus:outline-none"
             />
-            <p className="text-eyeCatchDark text-end">{ errorMsg.certification }</p>
-            {/* || state.error?.certification  */}
+            <p className="text-eyeCatchDark text-end">{ errorMsg.certification || state.error?.certification }</p>
           </div>
         </div>
 
@@ -159,14 +171,13 @@ const EditProfilePage = () => {
                 <OrganizationOptions />
               </select>
             {/* )} */}
-            <p className="text-eyeCatchDark text-end">{ errorMsg.cert_org_id }</p>
-            {/* || state.error?.cert_org_id  */}
+            <p className="text-eyeCatchDark text-end">{ errorMsg.cert_org_id || state.error?.cert_org_id }</p>
           </div>
         </div>
 
         <div className='w-full text-center mt-12'>
         <button
-          disabled={isInputError}
+          disabled={(isInputError || isPending)}
           className={`px-4 py-1 rounded-md ${ isInputError ? 'bg-slate-300 dark:bg-slate-500 text-baseWhite' : 'bg-darkBlue dark:bg-iceBlue hover:bg-darkBlueLight dark:hover:bg-lightBlue text-baseWhite dark:text-baseBlack'}`}
         >Save</button>
         </div>

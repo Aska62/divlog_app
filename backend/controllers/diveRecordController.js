@@ -497,6 +497,7 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
         return prev = {...prev, ...newErrVal}
       }, {})
     });
+    return;
   }
 
   // Check if the log exists
@@ -505,6 +506,7 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
     res.status(500).send({
       message: 'The dive record of given id does not exit',
     });
+    return;
   }
 
   // Check if the country exists
@@ -520,6 +522,7 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
         message: 'Failed in validation',
         error: {country_id: 'The country id does not exist'}
       });
+      return;
     }
   }
 
@@ -536,6 +539,7 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
         message: 'Failed in validation',
         error: {purpose_id: 'The purpose id does not exist'}
       });
+      return;
     }
   }
 
@@ -552,6 +556,7 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
         message: 'Failed in validation',
         error: {buddy_ref: 'The buddy does not exist'}
       });
+      return;
     }
   }
 
@@ -568,6 +573,7 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
         message: 'Failed in validation',
         error: {supervisor_ref: 'The supervisor does not exist'}
       });
+      return;
     }
   }
 
@@ -584,6 +590,7 @@ const updateDiveRecord = asyncHandler(async (req, res) => {
         message: 'Failed in validation',
         error: {dive_center_id: 'The dive center does not exist'}
       });
+      return;
     }
   }
 

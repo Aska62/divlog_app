@@ -14,7 +14,7 @@ const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{12,}$/;
 // Validator
 const UserValidator = z.object({
   divlog_name  : z.string().max(20),
-  license_name : z.string().max(75),
+  license_name : z.string().max(75).nullish(),
   email        : z.string().regex(emailRegex),
   password     : z.string().regex(passwordRegex),
   certification: z.string().max(75).nullish(),
@@ -193,43 +193,116 @@ const updateUser = async(req, res) => {
     where: { id: req.user.id },
   });
 
-  if (user) {
-    // Create validator
-    const updateProfileValidator = UserValidator.partial();
+  if (!user) {
+    res.status(500).send({
+      success: false,
+      message: '',
+      error: 'Failed to find user profile',
+    });
+    return;
+  }
 
-    // Validate
-    const validated = updateProfileValidator.safeParse(req.body);
+  const {
+    divlog_name,
+    license_name,
+    email,
+    certification,
+    cert_org_id,
+  } = req.body;
 
-    if (validated.success) {
-      try {
-        const updatedUser = await prisma.user.update({
-          where: {
-            id: user.id
-          },
-          data: validated.data
-        });
+  // Create validator
+  const updateProfileValidator = UserValidator.omit({
+    password   : true
+  });
 
-        res.status(200).json({
-          id           : updatedUser.id,
-          divlog_name  : updatedUser.divlog_name,
-          license_name : updatedUser.license_name,
-          email        : updatedUser.email,
-          certification: updatedUser.certification,
-          cert_org_id  : updatedUser.cert_org_id,
-        });
-      } catch (error) {
-        res.status(500).send({
-          message: 'Failed to update user info'
-        });
-      }
-    } else {
+  // Validate
+  const validated = updateProfileValidator.safeParse({
+    divlog_name,
+    license_name,
+    email,
+    certification,
+    cert_org_id: Number(cert_org_id),
+  });
+
+  if (!validated.success) {
+    res.status(500).send({
+      success: false,
+      message: 'Failed in validation',
+      error: validated.error.errors.reduce((prev, error) => {
+        const newErrVal = {[error.path[0]]: error.message};
+        return prev = {...prev, ...newErrVal}
+      }, {})
+    });
+    return;
+  }
+
+  // Check if the user name is taken by other users
+  const sameDivlogName = await prisma.user.findMany({
+    where: { divlog_name: validated.data.divlog_name }
+  });
+
+  if (sameDivlogName.length > 0 && sameDivlogName.some((u) => u.id !== user.id)) {
+    res.status(500).send({
+      success: false,
+      message: 'Failed in validation',
+      error: { divlog_name: 'The user name is taken' }
+    });
+    return;
+  }
+
+  // Check if the email is registered by other users
+  const sameEmail = await prisma.user.findMany({
+    where: { email: validated.data.email }
+  });
+
+  if (sameEmail.length > 0 && sameEmail.some((u) => u.id !== user.id)) {
+    res.status(500).send({
+      success: false,
+      message: 'Failed in validation',
+      error: { email: 'The email is registered' }
+    });
+    return;
+  }
+
+  // Check if the cert issuer exists
+  if (validated.data.cert_org_id) {
+    const certOrg = await prisma.organization.findUnique({
+      where: { id: validated.data.cert_org_id }
+    });
+
+    if (!certOrg) {
       res.status(500).send({
-        message: 'Invalid data'
+        success: false,
+        message: 'Failed in validation',
+        error: { cert_org_id: 'The organization not found' }
       });
+      return;
     }
-  } else {
-    res.status(400).send({
-      message: 'The user does not exist'
+  }
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: user.id
+      },
+      data: validated.data
+    });
+
+    res.status(201).send({
+      success: true,
+      user: {
+        id           : updatedUser.id,
+        divlog_name  : updatedUser.divlog_name,
+        license_name : updatedUser.license_name,
+        email        : updatedUser.email,
+        certification: updatedUser.certification,
+        cert_org_id  : updatedUser.cert_org_id,
+      }
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: 'Failed to update user info'
     });
   }
 }
