@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { IoIosArrowForward } from "react-icons/io";
 import Heading from "@/components/Heading";
 import EditAccountBtn from '@/components/account/EditAccountBtn';
 import { getUserProfile, UserProfile } from '@/actions/user/getUserProfile';
@@ -55,6 +57,16 @@ const ProfilePage = () => {
           <p className="text-sm mr-2">Certificate issuer: </p>
           <p className="text-lg">{user.organization?.name}</p>
         </div>
+      </div>
+
+      <div className='w-8/12 md:w-1/3 max-w-md mx-auto'>
+        <Link
+          href='/account/diverInfo'
+          className='w-fit ml-auto mr-2 px-2 py-1 rounded-md flex items-center justify-end bg-lightBlue shadow-sm hover:text-darkBlueLight'
+        >
+          Diver Info
+          <IoIosArrowForward className='text-lg' />
+        </Link>
       </div>
     </>
   );
