@@ -7,6 +7,7 @@ import diveRecordRoutes from './routes/DiveRecordRoutes.js';
 import countryRoutes from './routes/CountryRoutes.js';
 import divePurposeRoutes from './routes/DivePurposeRoutes.js';
 import diveCenterRoutes from './routes/DiveCenterRoutes.js';
+import organizationRoutes from './routes/OrganizationRoutes.js';
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.use('/api/diveRecords', diveRecordRoutes);
 app.use('/api/countries', countryRoutes);
 app.use('/api/divePurposes', divePurposeRoutes);
 app.use('/api/diveCenters', diveCenterRoutes);
+app.use('/api/organizations', organizationRoutes);
 
 // Start server
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

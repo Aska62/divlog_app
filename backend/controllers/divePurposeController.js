@@ -3,7 +3,7 @@ import asyncHandler from "../middleware/asyncHandler.js";
 
 const prisma = new PrismaClient();
 
-// @desc Get dive all dive purposes
+// @desc Get all dive purposes
 // @route GET /api/divePurposes
 // @access Public
 const getAllPurposes = asyncHandler(async (req, res) => {
@@ -20,7 +20,7 @@ const getAllPurposes = asyncHandler(async (req, res) => {
   if (divePurposes) {
     res.status(200).json(divePurposes);
   } else {
-    res.statu(400).send('Failed to fetch dive purposes');
+    res.status(400).send('Failed to fetch dive purposes');
   }
 });
 
