@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { RxCross2 } from "react-icons/rx";
+import { BsPlusCircle } from "react-icons/bs";
 import { UNIT_IMPERIAL } from '@/constants/unit';
 import { DiverInfoType } from '@/types/diverInfoTypes';
 import { getDiverInfo } from '@/actions/getDiverInfo';
@@ -310,13 +312,33 @@ const DiverInfoPage = () => {
               >Languages:</label>
               <div className='flex flex-col'>
                 <div className='flex justify-stretch items-end w-full'>
-                  <input
-                    type="text"
-                    name='languages'
-                    id='languages'
-                    value={diverInfo.languages}
-                    className='w-full bg-lightBlue focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
+                  {diverInfo.languages && diverInfo.languages.length > 0 ? (
+                    <div className='w-full '>
+                      {diverInfo.languages.map((lang, index) => (
+                        <div key={index} className='flex justify-stretch'>
+                          <input
+                            type="text"
+                            name='languages'
+                            id={`lang_${index}`}
+                            value={lang}
+                            className='w-full bg-lightBlue focus:outline-none px-2 py-1 mb-1 rounded-tl-sm rounded-bl-sm'
+                          />
+                          <div className='flex'>
+                            <RxCross2 className="text-baseBlack h-5 w-5 mx-2 hover:cursor-pointer hover:text-eyeCatchDark" />
+                            <BsPlusCircle className="text-baseBlack h-5 w-5 mx-2 hover:cursor-pointer hover:text-eyeCatchDark" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <input
+                      type="text"
+                      name='languages'
+                      id='lang_1'
+                      value={diverInfo.languages}
+                      className='w-full bg-lightBlue focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
                     />
+                  )}
                 </div>
                 <div className='mt-1 text-right'>
                   <button
