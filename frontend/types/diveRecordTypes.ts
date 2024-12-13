@@ -3,6 +3,7 @@ import isObjectEmpty from "@/utils/isObjectEmpty";
 import isArray from "@/utils/isArray";
 import isString from "@/utils/isString";
 
+// Dive record highlight
 export type DiveRecordHighlight = {
   id                  : string,
   user_id             : string,
@@ -47,6 +48,7 @@ export const isDiveRecordHighlightArray = (val:unknown): val is [DiveRecordHighl
   return true;
 }
 
+// Full dive record
 export type DiveRecordDetail = {
   id                  : string,
   user_id             : string,
@@ -262,4 +264,10 @@ export const isKeyWithMustVal = (val: unknown): val is keyWithMustVal => {
   ];
 
   return keysWithMustVal.some((key) => key === val);
+}
+
+export type DiveRecordCount = {
+  total: number,
+  recorded: number,
+  withoutRecord: number,
 }

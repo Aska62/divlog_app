@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect } from "react";
 import axios from "axios";
-import isNumber from '@/utils/isNumber';
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import formatDate from '@/utils/dateTime/formatDate';
 import { isDiveRecordHighlight, DiveRecordHighlight } from '@/types/diveRecordTypes';
+import { getRecordCount } from '@/actions/diveRecord/getRecordCount';
 
 const WelcomeMessage = () => {
   const [logCount, setLogCount] = useState<number>(0);
@@ -12,10 +12,10 @@ const WelcomeMessage = () => {
 
   useEffect(() => {
     const getLogData = async() => {
-      const countRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/count`, { withCredentials: true });
-
-      if (isNumber(countRes.data.total) && countRes.data.total > 0) {
-        setLogCount(countRes.data.total);
+      const countRes = await getRecordCount();
+      console.log('fetchd data:', countRes)
+      if (countRes) {
+        setLogCount(countRes.total);
       } else {
         setLogCount(0);
       }

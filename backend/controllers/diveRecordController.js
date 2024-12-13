@@ -79,10 +79,10 @@ const getMyDiveRecords = asyncHandler(async (req, res) => {
 // @route GET /api/diveRecords/count
 // @access Private
 const getMyDiveRecordCount = asyncHandler(async (req, res) => {
-  const noRecordDiveCount = await prisma.diverInfo.findUnique({
+  const diverInfo = await prisma.diverInfo.findUnique({
     where: { user_id: req.user.id },
-    select: { norecord_dive_count: true }
   });
+  const noRecordDiveCount = diverInfo?.norecord_dive_count || 0;
 
   const recordDiveCount = await prisma.diveRecord.aggregate({
     where: {
@@ -94,8 +94,9 @@ const getMyDiveRecordCount = asyncHandler(async (req, res) => {
 
   if (recordDiveCount) {
     res.status(200).json({
-      total: noRecordDiveCount.norecord_dive_count + recordDiveCount._count.id,
-      withoutRecord: noRecordDiveCount.norecord_dive_count,
+      total: noRecordDiveCount + recordDiveCount._count.id,
+      recorded: recordDiveCount._count.id,
+      withoutRecord: noRecordDiveCount,
     });
   } else {
     res.status(400).send('Failed to get record count');
