@@ -38,18 +38,17 @@ const DiverInfoPage = () => {
 
   const handleInputChange = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
     e.preventDefault();
-    console.log('handleInputChange', e.target.value);
-    console.log(e.target.id)
-    console.log(e.target.name)
+    const {id, name, value} = e.target;
 
-    if (e.target.name === 'languages') {
-      const index = e.target.id.indexOf('_');
-      const langId = e.target.id.slice(index + 1);
+    if (name === 'languages') {
+      const langId = id.slice(id.indexOf('_') + 1);
       if (isNumString(langId)) {
         const newLangArr = langInputs;
-        newLangArr[Number(langId)] = e.target.value;
+        newLangArr[Number(langId)] = value;
         setDiverInfo({...diverInfo, ...{languages: newLangArr}});
       }
+    } else {
+      setDiverInfo({...diverInfo, ...{[name]: Number(value)}});
     }
   }
 
@@ -62,9 +61,7 @@ const DiverInfoPage = () => {
   };
 
   const deleteLangInput = (index:number):void => {
-    console.log('deleteLangInput', langInputs.length);
     if (langInputs.length > 1) {
-      console.log('del')
       setLangInputs((prev) => {
         const updatedLangs = [...prev];
         updatedLangs.splice(index, 1);
@@ -116,7 +113,7 @@ const DiverInfoPage = () => {
 
               <div className='mt-1 text-right'>
                 <button
-                  onClick={() => setEditing('')} // TODO:
+                  onClick={onCancelClick}
                   className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 rounded-md'
                 >Cancel</button>
                 <button
@@ -174,7 +171,7 @@ const DiverInfoPage = () => {
 
               <div className='mt-1 text-right'>
                 <button
-                  onClick={() => setEditing('')} // TODO:
+                  onClick={onCancelClick}
                   className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 rounded-md'
                 >Cancel</button>
                 <button
@@ -226,7 +223,7 @@ const DiverInfoPage = () => {
                 </div>
                 <div className='mt-1 text-right'>
                   <button
-                    onClick={() => setEditing('')} // TODO:
+                    onClick={onCancelClick}
                     className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 rounded-md'
                   >Cancel</button>
                   <button
@@ -279,7 +276,7 @@ const DiverInfoPage = () => {
                 </div>
                 <div className='mt-1 text-right'>
                   <button
-                    onClick={() => setEditing('')} // TODO:
+                    onClick={onCancelClick}
                     className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 rounded-md'
                   >Cancel</button>
                   <button
@@ -331,7 +328,7 @@ const DiverInfoPage = () => {
                 </div>
                 <div className='mt-1 text-right'>
                   <button
-                    onClick={() => setEditing('')} // TODO:
+                    onClick={onCancelClick}
                     className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 rounded-md'
                   >Cancel</button>
                   <button
