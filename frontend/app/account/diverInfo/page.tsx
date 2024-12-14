@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RxCross2 } from "react-icons/rx";
 import { BsPlusCircle } from "react-icons/bs";
 import { UNIT_IMPERIAL } from '@/constants/unit';
@@ -7,9 +7,12 @@ import { DiverInfoType } from '@/types/diverInfoTypes';
 import { getDiverInfo } from '@/actions/getDiverInfo';
 import { getRecordCount } from '@/actions/diveRecord/getRecordCount';
 import Heading from "@/components/Heading";
+import isNumString from '@/utils/isNumString';
 
 const DiverInfoPage = () => {
   const [diverInfo, setDiverInfo] = useState<Partial<DiverInfoType>>({});
+  const [diverInfoInDb, setDiverInfoInDb] = useState<Partial<DiverInfoType>>({});
+  const [langInputs, setLangInputs] = useState<string[]>([]);
   const [loggedDiveCount, setLoggedDiveCount] = useState<number>(0);
   const [editing, setEditing] = useState<string>('');
 
@@ -18,6 +21,10 @@ const DiverInfoPage = () => {
       const info = await getDiverInfo();
       if (info) {
         setDiverInfo(info);
+        setDiverInfoInDb(info);
+        if (Array.isArray(info.languages) && info.languages.length > 0) {
+          setLangInputs(info.languages);
+        }
       }
 
       const diveCount = await getRecordCount();
@@ -29,7 +36,49 @@ const DiverInfoPage = () => {
     fetchDiverInfo();
   }, []);
 
-  console.log('diverInfo', diverInfo)
+  const handleInputChange = (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    console.log('handleInputChange', e.target.value);
+    console.log(e.target.id)
+    console.log(e.target.name)
+
+    if (e.target.name === 'languages') {
+      const index = e.target.id.indexOf('_');
+      const langId = e.target.id.slice(index + 1);
+      if (isNumString(langId)) {
+        const newLangArr = langInputs;
+        newLangArr[Number(langId)] = e.target.value;
+        setDiverInfo({...diverInfo, ...{languages: newLangArr}});
+      }
+    }
+  }
+
+  const addLangInput = (index: number):void => {
+    setLangInputs((prev) => {
+      const updatedLangs = [...prev];
+      updatedLangs.splice(index + 1, 0, '');
+      return updatedLangs;
+    });
+  };
+
+  const deleteLangInput = (index:number):void => {
+    console.log('deleteLangInput', langInputs.length);
+    if (langInputs.length > 1) {
+      console.log('del')
+      setLangInputs((prev) => {
+        const updatedLangs = [...prev];
+        updatedLangs.splice(index, 1);
+        return updatedLangs;
+      });
+    }
+  }
+
+  const onCancelClick = () => {
+    setEditing('');
+    setDiverInfo(diverInfoInDb);
+    setLangInputs(diverInfoInDb.languages || []);
+  }
+
   return (
     <>
       <Heading pageTitle="Diver Info" />
@@ -58,8 +107,9 @@ const DiverInfoPage = () => {
                       name='norecord_dive_count'
                       id='norecord_dive_count'
                       value={diverInfo.norecord_dive_count}
-                      className='w-full bg-lightBlue focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
-                      />
+                      onChange={(e) => handleInputChange(e)}
+                      className='w-full bg-lightBlue dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
+                    />
                   </div>
                 </div>
               </div>
@@ -112,7 +162,8 @@ const DiverInfoPage = () => {
                       name='height'
                       id='height'
                       value={diverInfo.height}
-                      className='w-full bg-lightBlue focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
+                      onChange={(e) => handleInputChange(e)}
+                      className='w-full bg-lightBlue dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
                       />
                       <span className='text-sm bg-lightBlue py-1 h-8 pr-2 rounded-tr-sm rounded-br-sm'>
                         {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Inches' : 'cm'}
@@ -166,7 +217,8 @@ const DiverInfoPage = () => {
                     name='weight'
                     id='weight'
                     value={diverInfo.weight}
-                    className='w-full bg-lightBlue focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
+                    onChange={(e) => handleInputChange(e)}
+                    className='w-full bg-lightBlue dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
                     />
                     <span className='text-sm bg-lightBlue py-1 h-8 pr-2 rounded-tr-sm rounded-br-sm'>
                       {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Ib' : 'kg'}
@@ -218,9 +270,10 @@ const DiverInfoPage = () => {
                     name='shoe'
                     id='shoe'
                     value={diverInfo.shoe}
-                    className='w-full bg-lightBlue focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
+                    onChange={(e) => handleInputChange(e)}
+                    className='w-full bg-lightBlue dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
                     />
-                    <span className='text-sm bg-lightBlue py-1 h-8 pr-2 rounded-tr-sm rounded-br-sm'>
+                    <span className='text-sm dark:text-baseBlack bg-lightBlue py-1 h-8 pr-2 rounded-tr-sm rounded-br-sm'>
                       {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Inches' : 'cm'}
                     </span>
                 </div>
@@ -269,7 +322,8 @@ const DiverInfoPage = () => {
                     name="measurement_unit"
                     id="measurement_unit"
                     value={diverInfo.measurement_unit}
-                    className='w-full bg-lightBlue focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
+                    onChange={(e) => handleInputChange(e)}
+                    className='w-full bg-lightBlue dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
                   >
                     <option value="1">Metric</option>
                     <option value="2">Imperial</option>
@@ -303,7 +357,7 @@ const DiverInfoPage = () => {
         </div>
 
         {/* Languages */}
-        <div className="w-full mb-10 flex justify-between items-center md:items-start">
+        <div className="w-full mb-14 flex justify-between items-center md:items-start">
           {editing === 'languages' ? (
             <form action="" className='w-full '>
               <label
@@ -312,37 +366,57 @@ const DiverInfoPage = () => {
               >Languages:</label>
               <div className='flex flex-col'>
                 <div className='flex justify-stretch items-end w-full'>
-                  {diverInfo.languages && diverInfo.languages.length > 0 ? (
-                    <div className='w-full '>
-                      {diverInfo.languages.map((lang, index) => (
+                  <div className='w-full '>
+                    {langInputs.length > 0 ?
+                      langInputs.map((lang, index) => (
                         <div key={index} className='flex justify-stretch'>
                           <input
                             type="text"
                             name='languages'
                             id={`lang_${index}`}
                             value={lang}
-                            className='w-full bg-lightBlue focus:outline-none px-2 py-1 mb-1 rounded-tl-sm rounded-bl-sm'
+                            onChange={(e) => handleInputChange(e)} // TODO:
+                            className='w-full bg-lightBlue dark:text-baseBlack focus:outline-none px-2 py-1 mb-1 rounded-tl-sm rounded-bl-sm'
                           />
                           <div className='flex'>
-                            <RxCross2 className="text-baseBlack h-5 w-5 mx-2 hover:cursor-pointer hover:text-eyeCatchDark" />
-                            <BsPlusCircle className="text-baseBlack h-5 w-5 mx-2 hover:cursor-pointer hover:text-eyeCatchDark" />
+                            <RxCross2
+                              onClick={() => deleteLangInput(index)}
+                              className="text-baseBlack dark:text-lightBlue h-5 w-5 mx-2 hover:cursor-pointer hover:text-eyeCatchDark"
+                            />
+                            <BsPlusCircle
+                              onClick={() => addLangInput(index)}
+                              className="text-baseBlack dark:text-lightBlue h-5 w-5 mx-2 hover:cursor-pointer hover:text-eyeCatchDark"
+                            />
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <input
-                      type="text"
-                      name='languages'
-                      id='lang_1'
-                      value={diverInfo.languages}
-                      className='w-full bg-lightBlue focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
-                    />
-                  )}
+                      )): (
+                        <div className='flex justify-stretch'>
+                          <input
+                            type="text"
+                            name='languages'
+                            id='lang_0'
+                            value={langInputs[0]}
+                            onChange={(e) => handleInputChange(e)} // TODO:
+                            className='w-full bg-lightBlue dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm'
+                          />
+                          <div className='flex'>
+                            <RxCross2
+                              onClick={() => deleteLangInput(0)}
+                              className="text-baseBlack dark:text-lightBlue h-5 w-5 mx-2 hover:cursor-pointer hover:text-eyeCatchDark"
+                            />
+                            <BsPlusCircle
+                              onClick={() => addLangInput(0)}
+                              className="text-baseBlack dark:text-lightBlue h-5 w-5 mx-2 hover:cursor-pointer hover:text-eyeCatchDark"
+                            />
+                          </div>
+                        </div>
+                      )
+                    }
+                  </div>
                 </div>
                 <div className='mt-1 text-right'>
                   <button
-                    onClick={() => setEditing('')} // TODO:
+                    onClick={ onCancelClick }
                     className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 rounded-md'
                   >Cancel</button>
                   <button
