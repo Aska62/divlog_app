@@ -58,7 +58,8 @@ const DiverInfoPage = () => {
         setDiverInfo({...diverInfo, ...{languages: newLangArr}});
       }
     } else {
-      setDiverInfo({...diverInfo, ...{[name]: Number(value)}});
+      const newVal = !!value ?  Number(value) : undefined;
+      setDiverInfo({...diverInfo, ...{[name]: newVal}});
     }
   }
 
@@ -125,7 +126,7 @@ const DiverInfoPage = () => {
                   type="number"
                   name='norecord_dive_count'
                   id='norecord_dive_count'
-                  value={diverInfo.norecord_dive_count || 0}
+                  value={diverInfo.norecord_dive_count}
                   onChange={(e) => { if (editing === 'norecord_dive_count') handleInputChange(e)}}
                   disabled={editing !== 'norecord_dive_count'}
                   className={`${editing === 'norecord_dive_count' ? 'bg-lightBlue dark:text-baseBlack ' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}

@@ -43,14 +43,13 @@ const getDiverInfoByUserId = asyncHandler(async (req, res) => {
 // @route POST /api/diverInfo
 // @access Private
 const addDiverInfo = asyncHandler(async(req, res) => {
-
   const userId = req.user.id;
   if (!userId) {
     res.status(400).send('User id not provided');
     return;
   }
 
-  const diverInfoData = prisma.diverInfo.findUnique({ where: {user_id: userId}});
+  const diverInfoData = await prisma.diverInfo.findUnique({ where: {user_id: userId}});
   if (diverInfoData) {
     res.status(400).send('Record for the user exists. Cannot add new data');
     return;
