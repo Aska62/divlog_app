@@ -75,6 +75,7 @@ const DiverInfoPage = () => {
       setLangInputs((prev) => {
         const updatedLangs = [...prev];
         updatedLangs.splice(index, 1);
+        setDiverInfo({...diverInfo, ...{languages: updatedLangs}});
         return updatedLangs;
       });
     }
