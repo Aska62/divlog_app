@@ -1,5 +1,6 @@
 import axios, { isAxiosError } from "axios";
 import { DiverInfoType } from '@/types/diverInfoTypes';
+import isString from '@/utils/isString';
 
 export type DiverInfoStateType = Partial<DiverInfoType> & {
   success?: boolean,
@@ -21,6 +22,13 @@ async function updateDiverInfo(_previousState: DiverInfoStateType, formData: For
     languages          : formData.get('languages') || [],
   }
   const id = formData.get('id') || null;
+
+  if (isString(data.languages) && data.languages.split(',').some((str) => str.length === 0)) {
+    return {
+      success: false,
+      message: 'Delete or fill the empty language input',
+    };
+  }
 
   try {
     if (id) {
