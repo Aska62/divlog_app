@@ -90,7 +90,10 @@ const addDiverInfo = asyncHandler(async(req, res) => {
     const newDiverInfo = await prisma.diverInfo.create({
       data: validated.data,
     });
-    res.status(201).json(newDiverInfo);
+    res.status(201).send({
+      success: true,
+      diverInfo: newDiverInfo,
+    })
   } catch (error) {
     console.log('error', error);
     res.status(500).send({
@@ -157,7 +160,10 @@ const updateDiverInfo = asyncHandler(async(req, res) => {
       where: { id },
       data: validated.data,
     });
-    res.status(201).json(updatedDiverInfo);
+    res.status(201).send({
+      success: true,
+      diverInfo: updatedDiverInfo,
+    })
   } catch (error) {
     console.log('error', error);
     res.status(500).send({

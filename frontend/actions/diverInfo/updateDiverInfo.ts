@@ -8,6 +8,7 @@ export type DiverInfoStateType = Partial<DiverInfoType> & {
     string
   >>,
   message?: string,
+  data?: DiverInfoType,
 }
 
 async function updateDiverInfo(_previousState: DiverInfoStateType, formData: FormData):Promise<DiverInfoStateType> {
@@ -29,7 +30,7 @@ async function updateDiverInfo(_previousState: DiverInfoStateType, formData: For
       );
       return {
         success: true,
-        message: res.data.message,
+        data: res.data.diverInfo,
       }
     } else {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/diverInfo`,
@@ -38,7 +39,7 @@ async function updateDiverInfo(_previousState: DiverInfoStateType, formData: For
       );
       return {
         success: true,
-        message: res.data.message,
+        data: res.data.diverInfo,
       }
     }
 

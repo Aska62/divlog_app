@@ -19,7 +19,7 @@ const DiverInfoPage = () => {
   const [loggedDiveCount, setLoggedDiveCount] = useState<number>(0);
   const [editing, setEditing] = useState<string>('');
 
-  const [state, formAction, isPending] = useActionState(updateDiverInfo, diverInfo);
+  const [state, formAction, isPending] = useActionState(updateDiverInfo, {});
 
   useEffect(() => {
     const fetchDiverInfo = async() => {
@@ -88,7 +88,9 @@ const DiverInfoPage = () => {
   }
 
   useEffect(() => {
-    if (state.success) {
+    if (state.data) {
+      setEditing('');
+      setDiverInfoInDb(state.data)
       toast.success('Profile successfully updated');
     } else {
       toast.error(state.message);
@@ -139,7 +141,6 @@ const DiverInfoPage = () => {
                   className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
                 >Cancel</button>
                 <button
-                  // onClick={() => setEditing('')} // TODO:
                   disabled={isPending}
                   className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
                 >Save</button>
@@ -193,7 +194,6 @@ const DiverInfoPage = () => {
                   className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
                 >Cancel</button>
                 <button
-                  onClick={() => setEditing('')} // TODO:
                   disabled={isPending}
                   className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
                 >Save</button>
@@ -241,7 +241,6 @@ const DiverInfoPage = () => {
                   className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
                 >Cancel</button>
                 <button
-                  onClick={() => setEditing('')} // TODO:
                   disabled={isPending}
                   className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
                 >Save</button>
@@ -289,7 +288,6 @@ const DiverInfoPage = () => {
                   className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 rounded-md'
                 >Cancel</button>
                 <button
-                  onClick={() => setEditing('')} // TODO:
                   disabled={isPending}
                   className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
                 >Save</button>
@@ -337,7 +335,6 @@ const DiverInfoPage = () => {
                   className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
                 >Cancel</button>
                 <button
-                  onClick={() => setEditing('')} // TODO:
                   disabled={isPending}
                   className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
                 >Save</button>
@@ -421,7 +418,6 @@ const DiverInfoPage = () => {
                       className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
                     >Cancel</button>
                     <button
-                      // onClick={() => setEditing('')} // TODO:
                       disabled={isPending}
                       className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
                     >Save</button>
