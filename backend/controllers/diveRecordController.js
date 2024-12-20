@@ -108,34 +108,40 @@ const getMyDiveRecordCount = asyncHandler(async (req, res) => {
 // @route GET /api/diveRecords
 // @access Private
 const getLastDiveRecord = asyncHandler(async (req, res) => {
-  const diveRecord = await prisma.diveRecord.findFirst({
-    where: {
-      user_id: req.user.id,
-      is_draft: false,
-    },
-    select: {
-      id: true,
-      user_id: true,
-      log_no: true,
-      date: true,
-      location: true,
-      country_id: true,
-      is_draft: true,
-      country: {
-        select: {
-          name: true,
-        }
+  console.log('getLastDiveRecord')
+  try {
+    const diveRecord = await prisma.diveRecord.findFirst({
+      where: {
+        user_id: req.user.id,
+        is_draft: false,
       },
-    },
-    orderBy: {
-      start_time: 'desc',
-    }
-  });
+      select: {
+        id: true,
+        user_id: true,
+        log_no: true,
+        date: true,
+        location: true,
+        country_id: true,
+        is_draft: true,
+        country: {
+          select: {
+            name: true,
+          }
+        },
+      },
+      orderBy: {
+        start_time: 'desc',
+      }
+    });
 
-  if (diveRecord) {
-    res.status(200).json(diveRecord);
-  } else {
-    res.status(400).send('Failed to find dive record');
+    if (diveRecord) {
+      res.status(200).json(diveRecord);
+    } else {
+      res.status(200).send('No record yet');
+    }
+  } catch (error) {
+    console.error('error: ', error);
+    res.status(400).send('Error while fetching data');
   }
 });
 
