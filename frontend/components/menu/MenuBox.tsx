@@ -75,7 +75,7 @@ const MenuBox:React.FC<MenuBoxProps> = ({menuId, closeMenuBox}) => {
     return (
       <div
         ref={ref}
-        className="w-max bg-baseWhite shadow-dl rounded-sm p-3 text-sm flex flex-col"
+        className="w-max bg-baseWhite dark:bg-baseBlack shadow-dl rounded-sm p-3 text-sm flex flex-col"
       >
         {Object.entries(menuBoxContents[menuId]).map(([id, content]) => (
           <Link

@@ -13,6 +13,30 @@ import isNumber from "@/utils/isNumber";
 import MenuBox, { MenuContentIds, menuContentIds } from '@/components/menu/MenuBox';
 import MobileMenuBox from "@/components/menu/MobileMenuBox";
 
+const menuInfo = [
+  {
+    id: 'log_book',
+    name: 'Log Book',
+  },
+  {
+    id: 'dive_plan',
+    name: 'Dive Plan',
+  },
+  {
+    id: 'dive_centers',
+    name: 'Dive Centers',
+  },
+  {
+    id: 'buddies',
+    name: 'Buddies',
+  },
+  {
+    id: 'account',
+    name: 'Accounts',
+  }
+
+]
+
 const Header = () => {
 
   const isMenuContentId = (val: unknown): val is MenuContentIds => {
@@ -72,75 +96,25 @@ const Header = () => {
 
           {/* Desktop menu */}
           <nav className="mr-4 hidden md:flex">
-            <div className="w-24 mx-3">
-              <p
-                id={String(menuContentIds.log_book)}
-                onClick={(e) => handleMenuClick(e)}
-                className={`w-full px-2 mb-1 rounded-sm hover:cursor-pointer hover:text-darkBlueLight ${visibleMenuBox === menuContentIds.log_book && 'bg-lightBlue'}`}
-              >Log Book</p>
-              {visibleMenuBox === menuContentIds.log_book && (
-                <MenuBox
-                  menuId={menuContentIds.log_book}
-                  closeMenuBox={setVisibleMenuBox}
-                />
-              )}
-            </div>
-
-            <div className="w-24 mx-3">
-              <p
-                id={String(menuContentIds.dive_plan)}
-                onClick={(e)=> handleMenuClick(e)}
-                className={`w-full px-2 mb-1 rounded-sm hover:cursor-pointer hover:text-darkBlueLight ${visibleMenuBox === menuContentIds.dive_plan && 'bg-lightBlue'}`}
-              >Dive Plan</p>
-              {visibleMenuBox === menuContentIds.dive_plan && (
-                <MenuBox
-                  menuId={menuContentIds.dive_plan}
-                  closeMenuBox={setVisibleMenuBox}
-                />
-              )}
-            </div>
-
-            <div className="w-32 mx-3">
-              <p
-                id={String(menuContentIds.dive_centers)}
-                onClick={(e)=> handleMenuClick(e)}
-                className={`w-full px-2 mb-1 rounded-sm hover:cursor-pointer hover:text-darkBlueLight ${visibleMenuBox === menuContentIds.dive_centers && 'bg-lightBlue'}`}
-              >Dive Centers</p>
-              {visibleMenuBox === menuContentIds.dive_centers && (
-                <MenuBox
-                  menuId={menuContentIds.dive_centers}
-                  closeMenuBox={setVisibleMenuBox}
-                />
-              )}
-            </div>
-
-            <div className="w-24 mx-3">
-              <p
-                id={String(menuContentIds.buddies)}
-                onClick={(e)=> handleMenuClick(e)}
-                className={`w-full px-2 mb-1 rounded-sm hover:cursor-pointer hover:text-darkBlueLight ${visibleMenuBox === menuContentIds.buddies && 'bg-lightBlue'}`}
-              >Buddies</p>
-              {visibleMenuBox === menuContentIds.buddies && (
-                <MenuBox
-                  menuId={menuContentIds.buddies}
-                  closeMenuBox={setVisibleMenuBox}
-                />
-              )}
-            </div>
-
-            <div className="w-12 mx-3">
-              <p
-                id={String(menuContentIds.account)}
-                onClick={(e)=> handleMenuClick(e)}
-                className={`w-full px-2 mb-1 rounded-sm hover:cursor-pointer hover:text-darkBlueLight ${visibleMenuBox === menuContentIds.account && 'bg-lightBlue'}`}
-              ><CgProfile className="mx-0 h-6" /></p>
-              {visibleMenuBox === menuContentIds.account && (
-                <MenuBox
-                  menuId={menuContentIds.account}
-                  closeMenuBox={setVisibleMenuBox}
-                />
-              )}
-            </div>
+            {menuInfo.map((menu) => (
+              <div className="min-w-12 max-w-32 mx-3" key={menu.id}>
+                <p
+                  id={String(menuContentIds[menu.id])}
+                  onClick={(e) => handleMenuClick(e)}
+                  className={`w-full px-2 mb-1 rounded-sm hover:cursor-pointer hover:text-darkBlueLight ${visibleMenuBox === menuContentIds[menu.id] && 'bg-lightBlue dark:bg-baseBlackLight'}`}
+                >
+                  {menu.id === 'account' ? (
+                    <CgProfile className="mx-0 h-6" />
+                  ) : menu.name}
+                </p>
+                {visibleMenuBox === menuContentIds[menu.id] && (
+                  <MenuBox
+                    menuId={menuContentIds[menu.id]}
+                    closeMenuBox={setVisibleMenuBox}
+                  />
+                )}
+              </div>
+            ))}
 
             <MdLogout className="mx-3 h-6 hover:text-darkBlueLight hover:cursor-pointer" onClick={handleLogout} />
           </nav>
@@ -153,105 +127,28 @@ const Header = () => {
           <RxCross2 className="absolute top-3 right-3 h-7 w-7 hover:cursor-pointer hover:text-baseWhite70" onClick={() => setMenuOpen(false)}/>
 
           <div className=" w-1/2 mx-auto mt-24 flex flex-col">
-            <div className="w-full my-6">
-              <div
-                id={String(menuContentIds.log_book)}
-                onClick={(e) => handleMenuClick(e)}
-                className="flex items-center w-full px-2 mb-1 hover:text-baseWhite70"
-              >
-                <p className={`mr-2 rounded-sm hover:cursor-pointer ${visibleMenuBox === menuContentIds.log_book && 'text-baseWhite70'}`}>
-                  Log Book
-                </p>
-                <IoIosArrowDown className={`${visibleMenuBox === menuContentIds.log_book && 'rotate-180'} duration-150`} />
-              </div>
-              {visibleMenuBox === menuContentIds.log_book && (
-                <MobileMenuBox
-                  menuId={menuContentIds.log_book}
-                  closeMenuBox={setVisibleMenuBox}
-                  setMenuOpen={setMenuOpen}
-                />
-              )}
-            </div>
 
-            <div className="w-full my-6">
+            {menuInfo.map((menu) => (
+              <div className="w-full my-6" key={menu.id}>
               <div
-                id={String(menuContentIds.dive_plan)}
+                id={String(menuContentIds[menu.id])}
                 onClick={(e) => handleMenuClick(e)}
                 className="flex items-center w-full px-2 mb-1 hover:text-baseWhite70"
               >
-                <p className={`mr-2 rounded-sm hover:cursor-pointer ${visibleMenuBox === menuContentIds.dive_plan && 'text-baseWhite70'}`}>
-                  Dive Plan
+                <p className={`mr-2 rounded-sm hover:cursor-pointer ${visibleMenuBox === menuContentIds[menu.id] && 'text-baseWhite70'}`}>
+                  {menu.name}
                 </p>
-                <IoIosArrowDown className={`${visibleMenuBox === menuContentIds.dive_plan && 'rotate-180'} duration-150`} />
+                <IoIosArrowDown className={`${visibleMenuBox === menuContentIds[menu.id] && 'rotate-180'} duration-150`} />
               </div>
-              {visibleMenuBox === menuContentIds.dive_plan && (
+              {visibleMenuBox === menuContentIds[menu.id] && (
                 <MobileMenuBox
-                  menuId={menuContentIds.dive_plan}
+                  menuId={menuContentIds[menu.id]}
                   closeMenuBox={setVisibleMenuBox}
                   setMenuOpen={setMenuOpen}
                 />
               )}
             </div>
-
-            <div className="w-full my-6">
-              <div
-                id={String(menuContentIds.dive_centers)}
-                onClick={(e) => handleMenuClick(e)}
-                className="flex items-center w-full px-2 mb-1 hover:text-baseWhite70"
-              >
-                <p className={`mr-2 rounded-sm hover:cursor-pointer ${visibleMenuBox === menuContentIds.dive_centers && 'text-baseWhite70'}`}>
-                  Dive Centers
-                </p>
-                <IoIosArrowDown className={`${visibleMenuBox === menuContentIds.dive_centers && 'rotate-180'} duration-150`} />
-              </div>
-              {visibleMenuBox === menuContentIds.dive_centers && (
-                <MobileMenuBox
-                  menuId={menuContentIds.dive_centers}
-                  closeMenuBox={setVisibleMenuBox}
-                  setMenuOpen={setMenuOpen}
-                />
-              )}
-            </div>
-
-            <div className="w-full my-6">
-              <div
-                id={String(menuContentIds.buddies)}
-                onClick={(e) => handleMenuClick(e)}
-                className="flex items-center w-full px-2 mb-1 hover:text-baseWhite70"
-              >
-                <p className={`mr-2 rounded-sm hover:cursor-pointer ${visibleMenuBox === menuContentIds.buddies && 'text-baseWhite70'}`}>
-                  Buddies
-                </p>
-                <IoIosArrowDown className={`${visibleMenuBox === menuContentIds.buddies && 'rotate-180'} duration-150`} />
-              </div>
-              {visibleMenuBox === menuContentIds.buddies && (
-                <MobileMenuBox
-                  menuId={menuContentIds.buddies}
-                  closeMenuBox={setVisibleMenuBox}
-                  setMenuOpen={setMenuOpen}
-                />
-              )}
-            </div>
-
-            <div className="w-full my-6">
-              <div
-                id={String(menuContentIds.account)}
-                onClick={(e) => handleMenuClick(e)}
-                className="flex items-center w-full px-2 mb-1 hover:text-baseWhite70"
-              >
-                <p className={`mr-2 rounded-sm hover:cursor-pointer ${visibleMenuBox === menuContentIds.account && 'text-baseWhite70'}`}>
-                  Account
-                </p>
-                <IoIosArrowDown className={`${visibleMenuBox === menuContentIds.account && 'rotate-180'} duration-150`} />
-              </div>
-              {visibleMenuBox === menuContentIds.account && (
-                <MobileMenuBox
-                  menuId={menuContentIds.account}
-                  closeMenuBox={setVisibleMenuBox}
-                  setMenuOpen={setMenuOpen}
-                />
-              )}
-            </div>
+            ))}
 
             <div className="w-full my-6 text-left">
               <MdLogout
