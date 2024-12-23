@@ -71,7 +71,7 @@ const addDiverInfo = asyncHandler(async(req, res) => {
     weight             : Number(weight),
     shoe               : Number(shoe),
     measurement_unit   : Number(measurement_unit),
-    languages,
+    languages          : languages || [],
   });
 
   if (!validated.success) {
@@ -140,7 +140,7 @@ const updateDiverInfo = asyncHandler(async(req, res) => {
     weight             : Number(weight),
     shoe               : Number(shoe),
     measurement_unit   : Number(measurement_unit),
-    languages          : languages.length > 0 ? languages.split(',') : [],
+    languages          : languages || []
   });
 
   if (!validated.success) {
