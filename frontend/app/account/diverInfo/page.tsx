@@ -105,7 +105,7 @@ const DiverInfoPage = () => {
       <Heading pageTitle="Diver Info" />
 
       <form action={formAction} className="w-2/3 max-w-sm h-fit mx-auto mt-6 mb-12">
-        <input type="hidden" name='id' value={diverInfo.id} />
+        {diverInfo.id && <input type="hidden" name='id' value={diverInfo.id} />}
 
         {/* Logged dive */}
         <div className="items-baseline my-14 md:flex">
@@ -126,7 +126,7 @@ const DiverInfoPage = () => {
                   type="number"
                   name='norecord_dive_count'
                   id='norecord_dive_count'
-                  value={diverInfo.norecord_dive_count}
+                  value={diverInfo.norecord_dive_count || ''}
                   onChange={(e) => { if (editing === 'norecord_dive_count') handleInputChange(e)}}
                   disabled={editing !== 'norecord_dive_count'}
                   className={`${editing === 'norecord_dive_count' ? 'bg-lightBlue dark:text-baseBlack ' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}
@@ -177,7 +177,7 @@ const DiverInfoPage = () => {
                   type="number"
                   name='height'
                   id='height'
-                  value={diverInfo.height}
+                  value={diverInfo.height || ''}
                   onChange={(e) =>{if (editing === 'height') handleInputChange(e)}}
                   className={`${editing === 'height' ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
                 />
@@ -224,7 +224,7 @@ const DiverInfoPage = () => {
                   type="number"
                   name='weight'
                   id='weight'
-                  value={diverInfo.weight}
+                  value={diverInfo.weight || ''}
                   onChange={(e) => {if (editing === 'weight') handleInputChange(e)}}
                   className={`${editing === 'weight' ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
                 />
@@ -271,7 +271,7 @@ const DiverInfoPage = () => {
                   type="number"
                   name='shoe'
                   id='shoe'
-                  value={diverInfo.shoe}
+                  value={diverInfo.shoe || ''}
                   onChange={(e) => {if (editing === 'shoe') handleInputChange(e)}}
                   className={`${editing === 'shoe' ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
                 />
@@ -317,7 +317,7 @@ const DiverInfoPage = () => {
                 <select
                   name="measurement_unit"
                   id="measurement_unit"
-                  value={diverInfo.measurement_unit}
+                  value={diverInfo.measurement_unit || ''}
                   onChange={(e) => {if (editing !== 'measurement_unit') handleInputChange(e)}}
                   disabled={editing !== 'measurement_unit'}
                   className={`${editing === 'measurement_unit' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}
@@ -393,7 +393,7 @@ const DiverInfoPage = () => {
                           name='lang'
                           id='lang_0'
                           value={langInputs[0]}
-                          onChange={(e) => {if (editing === 'languages') handleInputChange(e)}} // TODO:
+                          onChange={(e) => {if (editing === 'languages') handleInputChange(e)}}
                           className={`${editing === 'languages' ? 'bg-lightBlue dark:text-baseBlack w-full' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-48'} dark:text-baseBlack focus:outline-none px-2 py-1 mb-1 rounded-sm`}
                         />
                         <div className={`${editing === 'languages' ? 'flex' : 'hidden'} `}>
