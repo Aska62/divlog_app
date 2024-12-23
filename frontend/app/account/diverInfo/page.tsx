@@ -320,7 +320,7 @@ const DiverInfoPage = () => {
                   value={diverInfo.measurement_unit || ''}
                   onChange={(e) => {if (editing !== 'measurement_unit') handleInputChange(e)}}
                   disabled={editing !== 'measurement_unit'}
-                  className={`${editing === 'measurement_unit' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}
+                  className={`${editing === 'measurement_unit' ? 'bg-lightBlue dark:text-baseBlack appearance-auto' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite appearance-none'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}
                 >
                   <option value="1">Metric</option>
                   <option value="2">Imperial</option>
