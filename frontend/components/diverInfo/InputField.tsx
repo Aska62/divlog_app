@@ -11,8 +11,6 @@ type InputFieldProps = {
   handleInputChange: (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void
   value?: DiverInfoInputValues<DiverInfoInputFields>,
   measurementUnit?: typeof UNIT_METRIC | typeof UNIT_IMPERIAL
-  deleteLangInput?: (index:number) => void,
-  addLangInput?: (index:number) => void,
 }
 
 const labelText = {
