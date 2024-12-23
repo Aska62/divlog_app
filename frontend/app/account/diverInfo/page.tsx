@@ -182,9 +182,12 @@ const DiverInfoPage = () => {
                   disabled={editing !== 'height' || isPending}
                   className={`${editing === 'height' ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
                 />
-                <span className={`${editing === 'height' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
-                  {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Inches' : 'cm'}
-                </span>
+
+                {(!!diverInfo.height || editing === 'height') &&
+                  <span className={`${editing === 'height' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
+                    {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Inches' : 'cm'}
+                  </span>
+                }
               </div>
             </div>
           </div>
@@ -230,9 +233,11 @@ const DiverInfoPage = () => {
                   disabled={editing !== 'weight' || isPending}
                   className={`${editing === 'weight' ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
                 />
-                <span className={`${editing === 'weight' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
-                  {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Ib' : 'kg'}
-                </span>
+                {(!!diverInfo.height || editing === 'weight') &&
+                  <span className={`${editing === 'weight' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
+                    {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Ib' : 'kg'}
+                  </span>
+                }
               </div>
               </div>
           </div>
@@ -278,9 +283,11 @@ const DiverInfoPage = () => {
                   disabled={editing !== 'shoe' || isPending}
                   className={`${editing === 'shoe' ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
                 />
-                <span className={`${editing === 'shoe' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
-                  {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Inches' : 'cm'}
-                </span>
+                {(!!diverInfo.height || editing === 'shoe') &&
+                  <span className={`${editing === 'shoe' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
+                    {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Inches' : 'cm'}
+                  </span>
+                }
               </div>
             </div>
           </div>
