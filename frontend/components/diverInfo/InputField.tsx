@@ -69,7 +69,7 @@ const InputField:React.FC<InputFieldProps> = ({
             <select
               name={field}
               id={field}
-              value={value || ''}
+              defaultValue={value === UNIT_IMPERIAL ? value : UNIT_METRIC}
               onChange={(e) => {if (editing === field) handleInputChange(e)}}
               disabled={editing !== field}
               className={`${editing === field ? 'bg-lightBlue dark:text-baseBlack appearance-auto' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite appearance-none'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}
