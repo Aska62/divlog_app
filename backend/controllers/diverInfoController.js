@@ -140,7 +140,7 @@ const updateDiverInfo = asyncHandler(async(req, res) => {
     weight             : Number(weight),
     shoe               : Number(shoe),
     measurement_unit   : Number(measurement_unit),
-    languages          : languages.split(','),
+    languages          : languages.length > 0 ? languages.split(',') : [],
   });
 
   if (!validated.success) {
