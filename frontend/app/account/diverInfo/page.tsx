@@ -11,13 +11,14 @@ import updateDiverInfo from '@/actions/diverInfo/updateDiverInfo';
 import { getRecordCount } from '@/actions/diveRecord/getRecordCount';
 import Heading from "@/components/Heading";
 import isNumString from '@/utils/isNumString';
+import SaveCancelBtn, { DiverInfoInputFields } from '@/components/diverInfo/SaveCancelBtn';
 
 const DiverInfoPage = () => {
   const [diverInfo, setDiverInfo] = useState<Partial<DiverInfoType>>({});
   const [diverInfoInDb, setDiverInfoInDb] = useState<Partial<DiverInfoType>>({});
   const [langInputs, setLangInputs] = useState<string[]>([]);
   const [loggedDiveCount, setLoggedDiveCount] = useState<number>(0);
-  const [editing, setEditing] = useState<string>('');
+  const [editing, setEditing] = useState<DiverInfoInputFields | ''>('');
 
   const [state, formAction, isPending] = useActionState(updateDiverInfo, {});
 
@@ -41,7 +42,7 @@ const DiverInfoPage = () => {
     fetchDiverInfo();
   }, []);
 
-  const handleEditStatus = (e:React.MouseEvent, type?:string) => {
+  const handleEditStatus = (e:React.MouseEvent, type?:DiverInfoInputFields) => {
     e.preventDefault();
     setEditing(type || '');
   }
@@ -135,27 +136,13 @@ const DiverInfoPage = () => {
             </div>
           </div>
 
-          <div className='mt-1 md:mt-0 md:ml-2 text-right flex md:flex-col'>
-            { editing === 'norecord_dive_count' ? (
-              <>
-                <button
-                  onClick={(e) => onCancelClick(e)}
-                  disabled={isPending}
-                  className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
-                >Cancel</button>
-                <button
-                  disabled={isPending}
-                  className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
-                >Save</button>
-              </>
-            ) : (
-              <button
-                disabled={editing.length > 0 || isPending}
-                onClick={(e) => handleEditStatus(e, 'norecord_dive_count')}
-                className={`${editing.length > 0 ? 'bg-lightGray' : 'bg-eyeCatchDark hover:bg-eyeCatch'} text-baseWhite px-2 rounded-md`}
-              >Edit</button>
-            )}
-          </div>
+          <SaveCancelBtn
+            field='norecord_dive_count'
+            editing={editing}
+            isPending={isPending}
+            onCancelClick={onCancelClick}
+            handleEditStatus={handleEditStatus}
+          />
         </div>
 
         {/* Total dive */}
@@ -192,27 +179,13 @@ const DiverInfoPage = () => {
             </div>
           </div>
 
-          <div className='mt-1 md:mt-0 md:ml-2 text-right flex md:flex-col'>
-            { editing === 'height' ? (
-              <>
-                <button
-                  onClick={(e) => onCancelClick(e)}
-                  disabled={isPending}
-                  className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
-                >Cancel</button>
-                <button
-                  disabled={isPending}
-                  className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
-                >Save</button>
-              </>
-            ) : (
-              <button
-                disabled={editing.length > 0 || isPending}
-                onClick={(e) => handleEditStatus(e, 'height')}
-                className={`${editing.length > 0 ? 'bg-lightGray' : 'bg-eyeCatchDark hover:bg-eyeCatch'} text-baseWhite px-2 rounded-md`}
-              >Edit</button>
-            )}
-          </div>
+          <SaveCancelBtn
+            field='height'
+            editing={editing}
+            isPending={isPending}
+            onCancelClick={onCancelClick}
+            handleEditStatus={handleEditStatus}
+          />
         </div>
 
         {/* Weight */}
@@ -242,27 +215,13 @@ const DiverInfoPage = () => {
               </div>
           </div>
 
-          <div className='mt-1 md:mt-0 md:ml-2 text-right flex md:flex-col'>
-            { editing === 'weight' ? (
-              <>
-                <button
-                  onClick={(e) => onCancelClick(e)}
-                  disabled={isPending}
-                  className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
-                >Cancel</button>
-                <button
-                  disabled={isPending}
-                  className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
-                >Save</button>
-              </>
-            ) : (
-              <button
-                disabled={editing.length > 0 || isPending}
-                onClick={(e) => handleEditStatus(e, 'weight')}
-                className={`${editing.length > 0 ? 'bg-lightGray' : 'bg-eyeCatchDark hover:bg-eyeCatch'} text-baseWhite px-2 rounded-md`}
-              >Edit</button>
-            )}
-          </div>
+          <SaveCancelBtn
+            field='weight'
+            editing={editing}
+            isPending={isPending}
+            onCancelClick={onCancelClick}
+            handleEditStatus={handleEditStatus}
+          />
         </div>
 
         {/* Shoe */}
@@ -292,30 +251,16 @@ const DiverInfoPage = () => {
             </div>
           </div>
 
-          <div className='mt-1 md:mt-0 md:ml-2 text-right flex md:flex-col'>
-            { editing === 'shoe' ? (
-              <>
-                <button
-                  onClick={(e) => onCancelClick(e)}
-                  disabled={isPending}
-                  className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 rounded-md'
-                >Cancel</button>
-                <button
-                  disabled={isPending}
-                  className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
-                >Save</button>
-              </>
-            ) : (
-              <button
-                disabled={editing.length > 0 || isPending}
-                onClick={(e) => handleEditStatus(e, 'shoe')}
-                className={`${editing.length > 0 ? 'bg-lightGray' : 'bg-eyeCatchDark hover:bg-eyeCatch'} text-baseWhite px-2 rounded-md`}
-              >Edit</button>
-            )}
-          </div>
+          <SaveCancelBtn
+            field='shoe'
+            editing={editing}
+            isPending={isPending}
+            onCancelClick={onCancelClick}
+            handleEditStatus={handleEditStatus}
+          />
         </div>
 
-        {/* Measurement unit */}
+        {/* Measurement unit TODO:bug: ib is not selectable */}
         <div className="w-full mb-14 flex flex-col md:flex-row justify-between items-start">
           <div className='md:flex md:justify-between'>
             <label
@@ -339,27 +284,13 @@ const DiverInfoPage = () => {
             </div>
           </div>
 
-          <div className='mt-1 md:mt-0 md:ml-2 text-right flex md:flex-col'>
-            { editing === 'measurement_unit' ? (
-              <>
-                <button
-                  onClick={(e) => onCancelClick(e)}
-                  disabled={isPending}
-                  className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
-                >Cancel</button>
-                <button
-                  disabled={isPending}
-                  className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
-                >Save</button>
-              </>
-            ) : (
-              <button
-                disabled={editing.length > 0 || isPending}
-                onClick={(e) => handleEditStatus(e, 'measurement_unit')}
-                className={`${editing.length > 0 ? 'bg-lightGray' : 'bg-eyeCatchDark hover:bg-eyeCatch'} text-baseWhite px-2 rounded-md`}
-              >Edit</button>
-            )}
-          </div>
+          <SaveCancelBtn
+            field='measurement_unit'
+            editing={editing}
+            isPending={isPending}
+            onCancelClick={onCancelClick}
+            handleEditStatus={handleEditStatus}
+          />
         </div>
 
         {/* Languages */}
@@ -424,27 +355,13 @@ const DiverInfoPage = () => {
                 </div>
               </div>
 
-              <div className='mt-1 md:mt-0 text-right flex md:flex-col'>
-                { editing === 'languages' ? (
-                  <>
-                    <button
-                      onClick={(e) => onCancelClick(e)}
-                      disabled={isPending}
-                      className='bg-eyeCatch hover:bg-eyeCatchDark text-baseWhite px-2 mr-2 md:mr-0 md:mb-2 rounded-md'
-                    >Cancel</button>
-                    <button
-                      disabled={isPending}
-                      className='bg-darkBlue hover:bg-darkBlueLight text-baseWhite px-2 rounded-md'
-                    >Save</button>
-                  </>
-                ) : (
-                  <button
-                    disabled={editing.length > 0 || isPending}
-                    onClick={(e) => handleEditStatus(e, 'languages')}
-                    className={`${editing.length > 0 ? 'bg-lightGray' : 'bg-eyeCatchDark hover:bg-eyeCatch'} text-baseWhite px-2 rounded-md`}
-                  >Edit</button>
-                )}
-              </div>
+              <SaveCancelBtn
+                field='languages'
+                editing={editing}
+                isPending={isPending}
+                onCancelClick={onCancelClick}
+                handleEditStatus={handleEditStatus}
+              />
             </div>
           </div>
         </div>
