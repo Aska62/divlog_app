@@ -7,8 +7,15 @@ import { DiverInfoType, DiverInfoInputFields } from '@/types/diverInfoTypes';
 import { getDiverInfo } from '@/actions/diverInfo/getDiverInfo';
 import updateDiverInfo from '@/actions/diverInfo/updateDiverInfo';
 import { getRecordCount } from '@/actions/diveRecord/getRecordCount';
-import Heading from "@/components/Heading";
+import { UNIT_IMPERIAL, UNIT_METRIC } from '@/constants/unit';
 import isNumString from '@/utils/isNumString';
+import {
+  convertCmToInch,
+  convertIbToKg,
+  convertInchToCm,
+  convertKgToIb,
+} from '@/utils/convertMeasurements';
+import Heading from "@/components/Heading";
 import InputField from '@/components/diverInfo/InputField';
 import SaveCancelBtn from '@/components/diverInfo/SaveCancelBtn';
 
@@ -27,11 +34,21 @@ const DiverInfoPage = () => {
       setLoading(true);
       const info = await getDiverInfo();
       if (info) {
-        setDiverInfo(info);
         setDiverInfoInDb(info);
+        // If measurement unit is imperial, convert height, weight, shoe values
+        if (info.measurement_unit === UNIT_IMPERIAL) {
+          console.log('imperial!')
+          info.height = info.height ? convertCmToInch(info.height) : info.height;
+          info.weight = info.weight ? convertKgToIb(info.weight) : info.weight;
+          info.shoe = info.shoe ? convertCmToInch(info.shoe) : info.shoe;
+        }
+
+        setDiverInfo(info);
+
         if (Array.isArray(info.languages) && info.languages.length > 0) {
           setLangInputs(info.languages);
         }
+
       }
 
       const diveCount = await getRecordCount();
@@ -61,6 +78,39 @@ const DiverInfoPage = () => {
         newLangArr[Number(langId)] = value;
         setDiverInfo({...diverInfo, ...{languages: newLangArr}});
       }
+    } else if (name === 'measurement_unit' && Number(value) !== diverInfo.measurement_unit) {
+      const newUnit:typeof UNIT_METRIC | typeof UNIT_IMPERIAL
+        = Number(value) === UNIT_IMPERIAL ? UNIT_IMPERIAL : UNIT_METRIC;
+      console.log('newUnit', newUnit)
+      // Calculate and assign new height
+      const newHeight =
+        !diverInfo.height ? 0
+        : newUnit === UNIT_IMPERIAL ? convertCmToInch(diverInfo.height)
+        : convertInchToCm(diverInfo.height);
+      // Calculate and assign new weight
+      const newWeight =
+        !diverInfo.weight ? 0
+        : newUnit === UNIT_IMPERIAL ? convertKgToIb(diverInfo.weight)
+        : convertIbToKg(diverInfo.weight);
+      // Calculate and assign new shoe size
+      const newShoe =
+        !diverInfo.shoe ? 0
+        : newUnit === UNIT_IMPERIAL ? convertCmToInch(diverInfo.shoe)
+        : convertInchToCm(diverInfo.shoe);
+
+      const newVal = {
+        height: newHeight,
+        weight: newWeight,
+        shoe: newShoe,
+        measurement_unit: newUnit
+      }
+
+      const newInfo = {
+        ...diverInfo,
+        ...newVal,
+      }
+
+      setDiverInfo(newInfo);
     } else {
       const newVal = !!value ?  Number(value) : undefined;
       setDiverInfo({...diverInfo, ...{[name]: newVal}});
@@ -108,7 +158,8 @@ const DiverInfoPage = () => {
     <>
       <Heading pageTitle="Diver Info" />
       {loading ?
-        <p>Loading...</p> :
+        <p>Loading...</p>
+      :
         <form action={formAction} className="w-2/3 max-w-sm h-fit mx-auto mt-6 mb-12">
           {diverInfo.id && <input type="hidden" name='id' value={diverInfo.id} />}
 
@@ -125,7 +176,7 @@ const DiverInfoPage = () => {
               editing={editing}
               isPending={isPending}
               handleInputChange={handleInputChange}
-              measurementUnit={diverInfo.measurement_unit}
+              measurementUnit={diverInfo.measurement_unit || UNIT_METRIC}
               value={diverInfo.norecord_dive_count}
             />
             <SaveCancelBtn
@@ -150,7 +201,7 @@ const DiverInfoPage = () => {
               editing={editing}
               isPending={isPending}
               handleInputChange={handleInputChange}
-              measurementUnit={diverInfo.measurement_unit}
+              measurementUnit={diverInfo.measurement_unit || UNIT_METRIC}
               value={diverInfo.height}
             />
             <SaveCancelBtn
@@ -169,7 +220,7 @@ const DiverInfoPage = () => {
               editing={editing}
               isPending={isPending}
               handleInputChange={handleInputChange}
-              measurementUnit={diverInfo.measurement_unit}
+              measurementUnit={diverInfo.measurement_unit || UNIT_METRIC}
               value={diverInfo.weight}
             />
             <SaveCancelBtn
@@ -188,7 +239,7 @@ const DiverInfoPage = () => {
               editing={editing}
               isPending={isPending}
               handleInputChange={handleInputChange}
-              measurementUnit={diverInfo.measurement_unit}
+              measurementUnit={diverInfo.measurement_unit || UNIT_METRIC}
               value={diverInfo.shoe}
             />
             <SaveCancelBtn
@@ -207,7 +258,7 @@ const DiverInfoPage = () => {
               editing={editing}
               isPending={isPending}
               handleInputChange={handleInputChange}
-              measurementUnit={diverInfo.measurement_unit}
+              measurementUnit={diverInfo.measurement_unit || UNIT_METRIC}
               value={diverInfo.measurement_unit}
             />
             <SaveCancelBtn

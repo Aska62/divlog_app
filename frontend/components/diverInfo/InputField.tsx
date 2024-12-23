@@ -9,8 +9,8 @@ type InputFieldProps = {
   editing: DiverInfoInputFields | '',
   isPending: boolean,
   handleInputChange: (e:React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => void
+  measurementUnit: typeof UNIT_METRIC | typeof UNIT_IMPERIAL
   value?: DiverInfoInputValues<DiverInfoInputFields>,
-  measurementUnit?: typeof UNIT_METRIC | typeof UNIT_IMPERIAL
 }
 
 const labelText = {
@@ -66,17 +66,24 @@ const InputField:React.FC<InputFieldProps> = ({
       <div className='flex flex-col'>
         <div className='flex justify-stretch items-end w-full'>
           {field === 'measurement_unit' ? (
-            <select
-              name={field}
-              id={field}
-              defaultValue={value === UNIT_IMPERIAL ? value : UNIT_METRIC}
-              onChange={(e) => {if (editing === field) handleInputChange(e)}}
-              disabled={editing !== field}
-              className={`${editing === field ? 'bg-lightBlue dark:text-baseBlack appearance-auto' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite appearance-none'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}
-            >
-              <option value={UNIT_METRIC}>Metric</option>
-              <option value={UNIT_IMPERIAL}>Imperial</option>
-            </select>
+            editing === field ? (
+              <select
+                name={field}
+                id={field}
+                defaultValue={value}
+                onChange={(e) => {if (editing === field) handleInputChange(e)}}
+                className='bg-lightBlue dark:text-baseBlack appearance-auto md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg'
+              >
+                <option value={UNIT_METRIC}>Metric</option>
+                <option value={UNIT_IMPERIAL}>Imperial</option>
+              </select>
+            ) : (
+              <p
+                className='bg-baseWhite dark:bg-baseBlack dark:text-baseWhite appearance-none md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg'
+              >
+                {value === UNIT_IMPERIAL ? 'Imperial' : 'Metric'}
+              </p>
+            )
           ) : isFieldWithUnit(field) ? (
             <>
               <input
@@ -86,7 +93,7 @@ const InputField:React.FC<InputFieldProps> = ({
                 value={value || ''}
                 onChange={(e) => {if (editing === field) handleInputChange(e)}}
                 disabled={editing !== field || isPending}
-                className={`${editing === field ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
+                className={`${editing === field ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-24'} dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
               />
               {(!!value || editing === field) &&
                 <span className={`${editing === field ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
