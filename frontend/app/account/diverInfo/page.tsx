@@ -1,6 +1,8 @@
 'use client';
 import React, { useState, useEffect, useActionState } from 'react';
+import Link from 'next/link';
 import { toast } from 'react-toastify';
+import { IoIosArrowForward } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import { BsPlusCircle } from "react-icons/bs";
 import { DiverInfoType, DiverInfoInputFields } from '@/types/diverInfoTypes';
@@ -167,6 +169,7 @@ const DiverInfoPage = () => {
       {loading ?
         <p>Loading...</p>
       :
+      <>
         <form
           onSubmit={handleSubmit}
           className="w-2/3 max-w-sm h-fit mx-auto mt-6 mb-12"
@@ -352,6 +355,17 @@ const DiverInfoPage = () => {
             </div>
           </div>
         </form>
+
+        <div className='w-8/12 md:w-1/3 max-w-md mx-auto mb-20'>
+        <Link
+          href='/account'
+          className='w-fit ml-auto mr-2 px-2 py-1 rounded-md flex items-center justify-end bg-lightBlue dark:text-baseBlack shadow-sm hover:text-darkBlueLight'
+        >
+          Profile
+          <IoIosArrowForward className='text-lg' />
+        </Link>
+      </div>
+      </>
       }
     </>
   );
