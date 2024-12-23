@@ -1,17 +1,16 @@
 'use client';
 import React, { useState, useEffect, useActionState } from 'react';
-// import { revalidatePath } from 'next/cache';
 import { toast } from 'react-toastify';
 import { RxCross2 } from "react-icons/rx";
 import { BsPlusCircle } from "react-icons/bs";
-import { UNIT_IMPERIAL } from '@/constants/unit';
-import { DiverInfoType } from '@/types/diverInfoTypes';
+import { DiverInfoType, DiverInfoInputFields } from '@/types/diverInfoTypes';
 import { getDiverInfo } from '@/actions/diverInfo/getDiverInfo';
 import updateDiverInfo from '@/actions/diverInfo/updateDiverInfo';
 import { getRecordCount } from '@/actions/diveRecord/getRecordCount';
 import Heading from "@/components/Heading";
 import isNumString from '@/utils/isNumString';
-import SaveCancelBtn, { DiverInfoInputFields } from '@/components/diverInfo/SaveCancelBtn';
+import InputField from '@/components/diverInfo/InputField';
+import SaveCancelBtn from '@/components/diverInfo/SaveCancelBtn';
 
 const DiverInfoPage = () => {
   const [diverInfo, setDiverInfo] = useState<Partial<DiverInfoType>>({});
@@ -116,26 +115,14 @@ const DiverInfoPage = () => {
 
         {/* Unrecorded dive */}
         <div className="w-full mb-14 flex flex-col md:flex-row justify-between items-start">
-          <div className='md:flex md:justify-between'>
-            <label
-              htmlFor="norecord_dive_count"
-              className='text-sm mr-2 md:mt-2 md:w-36'
-            >Unrecorded dive:</label>
-            <div className='flex flex-col'>
-              <div className='flex justify-stretch items-end w-full'>
-                <input
-                  type="number"
-                  name='norecord_dive_count'
-                  id='norecord_dive_count'
-                  value={diverInfo.norecord_dive_count || ''}
-                  onChange={(e) => { if (editing === 'norecord_dive_count') handleInputChange(e)}}
-                  disabled={editing !== 'norecord_dive_count' || isPending}
-                  className={`${editing === 'norecord_dive_count' ? 'bg-lightBlue dark:text-baseBlack ' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}
-                />
-              </div>
-            </div>
-          </div>
-
+          <InputField
+            field='norecord_dive_count'
+            editing={editing}
+            isPending={isPending}
+            handleInputChange={handleInputChange}
+            measurementUnit={diverInfo.measurement_unit}
+            value={diverInfo.norecord_dive_count}
+          />
           <SaveCancelBtn
             field='norecord_dive_count'
             editing={editing}
@@ -153,32 +140,14 @@ const DiverInfoPage = () => {
 
         {/* Height */}
         <div className="w-full mb-14 flex flex-col md:flex-row justify-between items-start">
-          <div className='md:flex md:justify-between'>
-            <label
-              htmlFor="height"
-              className='text-sm mr-2 md:mt-2 md:w-36'
-            >Height:</label>
-            <div className='flex flex-col'>
-              <div className='flex justify-stretch items-end w-full'>
-                <input
-                  type="number"
-                  name='height'
-                  id='height'
-                  value={diverInfo.height || ''}
-                  onChange={(e) =>{if (editing === 'height') handleInputChange(e)}}
-                  disabled={editing !== 'height' || isPending}
-                  className={`${editing === 'height' ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
-                />
-
-                {(!!diverInfo.height || editing === 'height') &&
-                  <span className={`${editing === 'height' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
-                    {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Inches' : 'cm'}
-                  </span>
-                }
-              </div>
-            </div>
-          </div>
-
+          <InputField
+            field='height'
+            editing={editing}
+            isPending={isPending}
+            handleInputChange={handleInputChange}
+            measurementUnit={diverInfo.measurement_unit}
+            value={diverInfo.height}
+          />
           <SaveCancelBtn
             field='height'
             editing={editing}
@@ -190,31 +159,14 @@ const DiverInfoPage = () => {
 
         {/* Weight */}
         <div className="w-full mb-14 flex flex-col md:flex-row justify-between items-start">
-          <div className='md:flex md:justify-between'>
-            <label
-              htmlFor="weight"
-              className='text-sm mr-2 md:mt-2 md:w-36'
-            >Weight:</label>
-            <div className='flex flex-col'>
-              <div className='flex justify-stretch items-end w-full'>
-                <input
-                  type="number"
-                  name='weight'
-                  id='weight'
-                  value={diverInfo.weight || ''}
-                  onChange={(e) => {if (editing === 'weight') handleInputChange(e)}}
-                  disabled={editing !== 'weight' || isPending}
-                  className={`${editing === 'weight' ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
-                />
-                {(!!diverInfo.height || editing === 'weight') &&
-                  <span className={`${editing === 'weight' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
-                    {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Ib' : 'kg'}
-                  </span>
-                }
-              </div>
-              </div>
-          </div>
-
+          <InputField
+            field='weight'
+            editing={editing}
+            isPending={isPending}
+            handleInputChange={handleInputChange}
+            measurementUnit={diverInfo.measurement_unit}
+            value={diverInfo.weight}
+          />
           <SaveCancelBtn
             field='weight'
             editing={editing}
@@ -226,31 +178,14 @@ const DiverInfoPage = () => {
 
         {/* Shoe */}
         <div className="w-full mb-14 flex flex-col md:flex-row justify-between items-start">
-          <div className='md:flex md:justify-between'>
-            <label
-              htmlFor="shoe"
-              className='text-sm mr-2 md:mt-2 md:w-36'
-            >Shoe size:</label>
-            <div className='flex flex-col'>
-              <div className='flex justify-stretch items-end w-full'>
-                <input
-                  type="number"
-                  name='shoe'
-                  id='shoe'
-                  value={diverInfo.shoe || ''}
-                  onChange={(e) => {if (editing === 'shoe') handleInputChange(e)}}
-                  disabled={editing !== 'shoe' || isPending}
-                  className={`${editing === 'shoe' ? 'bg-lightBlue dark:text-baseBlack md:w-36' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-20'} dark:text-baseBlack focus:outline-none px-2 py-1 rounded-tl-sm rounded-bl-sm text-lg`}
-                />
-                {(!!diverInfo.height || editing === 'shoe') &&
-                  <span className={`${editing === 'shoe' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
-                    {diverInfo.measurement_unit === UNIT_IMPERIAL ? 'Inches' : 'cm'}
-                  </span>
-                }
-              </div>
-            </div>
-          </div>
-
+          <InputField
+            field='shoe'
+            editing={editing}
+            isPending={isPending}
+            handleInputChange={handleInputChange}
+            measurementUnit={diverInfo.measurement_unit}
+            value={diverInfo.shoe}
+          />
           <SaveCancelBtn
             field='shoe'
             editing={editing}
@@ -262,28 +197,14 @@ const DiverInfoPage = () => {
 
         {/* Measurement unit TODO:bug: ib is not selectable */}
         <div className="w-full mb-14 flex flex-col md:flex-row justify-between items-start">
-          <div className='md:flex md:justify-between'>
-            <label
-              htmlFor="measurement_unit"
-              className='text-sm mr-2 md:mt-2 md:w-36'
-            >Measurement unit:</label>
-            <div className='flex flex-col'>
-              <div className='flex justify-stretch items-end w-full'>
-                <select
-                  name="measurement_unit"
-                  id="measurement_unit"
-                  value={diverInfo.measurement_unit || ''}
-                  onChange={(e) => {if (editing !== 'measurement_unit') handleInputChange(e)}}
-                  disabled={editing !== 'measurement_unit'}
-                  className={`${editing === 'measurement_unit' ? 'bg-lightBlue dark:text-baseBlack appearance-auto' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite appearance-none'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}
-                >
-                  <option value="1">Metric</option>
-                  <option value="2">Imperial</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
+          <InputField
+            field='measurement_unit'
+            editing={editing}
+            isPending={isPending}
+            handleInputChange={handleInputChange}
+            measurementUnit={diverInfo.measurement_unit}
+            value={diverInfo.measurement_unit}
+          />
           <SaveCancelBtn
             field='measurement_unit'
             editing={editing}
@@ -300,8 +221,8 @@ const DiverInfoPage = () => {
               htmlFor="languages"
               className='text-sm mr-2 md:mt-2 md:w-36'
             >Languages:</label>
-            <div className='flex flex-col md:flex-row'>
 
+            <div className='flex flex-col md:flex-row'>
               <div className='flex justify-stretch items-end w-full'>
                 <div>
                   <input type="hidden" name='languages' value={diverInfo.languages || []} />

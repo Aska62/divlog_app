@@ -1,10 +1,4 @@
-export type DiverInfoInputFields =
-  | 'norecord_dive_count'
-  | 'height'
-  | 'weight'
-  | 'shoe'
-  | 'measurement_unit'
-  | 'languages';
+import { DiverInfoInputFields } from '@/types/diverInfoTypes';
 
 type SaveCancelBtnProps = {
   field: DiverInfoInputFields

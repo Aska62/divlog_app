@@ -2,6 +2,7 @@ import isObject from "@/utils/isObject";
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import isNumber from "@/utils/isNumber";
 import isString from '@/utils/isString';
+import { UNIT_METRIC, UNIT_IMPERIAL } from '@/constants/unit';
 
 export type DiverInfoType =
   {
@@ -10,7 +11,7 @@ export type DiverInfoType =
     height             ?: number,
     weight             ?: number,
     shoe               ?: number,
-    measurement_unit   ?: number,
+    measurement_unit   ?: typeof UNIT_METRIC | typeof UNIT_IMPERIAL,
     languages          ?: string[]
   }
 
@@ -36,3 +37,7 @@ export const isDiverInfoType = (val:unknown): val is DiverInfoType => {
 
   return true;
 }
+
+export type DiverInfoInputFields = keyof Omit<DiverInfoType, 'id'>
+
+export type DiverInfoInputValues<F extends DiverInfoInputFields> = Omit<DiverInfoType, 'id'>[F];
