@@ -27,7 +27,7 @@ const labelText = {
 type FieldsWithUnit = Extract<DiverInfoInputFields, 'height' | 'weight' | 'shoe'>;
 
 const isFieldWithUnit = (val:unknown): val is FieldsWithUnit => {
-  return ['height', 'weight', 'shoes'].some((f) => f === val);
+  return ['height', 'weight', 'shoe'].some((f) => f === val);
 }
 
 const fieldUnits: Record<
@@ -42,15 +42,14 @@ const fieldUnits: Record<
     [UNIT_IMPERIAL]: 'Inches'
   },
   weight:{
-    [UNIT_METRIC]: 'Ib',
-    [UNIT_IMPERIAL]: 'kg'
+    [UNIT_METRIC]: 'kg',
+    [UNIT_IMPERIAL]: 'Ib'
   },
   shoe: {
     [UNIT_METRIC]: 'cm',
     [UNIT_IMPERIAL]: 'Inches'
   },
 }
-
 const InputField:React.FC<InputFieldProps> = ({
   field,
   editing,
@@ -73,7 +72,7 @@ const InputField:React.FC<InputFieldProps> = ({
               name={field}
               id={field}
               value={value || ''}
-              onChange={(e) => {if (editing !== field) handleInputChange(e)}}
+              onChange={(e) => {if (editing === field) handleInputChange(e)}}
               disabled={editing !== field}
               className={`${editing === field ? 'bg-lightBlue dark:text-baseBlack appearance-auto' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite appearance-none'} md:w-36 focus:outline-none px-2 py-1 rounded-sm text-lg`}
             >
@@ -93,7 +92,7 @@ const InputField:React.FC<InputFieldProps> = ({
               />
               {(!!value || editing === field) &&
                 <span className={`${editing === field ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite'} text-sm h-9 py-2 pr-2 rounded-tr-sm rounded-br-sm`}>
-                  {measurementUnit === UNIT_IMPERIAL ? fieldUnits[field][UNIT_IMPERIAL ] : 'cm'}
+                  {measurementUnit === UNIT_IMPERIAL ? fieldUnits[field][UNIT_IMPERIAL] : fieldUnits[field][UNIT_METRIC]}
                 </span>
               }
             </>
