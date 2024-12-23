@@ -29,15 +29,22 @@ const DiverInfoPage = () => {
 
   const [state, formAction, isPending] = useActionState(updateDiverInfo, {});
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    React.startTransition(() => {
+      formAction(diverInfo);
+    });
+  };
+
   useEffect(() => {
     const fetchDiverInfo = async() => {
+
       setLoading(true);
       const info = await getDiverInfo();
       if (info) {
         setDiverInfoInDb(info);
         // If measurement unit is imperial, convert height, weight, shoe values
         if (info.measurement_unit === UNIT_IMPERIAL) {
-          console.log('imperial!')
           info.height = info.height ? convertCmToInch(info.height) : info.height;
           info.weight = info.weight ? convertKgToIb(info.weight) : info.weight;
           info.shoe = info.shoe ? convertCmToInch(info.shoe) : info.shoe;
@@ -81,7 +88,7 @@ const DiverInfoPage = () => {
     } else if (name === 'measurement_unit' && Number(value) !== diverInfo.measurement_unit) {
       const newUnit:typeof UNIT_METRIC | typeof UNIT_IMPERIAL
         = Number(value) === UNIT_IMPERIAL ? UNIT_IMPERIAL : UNIT_METRIC;
-      console.log('newUnit', newUnit)
+
       // Calculate and assign new height
       const newHeight =
         !diverInfo.height ? 0
@@ -160,7 +167,10 @@ const DiverInfoPage = () => {
       {loading ?
         <p>Loading...</p>
       :
-        <form action={formAction} className="w-2/3 max-w-sm h-fit mx-auto mt-6 mb-12">
+        <form
+          onSubmit={handleSubmit}
+          className="w-2/3 max-w-sm h-fit mx-auto mt-6 mb-12"
+        >
           {diverInfo.id && <input type="hidden" name='id' value={diverInfo.id} />}
 
           {/* Logged dive */}
@@ -251,7 +261,6 @@ const DiverInfoPage = () => {
             />
           </div>
 
-          {/* Measurement unit TODO:bug: ib is not selectable */}
           <div className="w-full mb-14 flex flex-col md:flex-row justify-between items-start">
             <InputField
               field='measurement_unit'

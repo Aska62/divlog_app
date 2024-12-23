@@ -5,10 +5,16 @@ type SaveCancelBtnProps = {
   editing: DiverInfoInputFields | '',
   isPending: boolean,
   onCancelClick: (e:React.MouseEvent) => void,
-  handleEditStatus: (e:React.MouseEvent, type?:DiverInfoInputFields) => void
+  handleEditStatus: (e:React.MouseEvent, type?:DiverInfoInputFields) => void,
 }
 
-const SaveCancelBtn:React.FC<SaveCancelBtnProps> = ({field, editing, isPending, onCancelClick, handleEditStatus}) => {
+const SaveCancelBtn:React.FC<SaveCancelBtnProps> = ({
+  field,
+  editing,
+  isPending,
+  onCancelClick,
+  handleEditStatus,
+}) => {
   return (
     <div className='mt-1 md:mt-0 md:ml-2 text-right flex md:flex-col'>
       { editing === field ? (

@@ -12,18 +12,18 @@ export type DiverInfoStateType = Partial<DiverInfoType> & {
   data?: DiverInfoType,
 }
 
-async function updateDiverInfo(_previousState: DiverInfoStateType, formData: FormData):Promise<DiverInfoStateType> {
-  const data = {
-    norecord_dive_count: formData.get('norecord_dive_count') || 0,
-    height             : formData.get('height') || null,
-    weight             : formData.get('weight') || null,
-    shoe               : formData.get('shoe') || null,
-    measurement_unit   : formData.get('measurement_unit') || 1,
-    languages          : formData.get('languages') || [],
+async function updateDiverInfo(_previousState: DiverInfoStateType, data:Partial<DiverInfoType>):Promise<DiverInfoStateType> {
+  const newData = {
+    norecord_dive_count: data['norecord_dive_count'] || 0,
+    height             : data['height'] || null,
+    weight             : data['weight'] || null,
+    shoe               : data['shoe'] || null,
+    measurement_unit   : data['measurement_unit'] || 1,
+    languages          : data['languages'] || [],
   }
-  const id = formData.get('id') || null;
+  const id = data['id'] || null;
 
-  if (isString(data.languages) && data.languages.split(',').some((str) => str.length === 0)) {
+  if (isString(newData.languages) && newData.languages.split(',').some((str) => str.length === 0)) {
     return {
       success: false,
       message: 'Delete or fill the empty language input',
