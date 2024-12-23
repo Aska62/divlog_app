@@ -364,7 +364,7 @@ const DiverInfoPage = () => {
 
         {/* Languages */}
         <div className="w-full mb-14 flex flex-col md:flex-row justify-between items-start">
-          <div className='md:flex md:justify-between'>
+          <div className='w-full md:flex md:justify-between'>
             <label
               htmlFor="languages"
               className='text-sm mr-2 md:mt-2 md:w-36'
@@ -372,7 +372,7 @@ const DiverInfoPage = () => {
             <div className='flex flex-col md:flex-row'>
 
               <div className='flex justify-stretch items-end w-full'>
-                <div className='w-full'>
+                <div>
                   <input type="hidden" name='languages' value={diverInfo.languages || []} />
                   {langInputs.length > 0 ?
                     langInputs.map((lang, index) => (
@@ -406,7 +406,7 @@ const DiverInfoPage = () => {
                           value={langInputs[0]}
                           onChange={(e) => {if (editing === 'languages') handleInputChange(e)}}
                           disabled={editing !== 'languages' || isPending}
-                          className={`${editing === 'languages' ? 'bg-lightBlue dark:text-baseBlack w-full' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-48'} dark:text-baseBlack focus:outline-none px-2 py-1 mb-1 rounded-sm`}
+                          className={`${editing === 'languages' ? 'bg-lightBlue dark:text-baseBlack' : 'bg-baseWhite dark:bg-baseBlack dark:text-baseWhite w-44'} dark:text-baseBlack focus:outline-none px-2 py-1 mb-1 rounded-sm`}
                         />
                         <div className={`${editing === 'languages' ? 'flex' : 'hidden'} `}>
                           <RxCross2
@@ -424,7 +424,7 @@ const DiverInfoPage = () => {
                 </div>
               </div>
 
-              <div className='mt-1 md:mt-0 md:ml-2 text-right flex md:flex-col'>
+              <div className='mt-1 md:mt-0 text-right flex md:flex-col'>
                 { editing === 'languages' ? (
                   <>
                     <button
