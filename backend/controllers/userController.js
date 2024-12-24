@@ -400,42 +400,55 @@ const getUserById = async(req, res) => {
   }
 }
 
-// @desc Get user by name
-// @route PUT /api/users/find/:name
+// @desc Find users with keywords and/or follow status
+// @route PUT /api/users/find/:status/:keyword
 // @access Public
-const getUsersByName = async(req, res) => {
-  const users = await prisma.user.findMany({
-    where: {
-      OR: [
+const findUsers = async(req, res) => {
+  const keyword = req.params.keyword;
+  const status = req.params.status;
+  console.log('findUsers func', {keyword, status})
+
+  const conditions = {
+    select: {
+      id: true,
+      divlog_name  : true,
+      license_name : true,
+    },
+    orderBy: {
+      license_name: 'asc'
+    }
+  }
+
+  if (keyword) {
+    conditions.where = {
+      OR : [
         {
           divlog_name: {
-            contains: `${req.params.name}`,
+            contains: `${keyword}`,
             mode: 'insensitive',
           }
         },
         {
           license_name: {
-            contains: `${req.params.name}`,
+            contains: `${keyword}`,
             mode: 'insensitive',
           }
         },
       ]
-    },
-    select: {
-      id: true,
-      divlog_name  : true,
-      license_name : true,
-      certification: true,
-      cert_org_id  : true,
-    },
-    orderBy: {
-      divlog_name: 'asc'
     }
-  });
+  }
 
-  if (users) {
-    res.status(200).json(users);
-  } else {
+  try {
+    const users = await prisma.user.findMany(conditions);
+    if (users) {
+      res.status(200).json(users);
+    } else {
+      res.status(200).send({
+        message: 'No matching users found'
+      });
+    }
+  } catch (error) {
+    console.log('Error', error)
     res.status(400).send({
       message: 'Failed to find users'
     });
@@ -449,7 +462,7 @@ export {
   updateUser,
   getAllUsers,
   getUserById,
-  getUsersByName,
   getLoginUser,
   deleteUser,
+  findUsers,
 }
