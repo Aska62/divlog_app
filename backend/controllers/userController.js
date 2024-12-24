@@ -414,9 +414,14 @@ const findUsers = async(req, res) => {
       divlog_name  : true,
       license_name : true,
     },
-    orderBy: {
-      license_name: 'asc'
-    }
+    orderBy: [
+      {
+        license_name: 'asc',
+      },
+      {
+        divlog_name: 'asc'
+      }
+    ]
   }
 
   if (keyword) {
