@@ -2,9 +2,8 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
-import axios from "axios";
 import { isDiveRecordHighlightArray, DiveRecordHighlight } from '@/types/diveRecordTypes';
-import isObjectEmpty from "@/utils/isObjectEmpty";
+import { findMyDiveRecords } from '@/actions/diveRecord/findMyDiveRecords';
 import Heading from "@/components/Heading";
 import LogCard from "@/components/log/LogCard";
 import AddNewLogBtn from "@/components/log/AddNewLogBtn";
@@ -47,23 +46,12 @@ const LogBokPage = () => {
       const country = searchParams.get('country')?.toString();
       const status = searchParams.get('status')?.toString();
 
-      const params = {
-        dateFrom,
-        dateTo,
-        logNoFrom,
-        logNoTo,
-        country,
-        status,
-      }
+      const record = await findMyDiveRecords({dateFrom, dateTo, logNoFrom, logNoTo, country, status})
 
-      const conditions = isObjectEmpty(params) ?  { withCredentials: true } :  { params, withCredentials: true }
-
-      const logRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/search`,
-        conditions
-      );
-
-      if (isDiveRecordHighlightArray(logRes.data)) {
-        setDiveRecords(logRes.data);
+      if (isDiveRecordHighlightArray(record)) {
+        setDiveRecords(record);
+      } else {
+        setDiveRecords([])
       }
     }
 
