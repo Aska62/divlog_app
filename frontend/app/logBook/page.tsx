@@ -16,83 +16,20 @@ const LogBokPage = () => {
   const router = useRouter();
 
   const [diveRecords, setDiveRecords] = useState<[DiveRecordHighlight?]>([]);
-
-  // Date: from
-  const handleDateFromChange = useDebouncedCallback((val: string): void => {
+  // TODO:test
+  const handleInputChange = useDebouncedCallback((e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const params = new URLSearchParams(searchParams);
+    const { name, value } = e.target;
 
-    if (val) {
-      params.set('dateFrom', val);
-    } else {
-      params.delete('dateFrom');
+    if (name) {
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+
+      router.replace(`${pathName}/?${params.toString()}`);
     }
-
-    router.replace(`${pathName}/?${params.toString()}`);
-  }, 300);
-
-  // Date: to
-  const handleDateToChange = useDebouncedCallback((val: string): void => {
-    const params = new URLSearchParams(searchParams);
-
-    if (val) {
-      params.set('dateTo', val);
-    } else {
-      params.delete('dateTo');
-    }
-
-    router.replace(`${pathName}/?${params.toString()}`);
-  }, 300);
-
-   // Log no: from
-  const handleLogNoFromChange = useDebouncedCallback((val: string): void => {
-    const params = new URLSearchParams(searchParams);
-
-    if (val) {
-      params.set('logNoFrom', val);
-    } else {
-      params.delete('logNoFrom');
-    }
-
-    router.replace(`${pathName}/?${params.toString()}`);
-  }, 300);
-
-  // Log no: to
-  const handleLogNoToChange = useDebouncedCallback((val: string): void => {
-    const params = new URLSearchParams(searchParams);
-
-    if (val) {
-      params.set('logNoTo', val);
-    } else {
-      params.delete('logNoTo');
-    }
-
-    router.replace(`${pathName}/?${params.toString()}`);
-  }, 300);
-
-  // Country
-  const handleCountryChange = useDebouncedCallback((val: string): void => {
-    const params = new URLSearchParams(searchParams);
-
-    if (val) {
-      params.set('country', String(val));
-    } else {
-      params.delete('country');
-    }
-
-    router.replace(`${pathName}/?${params.toString()}`);
-  }, 300);
-
-  // Status
-  const handleStatusChange = useDebouncedCallback((val: string): void => {
-    const params = new URLSearchParams(searchParams);
-
-    if (val) {
-      params.set('status', String(val));
-    } else {
-      params.delete('status');
-    }
-
-    router.replace(`${pathName}/?${params.toString()}`);
   }, 300);
 
   // Clear
@@ -152,7 +89,7 @@ const LogBokPage = () => {
                 name="dateFrom"
                 placeholder="Date"
                 className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
-                onChange={(e) => handleDateFromChange(e.target.value)}
+                onChange={(e) => handleInputChange(e)}
                 defaultValue={searchParams.get('dateFrom')?.toString()}
               />
             </div>
@@ -163,7 +100,7 @@ const LogBokPage = () => {
                 name="dateTo"
                 placeholder="Date"
                 className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
-                onChange={(e) => handleDateToChange(e.target.value)}
+                onChange={(e) => handleInputChange(e)}
                 defaultValue={searchParams.get('dateTo')?.toString()}
               />
             </div>
@@ -181,7 +118,7 @@ const LogBokPage = () => {
                 name="logNoFrom"
                 placeholder="Log no."
                 className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
-                onChange={(e) => handleLogNoFromChange(e.target.value)}
+                onChange={(e) => handleInputChange(e)}
                 defaultValue={searchParams.get('logNoFrom')?.toString()}
               />
             </div>
@@ -192,7 +129,7 @@ const LogBokPage = () => {
                 name="logNoTo"
                 placeholder="Log no."
                 className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
-                onChange={(e) => handleLogNoToChange(e.target.value)}
+                onChange={(e) => handleInputChange(e)}
                 defaultValue={searchParams.get('logNoTo')?.toString()}
               />
             </div>
@@ -204,7 +141,7 @@ const LogBokPage = () => {
           <select
             name="country"
             className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 self-end md:ml-3 focus:outline-none"
-            onChange={(e) => handleCountryChange(e.target.value)}
+            onChange={(e) => handleInputChange(e)}
             defaultValue={searchParams.get('country')?.toString()}
           >
             <option value="">--- Please select ---</option>
@@ -222,7 +159,7 @@ const LogBokPage = () => {
                 name="status"
                 id="all"
                 value="1"
-                onChange={(e) => handleStatusChange(e.target.value)}
+                onChange={(e) => handleInputChange(e)}
                 checked={!searchParams.get('status') || searchParams.get('status')?.toString() === '1'}
               />
               <label htmlFor="all" className="ml-2">All</label>
@@ -233,7 +170,7 @@ const LogBokPage = () => {
                 name="status"
                 id="nonDraft"
                 value="2"
-                onChange={(e) => handleStatusChange(e.target.value)}
+                onChange={(e) => handleInputChange(e)}
                 checked={searchParams.get('status')?.toString() === '2'}
               />
               <label htmlFor="nonDraft" className="ml-2">Non-Draft</label>
@@ -244,7 +181,7 @@ const LogBokPage = () => {
                 name="status"
                 id="draft"
                 value="3"
-                onChange={(e) => handleStatusChange(e.target.value)}
+                onChange={(e) => handleInputChange(e)}
                 checked={searchParams.get('status')?.toString() === '3'}
               />
               <label htmlFor="draft" className="ml-2">Draft</label>
