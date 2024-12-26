@@ -41,7 +41,7 @@ const BuddyPage = () => {
     const { id, value } = e.target;
 
     if (value) {
-      params.set(id, String(value));
+      params.set(id, value);
     } else {
       params.delete(id);
     }
