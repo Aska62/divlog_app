@@ -68,6 +68,7 @@ const BuddyPage = () => {
             type="text"
             name="name"
             id="name"
+            defaultValue={searchParams.get('name') || ''}
             placeholder="Name"
             onChange={(e) => handleInputChange(e)}
             className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 px-1 self-end md:ml-3 focus:outline-none"

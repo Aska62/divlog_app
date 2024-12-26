@@ -19,7 +19,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.route('/logout').post(protect, logoutUser);
 router.route('/profile').get(protect, getLoginUser).put(protect, updateUser).delete(protect, deleteUser);
-router.route('/find/:status/:keyword?').get(findUsers);
+router.route('/find').get(findUsers);
 router.route('/:id').get(getUserById);
 
 export default router;

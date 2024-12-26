@@ -404,47 +404,45 @@ const getUserById = async(req, res) => {
 // @route PUT /api/users/find/:status/:keyword
 // @access Public
 const findUsers = async(req, res) => {
-  const keyword = req.params.keyword;
-  const status = req.params.status;
+  const { keyword, status } = req.query;
+
   console.log('findUsers func', {keyword, status})
 
-  const conditions = {
-    select: {
-      id: true,
-      divlog_name  : true,
-      license_name : true,
-    },
-    orderBy: [
+  const keywordCondition = keyword && keyword.length > 0 && {
+    OR : [
       {
-        license_name: 'asc',
+        divlog_name: {
+          contains: `${keyword}`,
+          mode: 'insensitive',
+        }
       },
       {
-        divlog_name: 'asc'
-      }
+        license_name: {
+          contains: `${keyword}`,
+          mode: 'insensitive',
+        }
+      },
     ]
   }
 
-  if (keyword) {
-    conditions.where = {
-      OR : [
-        {
-          divlog_name: {
-            contains: `${keyword}`,
-            mode: 'insensitive',
-          }
-        },
-        {
-          license_name: {
-            contains: `${keyword}`,
-            mode: 'insensitive',
-          }
-        },
-      ]
-    }
-  }
-
+  console.log('conditions', keywordCondition)
   try {
-    const users = await prisma.user.findMany(conditions);
+    const users = await prisma.user.findMany({
+      where: keywordCondition,
+      select: {
+        id: true,
+        divlog_name  : true,
+        license_name : true,
+      },
+      orderBy: [
+        {
+          license_name: 'asc',
+        },
+        {
+          divlog_name: 'asc'
+        }
+      ]
+    });
     if (users) {
       res.status(200).json(users);
     } else {

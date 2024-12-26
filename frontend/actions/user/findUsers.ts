@@ -13,7 +13,7 @@ export const isFindUsersParams = (value: unknown): value is FindUsersParams => {
     return false;
   }
 
-  return !!Object.entries(value).find(([i, val]) => !(
+  return !Object.entries(value).find(([i, val]) => !(
     (i === 'keyword' && isString(val))
     || (i === 'status' && [1, 2, 3].includes(val)))
   )
@@ -24,8 +24,16 @@ export type UserHighlight = Pick<UserType, 'id' | 'divlog_name' | 'license_name'
 export type FindUsersReturn = UserHighlight[]
 
 export async function findUsers({keyword, status}: FindUsersParams):Promise<FindUsersReturn | void> {
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/find/${status}/${keyword}`,
-    { withCredentials: true })
+
+  const params = {
+    keyword,
+    status,
+  }
+
+  const conditions = isObjectEmpty(params) ?  { withCredentials: true } :  { params, withCredentials: true }
+
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/find`,
+    conditions)
     .catch((error) => {
       console.log('Error fetching user data:', error)
     });
