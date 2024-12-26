@@ -12,7 +12,7 @@ const BuddyPage = () => {
   const router = useRouter();
 
   const [users, setUsers] = useState<FindUsersReturn>([]);
-  // TODO:test
+
   useEffect(() => {
     const getBuddies = async() => {
       const params = {
@@ -38,18 +38,18 @@ const BuddyPage = () => {
   //  Status
   const handleInputChange = useDebouncedCallback((e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const params = new URLSearchParams(searchParams);
-    const { id, value } = e.target;
+    const { name, value } = e.target;
 
     if (value) {
-      params.set(id, value);
+      params.set(name, value);
     } else {
-      params.delete(id);
+      params.delete(name);
     }
 
     router.replace(`${pathName}/?${params.toString()}`);
   }, 300);
 
-  // Clear
+  // Clear TODO:check
   const handleClear = (e:React.MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
     router.replace(`${pathName}`);
