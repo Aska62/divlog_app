@@ -402,13 +402,17 @@ const getUserById = async(req, res) => {
 
 // @desc Find users with keywords and/or follow status
 // @route PUT /api/users/find/:status/:keyword
-// @access Public
+// @access Private TODO:
 const findUsers = async(req, res) => {
   const { keyword, status } = req.query;
-
-  console.log('findUsers func', {keyword, status})
+  const userId = req.user.id
 
   const conditions = {
+    where: {
+      NOT: {
+        id: userId,
+      },
+    },
     select: {
       id: true,
       divlog_name  : true,
@@ -425,25 +429,38 @@ const findUsers = async(req, res) => {
   }
 
   if (keyword && keyword.length > 0) {
-    conditions.where = {
-      OR : [
-        {
-          divlog_name: {
-            contains: `${keyword}`,
-            mode: 'insensitive',
-          }
-        },
-        {
-          license_name: {
-            contains: `${keyword}`,
-            mode: 'insensitive',
-          }
-        },
-      ]
+    conditions.where.OR = [
+      {
+        divlog_name: {
+          contains: `${keyword}`,
+          mode: 'insensitive',
+        }
+      },
+      {
+        license_name: {
+          contains: `${keyword}`,
+          mode: 'insensitive',
+        }
+      },
+    ];
+  }
+
+  if (status === '2') {
+    // Those the user is following
+    conditions.where.followers = {
+      every: {
+        user_id: userId,
+      },
+    }
+  } else if (status === '3') {
+    // Followers of the user
+    conditions.where.following_users = {
+      every: {
+        following_user_id: userId,
+      },
     }
   }
 
-  console.log('conditions', conditions)
   try {
     const users = await prisma.user.findMany(conditions);
     if (users) {
