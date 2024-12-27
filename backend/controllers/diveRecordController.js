@@ -108,7 +108,6 @@ const getMyDiveRecordCount = asyncHandler(async (req, res) => {
 // @route GET /api/diveRecords
 // @access Private
 const getLastDiveRecord = asyncHandler(async (req, res) => {
-  console.log('getLastDiveRecord')
   try {
     const diveRecord = await prisma.diveRecord.findFirst({
       where: {
