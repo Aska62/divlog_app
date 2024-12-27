@@ -14,24 +14,28 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  divlog_name   String         @db.VarChar(20) @unique
-  license_name  String?        @db.VarChar(75)
-  email         String         @unique @db.VarChar(150)
-  password      String         @db.VarChar(150)
-  certification String?        @db.VarChar(75)
-  cert_org_id   Int?
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
+  id                 String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  divlog_name        String           @db.VarChar(20) @unique
+  license_name       String?          @db.VarChar(75)
+  email              String           @unique @db.VarChar(150)
+  password           String           @db.VarChar(150)
+  certification      String?          @db.VarChar(75)
+  cert_org_id        Int?
+  created_at         DateTime         @default(now())
+  updated_at         DateTime         @updatedAt
 
-  diver_info    DiverInfo?
-  organization  Organization?  @relation(fields: [cert_org_id], references: [id])
-  centers       CenterStaff[]
-  dive_records  DiveRecord[]   @relation("record_owner")
-  buddy_records DiveRecord[]   @relation("record_buddy")
-  supervisor_records DiveRecord[] @relation("record_supervisor")
+  diver_info         DiverInfo?
+  organization       Organization?    @relation(fields: [cert_org_id], references: [id])
+  centers            CenterStaff[]
+  dive_records       DiveRecord[]     @relation("record_owner")
+  buddy_records      DiveRecord[]     @relation("record_buddy")
+  supervisor_records DiveRecord[]     @relation("record_supervisor")
+  following_users    UserFollow[]     @relation("following")
+  followers          UserFollow[]     @relation("follower")
+  following_dcs      DiveCenterFollow[] @relation("dc_follower")
 
   @@map("users")
+  @@unique([divlog_name, email])
 }
 
 model DiverInfo {
@@ -63,8 +67,10 @@ model DiveCenter {
   organization    Organization @relation(fields: [organization_id], references: [id])
   center_staffs   CenterStaff[]
   dive_records    DiveRecord[]
+  following_dcs   DiveCenterFollow[] @relation("following_dc")
 
   @@map("dive_centers")
+  @@unique([name, country_id])
 }
 
 model Organization {
@@ -90,6 +96,7 @@ model CenterStaff {
   dive_center    DiveCenter @relation(fields: [dive_center_id], references: [id])
 
   @@map("center_staffs")
+  @@unique([user_id, dive_center_id])
 }
 
 model DivePurpose {
@@ -155,4 +162,32 @@ model DiveRecord {
   dive_center         DiveCenter?  @relation(fields: [dive_center_id], references: [id])
 
 	@@map("dive_records")
+}
+
+model UserFollow {
+  id                Int        @id @default(autoincrement())
+  user_id           String     @db.Uuid
+  following_user_id String     @db.Uuid
+  created_at        DateTime   @default(now())
+  updated_at        DateTime   @updatedAt
+
+  user              User       @relation("follower", fields: [user_id], references: [id])
+  following_user    User       @relation("following", fields: [following_user_id], references: [id])
+
+  @@map("user_follow")
+  @@unique([user_id, following_user_id])
+}
+
+model DiveCenterFollow {
+  id                Int        @id @default(autoincrement())
+  user_id           String     @db.Uuid
+  following_dc_id   String     @db.Uuid
+  created_at        DateTime   @default(now())
+  updated_at        DateTime   @updatedAt
+
+  follower          User       @relation("dc_follower", fields: [user_id], references: [id])
+  following_dc      DiveCenter @relation("following_dc", fields: [following_dc_id], references: [id])
+
+  @@map("dive_center_follow")
+  @@unique([user_id, following_dc_id])
 }

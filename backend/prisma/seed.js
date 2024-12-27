@@ -576,6 +576,59 @@ async function main() {
     skipDuplicates: true,
   });
 
+  const askaFollowJohn = {
+    user_id: aska.id,
+    following_user_id: john.id
+  }
+
+  const marissaFollowAska = {
+    user_id: marissa.id,
+    following_user_id: aska.id
+  }
+
+  const askaFollowBrad = {
+    user_id: aska.id,
+    following_user_id: brad.id
+  }
+
+  const bradFollowAska = {
+    user_id: brad.id,
+    following_user_id: aska.id
+  }
+
+  const bradFollowJohn = {
+    user_id: brad.id,
+    following_user_id: john.id
+  }
+
+  const createdUserFollows = await prisma.userFollow.createMany({
+    data: [
+      askaFollowJohn,
+      marissaFollowAska,
+      askaFollowBrad,
+      bradFollowAska,
+      bradFollowJohn,
+    ],
+    skipDuplicates: true,
+  });
+
+  const askaFollowDivlogDivers = {
+    user_id: aska.id,
+    following_dc_id: divlogDivers.id,
+  }
+
+  const askaFollowDdDiveCenter = {
+    user_id: aska.id,
+    following_dc_id: ddDiveCenter.id,
+  }
+
+  const createdDcFollows = await prisma.diveCenterFollow.createMany({
+    data: [
+      askaFollowDivlogDivers,
+      askaFollowDdDiveCenter,
+    ],
+    skipDuplicates: true,
+  });
 }
 
 main()
