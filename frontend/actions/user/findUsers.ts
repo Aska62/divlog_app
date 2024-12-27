@@ -1,6 +1,6 @@
 import axios from "axios";
 import isObjectEmpty from "@/utils/isObjectEmpty";
-import isString from "@/utils/isString";
+import { isStringOrEmptyString } from "@/utils/isString";
 import { UserType } from "@/types/userTypes";
 
 type FindUsersParams = {
@@ -14,7 +14,7 @@ export const isFindUsersParams = (value: unknown): value is FindUsersParams => {
   }
 
   return !Object.entries(value).find(([i, val]) => !(
-    (i === 'keyword' && isString(val))
+    (i === 'keyword' && isStringOrEmptyString(val))
     || (i === 'status' && [1, 2, 3].includes(val)))
   )
 }

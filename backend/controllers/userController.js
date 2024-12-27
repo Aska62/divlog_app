@@ -408,41 +408,44 @@ const findUsers = async(req, res) => {
 
   console.log('findUsers func', {keyword, status})
 
-  const keywordCondition = keyword && keyword.length > 0 && {
-    OR : [
+  const conditions = {
+    select: {
+      id: true,
+      divlog_name  : true,
+      license_name : true,
+    },
+    orderBy: [
       {
-        divlog_name: {
-          contains: `${keyword}`,
-          mode: 'insensitive',
-        }
+        license_name: 'asc',
       },
       {
-        license_name: {
-          contains: `${keyword}`,
-          mode: 'insensitive',
-        }
-      },
+        divlog_name: 'asc'
+      }
     ]
   }
 
-  console.log('conditions', keywordCondition)
-  try {
-    const users = await prisma.user.findMany({
-      where: keywordCondition,
-      select: {
-        id: true,
-        divlog_name  : true,
-        license_name : true,
-      },
-      orderBy: [
+  if (keyword && keyword.length > 0) {
+    conditions.where = {
+      OR : [
         {
-          license_name: 'asc',
+          divlog_name: {
+            contains: `${keyword}`,
+            mode: 'insensitive',
+          }
         },
         {
-          divlog_name: 'asc'
-        }
+          license_name: {
+            contains: `${keyword}`,
+            mode: 'insensitive',
+          }
+        },
       ]
-    });
+    }
+  }
+
+  console.log('conditions', conditions)
+  try {
+    const users = await prisma.user.findMany(conditions);
     if (users) {
       res.status(200).json(users);
     } else {

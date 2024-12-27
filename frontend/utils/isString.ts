@@ -6,4 +6,8 @@ const isString = (val:unknown): val is string => {
   return true;
 }
 
+export const isStringOrEmptyString = (val:unknown): val is string => {
+  return typeof val === 'string';
+}
+
 export default isString;

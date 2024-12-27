@@ -110,7 +110,7 @@ const BuddyPage = () => {
                 onChange={(e) => handleInputChange(e)}
                 checked={searchParams.get('status')?.toString() === '3'}
               />
-              <label htmlFor="draft" className="ml-2">Followed</label>
+              <label htmlFor="followed" className="ml-2">Followed</label>
             </div>
           </div>
         </div>
