@@ -417,6 +417,22 @@ const findUsers = async(req, res) => {
       id: true,
       divlog_name  : true,
       license_name : true,
+      followers: { // the logged in user is followed
+        where: {
+          following_user_id: userId,
+        },
+        select: {
+          following_user_id: true,
+        }
+      },
+      following_users: { // the logged in user is following
+        where: {
+          user_id: userId,
+        },
+        select: {
+          user_id: true,
+        }
+      },
     },
     orderBy: [
       {
@@ -446,14 +462,14 @@ const findUsers = async(req, res) => {
   }
 
   if (status === '2') {
-    // Those the user is following
+    // Those the logged in user is following
     conditions.where.followers = {
       every: {
         user_id: userId,
       },
     }
   } else if (status === '3') {
-    // Followers of the user
+    // Those who follow the logged in user
     conditions.where.following_users = {
       every: {
         following_user_id: userId,
