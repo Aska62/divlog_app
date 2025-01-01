@@ -19,7 +19,12 @@ export const isFindUsersParams = (value: unknown): value is FindUsersParams => {
   )
 }
 
-export type UserHighlight = Pick<UserType, 'id' | 'divlog_name' | 'license_name'>
+export type UserHighlight = Pick<
+  UserType, 'id' | 'divlog_name' | 'license_name'
+> & {
+  followers: { following_user_id: string}[],
+  following_users: { user_id: string}[]
+}
 
 export type FindUsersReturn = UserHighlight[]
 

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
+import { RiUserFollowFill, RiUserFollowLine } from "react-icons/ri";
 import { findUsers, FindUsersReturn, isFindUsersParams } from "@/actions/user/findUsers";
 import Heading from "@/components/Heading";
 import BuddyCard from '@/components/buddies/BuddyCard';
@@ -76,10 +77,10 @@ const BuddyPage = () => {
         </div>
 
         {/* Follow status */}
-        <div className="w-full flex flex-col md:flex-row mb-4">
+        <div className="w-full flex flex-col md:flex-row md:justify-between mb-4">
           <p className="mr-12">Follow Status</p>
-          <div className="flex ">
-            <div className="mr-6">
+          <div className="flex items-center md:w-3/5 md:justify-between">
+            <div className="mr-3">
               <input
                 type="radio"
                 name="status"
@@ -88,9 +89,9 @@ const BuddyPage = () => {
                 onChange={(e) => handleInputChange(e)}
                 checked={!searchParams.get('status') || searchParams.get('status')?.toString() === '1'}
               />
-              <label htmlFor="all" className="ml-2">All</label>
+              <label htmlFor="all" className="ml-1">All</label>
             </div>
-            <div className="mr-6">
+            <div className="mr-3 flex">
               <input
                 type="radio"
                 name="status"
@@ -99,9 +100,11 @@ const BuddyPage = () => {
                 onChange={(e) => handleInputChange(e)}
                 checked={searchParams.get('status')?.toString() === '2'}
               />
-              <label htmlFor="nonDraft" className="ml-2">Following</label>
+              <label htmlFor="nonDraft" className="flex items-center">
+                <RiUserFollowFill />Following
+              </label>
             </div>
-            <div className="mr-6">
+            <div className="flex">
               <input
                 type="radio"
                 name="status"
@@ -110,7 +113,9 @@ const BuddyPage = () => {
                 onChange={(e) => handleInputChange(e)}
                 checked={searchParams.get('status')?.toString() === '3'}
               />
-              <label htmlFor="followed" className="ml-2">Followed</label>
+              <label htmlFor="followed" className="flex items-center">
+                <RiUserFollowLine />Followed
+              </label>
             </div>
           </div>
         </div>
