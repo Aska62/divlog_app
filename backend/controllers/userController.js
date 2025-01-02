@@ -415,14 +415,14 @@ const findUsers = async(req, res) => {
     },
     select: {
       id: true,
-      divlog_name  : true,
-      license_name : true,
+      divlog_name: true,
+      license_name: true,
       followers: { // the logged in user is followed
         where: {
           following_user_id: userId,
         },
         select: {
-          following_user_id: true,
+          id: true,
         }
       },
       following_users: { // the logged in user is following
@@ -430,7 +430,7 @@ const findUsers = async(req, res) => {
           user_id: userId,
         },
         select: {
-          user_id: true,
+          id: true,
         }
       },
     },
@@ -462,16 +462,16 @@ const findUsers = async(req, res) => {
   }
 
   if (status === '2') {
-    // Those the logged in user is following
-    conditions.where.followers = {
-      every: {
+    // Those who follow the logged in user
+    conditions.where.following_users = {
+      some: {
         user_id: userId,
       },
     }
   } else if (status === '3') {
-    // Those who follow the logged in user
-    conditions.where.following_users = {
-      every: {
+   // Those the logged in user is following
+    conditions.where.followers = {
+      some: {
         following_user_id: userId,
       },
     }
