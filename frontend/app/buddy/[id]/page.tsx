@@ -33,7 +33,12 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
   // TODO:
   const onFollowBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log('clicked')
+    console.log('follow clicked')
+  }
+
+  const onUnFollowBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log('unfollow clicked')
   }
 
   return (
@@ -76,17 +81,21 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
         </div>
       </div>
 
-      {!user.followed && (
-        <div className='w-8/12 md:w-1/3 max-w-md mx-auto'>
-          <button
-            type='button'
-            onClick={(e) => onFollowBtnClick(e)}
-            className='bg-darkBlue dark:bg-lightBlue hover:bg-darkBlueLight dark:hover:bg-lightBlue text-lightBlue dark:text-darkBlue dark:hover:text-darkBlueLight px-2 py-1 rounded-md'
-          >
-            Follow
-          </button>
-        </div>
-      )}
+      <div className='w-8/12 md:w-1/3 max-w-md mx-auto'>
+        <button
+          type='button'
+          onClick={(e) => {
+            if (user.followed) {
+              onUnFollowBtnClick(e);
+            } else {
+              onFollowBtnClick(e);
+            }
+          }}
+          className={`${user.followed ? 'bg-eyeCatchDark hover:bg-eyeCatch text-baseWhite' : 'bg-darkBlue dark:bg-lightBlue hover:bg-darkBlueLight dark:hover:bg-lightBlue text-lightBlue dark:text-darkBlue dark:hover:text-darkBlueLight'} px-2 py-1 rounded-md`}
+        >
+          {user.followed ? 'Unfollow' : 'Follow'}
+        </button>
+      </div>
     </>
   );
 }
