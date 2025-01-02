@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware'
+import { persist } from 'zustand/middleware';
 
 export type UserInfo = {
   id?: string,
@@ -46,9 +46,9 @@ const useUser = create(
     (set) => ({
       isAuth: false,
       setIsAuth: () => {
-        const userSession =  localStorage.getItem('userInfo') || null;
+        const userSession = localStorage.getItem('userInfo');
         set({ isAuth: !!userSession });
-      }
+      },
     }),
     {
       name: 'userAuthStatus',

@@ -378,31 +378,64 @@ const getAllUsers = async(req, res) => {
 // @route PUT /api/users/:id
 // @access Public
 const getUserById = async(req, res) => {
+  const { loginUser } = req.query;
+
+  const include = {
+    organization: {
+      select: {
+        id: true,
+        name: true,
+      }
+    }
+  }
+
+  if (!!loginUser) {
+    include.followers = {
+      where: {
+        following_user_id: loginUser,
+      },
+      select: {
+        id: true,
+      },
+    }
+
+    include.following_users = {
+      where: {
+        user_id: loginUser,
+      },
+      select: {
+        id: true,
+      }
+    }
+  }
+
   const user = await prisma.user.findUnique({
     where: {
       id: req.params.id
     },
-    select: {
-      id: true,
-      divlog_name  : true,
-      license_name : true,
-      certification: true,
-      cert_org_id  : true,
-    },
+    include: include,
   });
 
   if (user) {
-    res.status(200).json(user);
-  } else {
-    res.status(400).send({
-      message: 'Failed to find the user'
+    res.status(200).json({
+      id           : user.id,
+      divlog_name  : user.divlog_name,
+      license_name : user.license_name,
+      email        : user.email,
+      certification: user.certification,
+      cert_org_id  : user.cert_org_id,
+      organization : user.organization,
+      following: user.followers?.length > 0,
+      followed: user.following_users?.length > 0,
     });
+  } else {
+    res.status(400).send('Failed to find user info');
   }
 }
 
 // @desc Find users with keywords and/or follow status
 // @route PUT /api/users/find/:status/:keyword
-// @access Private TODO:
+// @access Private
 const findUsers = async(req, res) => {
   const { keyword, status } = req.query;
   const userId = req.user.id
