@@ -45,9 +45,28 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
     <>
       <Heading pageTitle="Buddy's Profile" />
       <div className="w-8/12 md:w-1/3 max-w-md h-fit mx-auto mt-6 mb-12">
-        <div className="w-12 flex justify-around ml-auto mr-0">
-          {user.followed && <FollowIcon status={statusFollowing} />}
-          {user.following && <FollowIcon status={statusFollowed} />}
+
+        <div className='mb-6 flex flex-col items-end'>
+          {/* Follow icons */}
+          <div className="w-12 flex justify-around ml-auto mr-0 mb-3">
+            {user.followed && <FollowIcon status={statusFollowing} />}
+            {user.following && <FollowIcon status={statusFollowed} />}
+          </div>
+
+          {/* Follow/unfollow button */}
+          <button
+            type='button'
+            onClick={(e) => {
+              if (user.followed) {
+                onUnFollowBtnClick(e);
+              } else {
+                onFollowBtnClick(e);
+              }
+            }}
+            className={`${user.followed ? 'bg-eyeCatchDark hover:bg-eyeCatch text-baseWhite' : 'bg-darkBlue dark:bg-lightBlue hover:bg-darkBlueLight dark:hover:bg-lightBlue text-lightBlue dark:text-darkBlue dark:hover:text-darkBlueLight'} h-8 w-20 px-2 py-1 rounded-md`}
+          >
+            {user.followed ? 'Unfollow' : 'Follow'}
+          </button>
         </div>
 
         {/* User name */}
@@ -81,21 +100,6 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
         </div>
       </div>
 
-      <div className='w-8/12 md:w-1/3 max-w-md mx-auto'>
-        <button
-          type='button'
-          onClick={(e) => {
-            if (user.followed) {
-              onUnFollowBtnClick(e);
-            } else {
-              onFollowBtnClick(e);
-            }
-          }}
-          className={`${user.followed ? 'bg-eyeCatchDark hover:bg-eyeCatch text-baseWhite' : 'bg-darkBlue dark:bg-lightBlue hover:bg-darkBlueLight dark:hover:bg-lightBlue text-lightBlue dark:text-darkBlue dark:hover:text-darkBlueLight'} px-2 py-1 rounded-md`}
-        >
-          {user.followed ? 'Unfollow' : 'Follow'}
-        </button>
-      </div>
     </>
   );
 }

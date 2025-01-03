@@ -17,20 +17,20 @@ const FollowIcon = ({status}: FollowIconProps) => {
       <div
         onMouseOver={() => setShowTooltip(true)}
         onMouseOut={() => setShowTooltip(false)}
-        className={`h-12 w-6 flex flex-col text-sm ${status === statusFollowing ? 'items-end' : 'items-start'}`}
+        className={`h-12 w-6 flex flex-col-reverse text-sm ${status === statusFollowing ? 'items-end' : 'items-start'}`}
       >
         { status === statusFollowing ?
           <RiUserFollowFill
-            className='h-5 w-5' />
+          className='h-5 w-5' />
           : <RiUserFollowLine className='h-5 w-5' />
         }
 
-      {showTooltip && (
-        <div
-          className='shadow-dl px-2 py-1 rounded-md'>
-          <p>{status === statusFollowing ? 'Following' : 'Followed'}</p>
-        </div>
-      )}
+        {showTooltip && (
+          <div
+            className='shadow-dl px-2 py-1 rounded-md'>
+            <p>{status === statusFollowing ? 'Following' : 'Followed'}</p>
+          </div>
+        )}
       </div>
     </>
   )
