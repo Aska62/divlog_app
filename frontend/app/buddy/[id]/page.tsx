@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { UUID } from 'crypto';
 import { toast } from 'react-toastify';
+import isObjectEmpty from "@/utils/isObjectEmpty";
 import { getBuddyProfile, GetBuddyProfileReturn } from '@/actions/user/getBuddyProfile';
 import followUser from '@/actions/userFollow/followUser';
 import unfollowUser from '@/actions/userFollow/unfollowUser';
@@ -30,21 +31,25 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
         loggedInUserId: loggedInUserId,
       }
 
-      const user = await getBuddyProfile(funcParams);
-      if (user) {
-        setUser(user);
+      const userData = await getBuddyProfile(funcParams);
+      if (userData) {
+        setUser(userData);
       }
     }
-    getUser();
-  }, [params, loggedInUserId]);
+
+    if (isObjectEmpty(user)) {
+      getUser();
+    }
+  }, [params, loggedInUserId, user]);
 
   const onFollowBtnClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
     if (user.id) {
       try {
         const res = await followUser({targetUserId: user.id});
         if (res.data) {
-          setUser({...user, ...{following: true}});
+          setUser({...user, ...{followed: true}});
         } else {
           console.log('Error while trying to follow:', res.message);
         }
@@ -57,11 +62,12 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
 
   const onUnFollowBtnClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
     if (user.id) {
       try {
         const res = await unfollowUser({targetUserId: user.id});
         if (res.data) {
-          setUser({...user, ...{following: false}});
+          setUser({...user, ...{followed: false}});
         } else {
           console.log('Error while trying to unfollow:', res.message)
         }
