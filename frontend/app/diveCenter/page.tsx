@@ -8,6 +8,7 @@ import { findDiveCenters , findDiveCentersReturn, isFindDiveCentersParams } from
 import Heading from "@/components/Heading";
 import CountryOptions from '@/components/CountryOptions';
 import OrganizationOptions from '@/components/OrganizationOptions';
+import DiveCenterCard from '@/components/diveCenter/DiveCenterCard';
 
 const DiveCenterListPage = () => {
   const searchParams = useSearchParams();
@@ -156,17 +157,16 @@ const DiveCenterListPage = () => {
       </form>
 
 
-      <div>
+      <div className="flex flex-col items-center my-6">
         {isLoading ? (
           <p>Loading... </p>
         ) : diveCenters.length > 0 ? diveCenters.map((center) => {
           return (
-            <div key={center.id}>
-              {center.name}
-              {center.country}
-              {center.organization}
-              {center.is_following && <RiUserFollowFill />}
-            </div>
+            <DiveCenterCard
+              diveCenter={center}
+              my={6}
+              key={center.id}
+            />
           )
         }) : (
           <p>No matching center found</p>
