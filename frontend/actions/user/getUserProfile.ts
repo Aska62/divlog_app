@@ -3,10 +3,14 @@ import { UserType } from "@/types/userTypes";
 import { UUID } from "crypto";
 
 export type UserProfile = UserType & {
-  organization? : {
+  dive_centers: {
     id: UUID,
     name: string,
-  }
+  }[],
+  organization? : {
+    id: number,
+    name: string,
+  },
 }
 
 export async function getUserProfile():Promise<UserProfile | void> {

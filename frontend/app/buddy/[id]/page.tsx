@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { UUID } from 'crypto';
 import { toast } from 'react-toastify';
 import isObjectEmpty from "@/utils/isObjectEmpty";
@@ -135,6 +136,24 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
           <p className="text-sm mr-2">Certificate issuer: </p>
           <p className="text-lg">{user.organization?.name}</p>
         </div>
+
+        {/* Dive centers */}
+        {user.dive_centers && user.dive_centers.length > 0 && (
+          <div className="items-baseline mb-8">
+            <p className="text-sm mr-2">Works at:</p>
+            <div className='text-lg flex flex-col'>
+              {user.dive_centers?.map((center) => (
+                <Link
+                  href={`/diveCenter/${center.id}`}
+                  key={center.id}
+                  className='hover:text-eyeCatchDark'
+                >
+                  {center.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
     </>

@@ -166,6 +166,16 @@ const getLoginUser = asyncHandler(async(req, res) => {
           id: true,
           name: true,
         }
+      },
+      centers: {
+        select: {
+          dive_center: {
+            select: {
+              id: true,
+              name: true,
+            }
+          }
+        }
       }
     }
   });
@@ -179,6 +189,7 @@ const getLoginUser = asyncHandler(async(req, res) => {
       certification: user.certification,
       cert_org_id  : user.cert_org_id,
       organization : user.organization,
+      dive_centers : user.centers.map((center) => center.dive_center),
     });
   } else {
     res.status(400).send('Failed to find user info');
@@ -386,6 +397,16 @@ const getUserById = async(req, res) => {
         id: true,
         name: true,
       }
+    },
+    centers: {
+      select: {
+        dive_center: {
+          select: {
+            id: true,
+            name: true,
+          }
+        }
+      }
     }
   }
 
@@ -425,8 +446,9 @@ const getUserById = async(req, res) => {
       certification: user.certification,
       cert_org_id  : user.cert_org_id,
       organization : user.organization,
-      following: user.followers?.length > 0,
-      followed: user.following_users?.length > 0,
+      dive_centers : user.centers.map((center) => center.dive_center),
+      following    : user.followers?.length > 0,
+      followed     : user.following_users?.length > 0,
     });
   } else {
     res.status(400).send('Failed to find user info');
