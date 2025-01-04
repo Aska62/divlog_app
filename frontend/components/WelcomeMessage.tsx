@@ -13,7 +13,7 @@ const WelcomeMessage = () => {
   useEffect(() => {
     const getLogData = async() => {
       const countRes = await getRecordCount();
-      console.log('fetchd data:', countRes)
+
       if (countRes) {
         setLogCount(countRes.total);
       } else {
