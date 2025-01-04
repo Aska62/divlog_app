@@ -10,6 +10,7 @@ export type DiveCenter = {
   country       : string,
   organization  : string,
   staffs        : UserType,
+  is_following   : boolean,
 }
 
 export type DiveCenterHighLight = Exclude<DiveCenter, 'staffs'>;

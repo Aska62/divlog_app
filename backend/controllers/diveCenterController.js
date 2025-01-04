@@ -42,7 +42,6 @@ const getDiveCentersByName = async(req, res) => {
 // @route PUT /api/diveCenters/find
 // @access Private
 const findDiveCenters = async(req, res) => {
-  console.log('findDiveCenters', req.query);
   const { keyword, country, organization, status } = req.query;
   const userId = req.user.id
 
@@ -61,6 +60,14 @@ const findDiveCenters = async(req, res) => {
           name: true,
         },
       },
+      following_dcs: {
+        where: {
+          user_id: userId,
+        },
+        select: {
+          id: true,
+        }
+      }
     },
     orderBy: [
       {
@@ -84,21 +91,13 @@ const findDiveCenters = async(req, res) => {
     conditions.where.organization_id = Number(organization);
   }
 
-  // if (status === '2') {
-  //   // Those who follow the logged in user
-  //   conditions.where.following_users = {
-  //     some: {
-  //       user_id: userId,
-  //     },
-  //   }
-  // } else if (status === '3') {
-  //  // Those the logged in user is following
-  //   conditions.where.followers = {
-  //     some: {
-  //       following_user_id: userId,
-  //     },
-  //   }
-  // }
+  if (status === '2') {
+    conditions.where.following_dcs = {
+      some: {
+        user_id: userId,
+      },
+    }
+  }
 
   try {
     const diveCenters = await prisma.diveCenter.findMany(conditions);
@@ -109,6 +108,7 @@ const findDiveCenters = async(req, res) => {
           name        : center.name,
           country     : center.country.name,
           organization: center.organization.name,
+          is_following: center.following_dcs.length > 0,
         }
       }));
     } else {

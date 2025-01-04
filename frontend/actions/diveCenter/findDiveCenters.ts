@@ -7,7 +7,7 @@ type findDiveCentersParams = {
   keyword     : string,
   country     : number | '',
   organization: number | '',
-  status      : 1 | 2 | 3,
+  status      : 1 | 2,
 }
 
 export const isFindDiveCentersParams = (val:unknown): val is findDiveCentersParams => {

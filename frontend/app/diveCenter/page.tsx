@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { RiUserFollowFill, RiUserFollowLine } from "react-icons/ri";
+import { RiUserFollowFill } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { useDebouncedCallback } from 'use-debounce';
 import { findDiveCenters , findDiveCentersReturn, isFindDiveCentersParams } from '@/actions/diveCenter/findDiveCenters';
@@ -144,19 +144,6 @@ const DiveCenterListPage = () => {
                 <RiUserFollowFill />Following
               </label>
             </div>
-            <div className="flex">
-              <input
-                type="radio"
-                name="status"
-                id="followed"
-                value="3"
-                onChange={(e) => handleInputChange(e)}
-                checked={searchParams.get('status')?.toString() === '3'}
-              />
-              <label htmlFor="followed" className="flex items-center">
-                <RiUserFollowLine />Followed
-              </label>
-            </div>
           </div>
         </div>
 
@@ -178,6 +165,7 @@ const DiveCenterListPage = () => {
               {center.name}
               {center.country}
               {center.organization}
+              {center.is_following && <RiUserFollowFill />}
             </div>
           )
         }) : (
