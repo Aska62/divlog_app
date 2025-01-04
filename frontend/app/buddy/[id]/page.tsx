@@ -4,9 +4,9 @@ import { UUID } from 'crypto';
 import { toast } from 'react-toastify';
 import { getBuddyProfile, GetBuddyProfileReturn } from '@/actions/user/getBuddyProfile';
 import followUser from '@/actions/userFollow/followUser';
+import unfollowUser from '@/actions/userFollow/unfollowUser';
 import Heading from "@/components/Heading";
 import FollowIcon, { statusFollowing, statusFollowed } from '@/components/buddies/FollowIcon';
-import { revalidatePath } from 'next/cache';
 
 type BuddyPageParams = {
   params: Promise<{ id: UUID }>
@@ -44,10 +44,9 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
       try {
         const res = await followUser({targetUserId: user.id});
         if (res.data) {
-          revalidatePath(`/buddy/${res.data.following_user_id}`);
-          toast.success(`You are now following ${user.divlog_name}`);
+          setUser({...user, ...{following: true}});
         } else {
-          console.log('Error while trying to follow:', res.message)
+          console.log('Error while trying to follow:', res.message);
         }
       } catch (error) {
         console.log('Error:', error)
@@ -56,9 +55,21 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
     }
   }
 
-  const onUnFollowBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onUnFollowBtnClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log('unfollow clicked')
+    if (user.id) {
+      try {
+        const res = await unfollowUser({targetUserId: user.id});
+        if (res.data) {
+          setUser({...user, ...{following: false}});
+        } else {
+          console.log('Error while trying to unfollow:', res.message)
+        }
+      } catch (error) {
+        console.log('Error:', error)
+        toast.error(`Failed to unfollow user ${user.divlog_name}`);
+      }
+    }
   }
 
   return (

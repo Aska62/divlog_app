@@ -58,6 +58,61 @@ const followUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc unfollow user
+// @route POST /api/userFollow/unfollow
+// @access Private
+const unfollowUser = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  if (!userId) {
+    res.status(400).send('User id not provided');
+    return;
+  }
+
+  const { targetUserId } = req.body;
+
+  // Check the target user exists
+  const targetUser = await prisma.user.findUnique({
+    where: {
+      id: targetUserId
+    }
+  });
+  if (!targetUser) {
+    res.status(400).send('Target user not found');
+    return;
+  }
+
+  // Check if the target user is not followed by logged in user
+  const followData = await prisma.userFollow.findFirst({
+    where: {
+      user_id: userId,
+      following_user_id: targetUserId
+    }
+  });
+  if (!followData) {
+    res.status(400).send('Not following the target user currently');
+    return;
+  }
+
+  try {
+    const unfollowed = await prisma.userFollow.delete({
+      where: {
+        id: followData.id
+      }
+    });
+
+    res.status(201).json({
+      user_id: unfollowed.user_id,
+      unfollowed_user_id: unfollowed.following_user_id
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+      error: error
+    });
+  }
+});
+
 export {
   followUser,
+  unfollowUser,
 }
