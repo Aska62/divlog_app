@@ -1,9 +1,10 @@
 import axios from "axios";
 import { UserType } from "@/types/userTypes";
+import { UUID } from "crypto";
 
 export type UserProfile = UserType & {
   organization? : {
-    id: number,
+    id: UUID,
     name: string,
   }
 }

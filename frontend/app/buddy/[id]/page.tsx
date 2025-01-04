@@ -1,9 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { UUID } from 'crypto';
+import { toast } from 'react-toastify';
 import { getBuddyProfile, GetBuddyProfileReturn } from '@/actions/user/getBuddyProfile';
+import followUser from '@/actions/userFollow/followUser';
 import Heading from "@/components/Heading";
 import FollowIcon, { statusFollowing, statusFollowed } from '@/components/buddies/FollowIcon';
+import { revalidatePath } from 'next/cache';
 
 type BuddyPageParams = {
   params: Promise<{ id: UUID }>
@@ -11,16 +14,20 @@ type BuddyPageParams = {
 
 const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
 
-  const userInfo = localStorage.getItem('userInfo');
-  const userId = userInfo ? JSON.parse(userInfo).id : null;
+  const [loggedInUserId, setLoggedInUserId] = useState<UUID | null>(null);
   const [user, setUser] = useState<Partial<GetBuddyProfileReturn>>({});
+
+  useEffect(() => {
+    const userInfo = window.localStorage.getItem('userInfo');
+    setLoggedInUserId(userInfo ? JSON.parse(userInfo).id : null);
+  }, []);
 
   useEffect(() => {
     const getUser = async() => {
       const { id } = await params;
       const funcParams = {
         id,
-        loggedInUserId: userId,
+        loggedInUserId: loggedInUserId,
       }
 
       const user = await getBuddyProfile(funcParams);
@@ -29,11 +36,24 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
       }
     }
     getUser();
-  }, [params, userId]);
-  // TODO:
-  const onFollowBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  }, [params, loggedInUserId]);
+
+  const onFollowBtnClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log('follow clicked')
+    if (user.id) {
+      try {
+        const res = await followUser({targetUserId: user.id});
+        if (res.data) {
+          revalidatePath(`/buddy/${res.data.following_user_id}`);
+          toast.success(`You are now following ${user.divlog_name}`);
+        } else {
+          console.log('Error while trying to follow:', res.message)
+        }
+      } catch (error) {
+        console.log('Error:', error)
+        toast.error(`Failed to follow user ${user.divlog_name}`);
+      }
+    }
   }
 
   const onUnFollowBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
