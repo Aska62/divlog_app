@@ -174,6 +174,7 @@ const getDiveCenterById = async(req, res) => {
       country       : diveCenter.country.name,
       organization  : diveCenter.organization.name,
       staffs        : diveCenter.center_staffs.map((staff) => staff.user),
+      is_my_center  : !!diveCenter.center_staffs.find((staff) => staff.user.id === userId),
       follower_count: diveCenter.following_dcs.length,
       is_following  : !!diveCenter.following_dcs.find((f) => f.user_id === userId),
     });

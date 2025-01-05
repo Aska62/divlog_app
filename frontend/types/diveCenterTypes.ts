@@ -5,17 +5,18 @@ import isString from "@/utils/isString";
 import { UserType } from '@/types/userTypes';
 
 export type DiveCenter = {
-  id            : UUID,
-  name          : string,
-  country       : string,
-  organization  : string,
-  staffs        : {
+  id             : UUID,
+  name           : string,
+  country        : string,
+  organization   : string,
+  staffs         : {
     id: UUID,
-    divlog_name: string,
+    divlog_name  : string,
     license_name?: string,
   }[],
-  follower_count: number,
-  is_following  : boolean,
+  is_my_center   : boolean,
+  follower_count : number,
+  is_following   : boolean,
 }
 
 export type DiveCenterHighLight = Exclude<DiveCenter, 'staffs' | 'follower_count'>;
