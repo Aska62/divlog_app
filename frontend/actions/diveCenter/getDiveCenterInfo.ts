@@ -7,7 +7,6 @@ type GetDiveCenterInfoParams = {
 }
 
 export async function getDiveCenterInfo({diveCenterId}: GetDiveCenterInfoParams): Promise<DiveCenter | void> {
-  console.log('getDiveCenterInfo', diveCenterId)
   const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveCenters/${diveCenterId}`,
     {
       withCredentials: true
@@ -17,7 +16,6 @@ export async function getDiveCenterInfo({diveCenterId}: GetDiveCenterInfoParams)
     });
 
     if (res) {
-      console.log('res: ', res.data)
       return res.data;
     }
 }

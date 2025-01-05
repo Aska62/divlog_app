@@ -8,6 +8,6 @@ import { protect } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 router.route('/follow').post(protect, followUser);
-router.route('/unfollow').post(protect, unfollowUser);
+router.route('/unfollow').delete(protect, unfollowUser);
 
 export default router;
