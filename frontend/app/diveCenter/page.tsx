@@ -17,10 +17,12 @@ const DiveCenterListPage = () => {
 
   const [diveCenters, setDiveCenters] = useState<findDiveCentersReturn>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [name, setName] = useState<string>(searchParams.get('name') || '');
+  const [country, setCountry] = useState<string>(searchParams.get('country') || '');
+  const [organization, setOrganization] = useState<string>(searchParams.get('organization') || '');
 
-  const handleInputChange = useDebouncedCallback((e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+  const updateQueryParams = useDebouncedCallback(({name, value}: {name: string, value: string}) => {
     const params = new URLSearchParams(searchParams);
-    const { name, value } = e.target;
 
     if (value) {
       params.set(name, value);
@@ -31,12 +33,35 @@ const DiveCenterListPage = () => {
     router.replace(`${pathName}/?${params.toString()}`);
   }, 300);
 
-  // Clear TODO:check
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+    switch (name) {
+      case 'name':
+        console.log('name')
+        setName(value);
+        break;
+      case 'country':
+        console.log('country')
+        setCountry(value);
+        break;
+      case 'organization':
+        console.log('org')
+        setOrganization(value);
+        break;
+    }
+
+    updateQueryParams({name, value});
+  };
+
+  // Clear
   const handleClear = (e:React.MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
     router.replace(`${pathName}`);
+    setName('');
+    setCountry('');
+    setOrganization('');
   }
-
 
   useEffect(() => {
     const getDiveCenters = async() => {
@@ -69,6 +94,12 @@ const DiveCenterListPage = () => {
     getDiveCenters();
   }, [searchParams]);
 
+  useEffect(() => {
+    setName(searchParams.get('name') || '');
+    setCountry(searchParams.get('country') || '');
+    setOrganization(searchParams.get('organization') || '');
+  }, [searchParams]);
+
   return (
     <>
       <Heading pageTitle="Dive Centers" />
@@ -82,7 +113,7 @@ const DiveCenterListPage = () => {
             type="text"
             name="name"
             id="name"
-            defaultValue={searchParams.get('name') || ''}
+            value={name}
             placeholder="Name"
             onChange={(e) => handleInputChange(e)}
             className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 px-1 self-end md:ml-3 focus:outline-none"
@@ -96,7 +127,7 @@ const DiveCenterListPage = () => {
             name="country"
             className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 px-1 self-end md:ml-3 focus:outline-none"
             onChange={(e) => handleInputChange(e)}
-            defaultValue={searchParams.get('country')?.toString()}
+            value={country}
           >
             <option value="">--- Please select ---</option>
             <CountryOptions />
@@ -110,7 +141,7 @@ const DiveCenterListPage = () => {
             name="organization"
             className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 px-1 self-end md:ml-3 focus:outline-none"
             onChange={(e) => handleInputChange(e)}
-            defaultValue={searchParams.get('organization')?.toString()}
+            value={organization}
           >
             <option value="">--- Please select ---</option>
             <OrganizationOptions />

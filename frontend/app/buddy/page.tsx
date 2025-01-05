@@ -13,6 +13,7 @@ const BuddyPage = () => {
   const router = useRouter();
 
   const [users, setUsers] = useState<FindUsersReturn>([]);
+  const [name, setName] = useState<string>(searchParams.get('name') || '');
 
   useEffect(() => {
     const getBuddies = async() => {
@@ -36,10 +37,12 @@ const BuddyPage = () => {
     getBuddies();
   }, [searchParams]);
 
-  //  Status
-  const handleInputChange = useDebouncedCallback((e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+  useEffect(() => {
+    setName(searchParams.get('name') || '');
+  }, [searchParams]);
+
+  const updateQueryParams = useDebouncedCallback(({name, value}: {name: string, value: string}) => {
     const params = new URLSearchParams(searchParams);
-    const { name, value } = e.target;
 
     if (value) {
       params.set(name, value);
@@ -50,10 +53,22 @@ const BuddyPage = () => {
     router.replace(`${pathName}/?${params.toString()}`);
   }, 300);
 
-  // Clear TODO:check
+  //  Status
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target;
+
+    if (name === 'name') {
+      setName(value);
+    }
+
+    updateQueryParams({name, value});
+  };
+
+  // Clear search conditions
   const handleClear = (e:React.MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
     router.replace(`${pathName}`);
+    setName('');
   }
 
   return (
@@ -69,7 +84,7 @@ const BuddyPage = () => {
             type="text"
             name="name"
             id="name"
-            defaultValue={searchParams.get('name') || ''}
+            value={name}
             placeholder="Name"
             onChange={(e) => handleInputChange(e)}
             className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 px-1 self-end md:ml-3 focus:outline-none"
