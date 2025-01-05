@@ -124,7 +124,66 @@ const findDiveCenters = async(req, res) => {
   }
 }
 
+
+// @desc Get dive center by id
+// @route PUT /api/diveCenter/:id
+// @access Public
+const getDiveCenterById = async(req, res) => {
+  const userId = req.user.id;
+
+  const diveCenter = await prisma.diveCenter.findUnique({
+    where: {
+      id: req.params.id,
+    },
+    select: {
+      id: true,
+      name: true,
+      country: {
+        select: {
+          name: true,
+        },
+      },
+      organization: {
+        select: {
+          name: true,
+        },
+      },
+      center_staffs: {
+        select: {
+          user: {
+            select: {
+              id: true,
+              divlog_name: true,
+              license_name: true,
+            }
+          }
+        }
+      },
+      following_dcs: {
+        select: {
+          user_id: true,
+        }
+      }
+    }
+  });
+
+  if (diveCenter) {
+    res.status(200).json({
+      id            : diveCenter.id,
+      name          : diveCenter.name,
+      country       : diveCenter.country.name,
+      organization  : diveCenter.organization.name,
+      staffs        : diveCenter.center_staffs.map((staff) => staff.user),
+      follower_count: diveCenter.following_dcs.length,
+      is_following  : !!diveCenter.following_dcs.find((f) => f.user_id === userId),
+    });
+  } else {
+    res.status(400).send('Failed to find dive center info');
+  }
+}
+
 export {
   getDiveCentersByName,
   findDiveCenters,
+  getDiveCenterById,
 }

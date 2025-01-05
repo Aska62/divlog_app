@@ -9,11 +9,16 @@ export type DiveCenter = {
   name          : string,
   country       : string,
   organization  : string,
-  staffs        : UserType,
-  is_following   : boolean,
+  staffs        : {
+    id: UUID,
+    divlog_name: string,
+    license_name?: string,
+  }[],
+  follower_count: number,
+  is_following  : boolean,
 }
 
-export type DiveCenterHighLight = Exclude<DiveCenter, 'staffs'>;
+export type DiveCenterHighLight = Exclude<DiveCenter, 'staffs' | 'follower_count'>;
 
 export const isDiveCenterHighLight = (val:unknown): val is UserType => {
   if (!val || !isObject(val) || isObjectEmpty(val)) {
