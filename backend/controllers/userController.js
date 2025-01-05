@@ -176,6 +176,16 @@ const getLoginUser = asyncHandler(async(req, res) => {
             }
           }
         }
+      },
+      dive_records: {
+        select: {
+          id: true,
+        }
+      },
+      diver_info: {
+        select: {
+          norecord_dive_count: true,
+        }
       }
     }
   });
@@ -190,6 +200,7 @@ const getLoginUser = asyncHandler(async(req, res) => {
       cert_org_id  : user.cert_org_id,
       organization : user.organization,
       dive_centers : user.centers.map((center) => center.dive_center),
+      log_count    : user.dive_records.length + user.diver_info.norecord_dive_count,
     });
   } else {
     res.status(400).send('Failed to find user info');
@@ -407,6 +418,16 @@ const getUserById = async(req, res) => {
           }
         }
       }
+    },
+    dive_records: {
+      select: {
+        id: true,
+      }
+    },
+    diver_info: {
+      select: {
+        norecord_dive_count: true,
+      }
     }
   }
 
@@ -442,13 +463,13 @@ const getUserById = async(req, res) => {
       id           : user.id,
       divlog_name  : user.divlog_name,
       license_name : user.license_name,
-      email        : user.email,
       certification: user.certification,
       cert_org_id  : user.cert_org_id,
       organization : user.organization,
       dive_centers : user.centers.map((center) => center.dive_center),
-      following    : user.followers?.length > 0,
-      followed     : user.following_users?.length > 0,
+      is_followed  : user.followers?.length > 0,
+      is_following : user.following_users?.length > 0,
+      log_count    : user.dive_records.length + user.diver_info.norecord_dive_count,
     });
   } else {
     res.status(400).send('Failed to find user info');

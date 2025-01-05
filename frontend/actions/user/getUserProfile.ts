@@ -2,16 +2,18 @@ import axios from "axios";
 import { UserType } from "@/types/userTypes";
 import { UUID } from "crypto";
 
-export type UserProfile = UserType & {
-  dive_centers: {
-    id: UUID,
-    name: string,
-  }[],
-  organization? : {
-    id: number,
-    name: string,
-  },
-}
+export type UserProfile = UserType
+  & Record<'log_count', number>
+  & {
+    dive_centers: {
+      id: UUID,
+      name: string,
+    }[],
+    organization? : {
+      id: number,
+      name: string,
+    },
+  }
 
 export async function getUserProfile():Promise<UserProfile | void> {
 

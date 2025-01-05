@@ -7,9 +7,9 @@ type GetBuddyProfileParams = {
   loggedInUserId: UUID | null,
 }
 
-export type GetBuddyProfileReturn = UserProfile & Record<
-  'following' | 'followed', boolean
->
+export type GetBuddyProfileReturn = Exclude<UserProfile, 'email'> & Record<
+  'is_following' | 'is_followed', boolean
+>;
 
 export async function getBuddyProfile({id, loggedInUserId}: GetBuddyProfileParams): Promise<GetBuddyProfileReturn | void> {
 

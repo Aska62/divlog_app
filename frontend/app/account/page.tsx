@@ -40,6 +40,12 @@ const ProfilePage = () => {
           <p className="text-lg">{user.license_name}</p>
         </div>
 
+        {/* Number of dives */}
+        <div className="items-baseline mb-8">
+          <p className="text-sm mr-2">Total dives: </p>
+          <p className="text-lg">{user.log_count}</p>
+        </div>
+
         {/* Email */}
         <div className="items-baseline mb-8">
           <p className="text-sm mr-2">Email: </p>

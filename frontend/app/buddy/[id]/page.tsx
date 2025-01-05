@@ -87,23 +87,23 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
         <div className='mb-6 flex flex-col items-end'>
           {/* Follow icons */}
           <div className="w-12 flex justify-around ml-auto mr-0 mb-3">
-            {user.followed && <FollowIcon status={statusFollowing} />}
-            {user.following && <FollowIcon status={statusFollowed} />}
+            {user.is_following && <FollowIcon status={statusFollowing} />}
+            {user.is_followed && <FollowIcon status={statusFollowed} />}
           </div>
 
           {/* Follow/unfollow button */}
           <button
             type='button'
             onClick={(e) => {
-              if (user.followed) {
+              if (user.is_following) {
                 onUnFollowBtnClick(e);
               } else {
                 onFollowBtnClick(e);
               }
             }}
-            className={`${user.followed ? 'bg-eyeCatchDark hover:bg-eyeCatch text-baseWhite' : 'bg-darkBlue dark:bg-lightBlue hover:bg-darkBlueLight dark:hover:bg-lightBlue text-lightBlue dark:text-darkBlue dark:hover:text-darkBlueLight'} h-8 w-20 px-2 py-1 rounded-md`}
+            className={`${user.is_following ? 'bg-eyeCatchDark hover:bg-eyeCatch text-baseWhite' : 'bg-darkBlue dark:bg-lightBlue hover:bg-darkBlueLight dark:hover:bg-lightBlue text-lightBlue dark:text-darkBlue dark:hover:text-darkBlueLight'} h-8 w-20 px-2 py-1 rounded-md`}
           >
-            {user.followed ? 'Unfollow' : 'Follow'}
+            {user.is_following ? 'Unfollow' : 'Follow'}
           </button>
         </div>
 
@@ -119,10 +119,10 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
           <p className="text-lg">{user.license_name}</p>
         </div>
 
-        {/* Email */}
+        {/* Number of dives */}
         <div className="items-baseline mb-8">
-          <p className="text-sm mr-2">Email: </p>
-          <p className="text-lg">{user.email}</p>
+          <p className="text-sm mr-2">Total dives: </p>
+          <p className="text-lg">{user.log_count}</p>
         </div>
 
         {/* Certificate */}
