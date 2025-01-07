@@ -190,12 +190,14 @@ const LogBokPage = () => {
           diveRecords.map((record) => (
             <LogCard
               key={record.id}
+              user_id={record.user_id}
               id={record.id}
               log_no={record.log_no}
               date={record.date}
               location={record.location}
               is_draft={record.is_draft}
               country_name={record.country}
+              is_visitor={false}
             />
           )
         ) : (

@@ -2,10 +2,12 @@ import isObject from "@/utils/isObject";
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import isArray from "@/utils/isArray";
 import isString from "@/utils/isString";
+import { UUID } from "crypto";
 
 // Dive record highlight
 export type DiveRecordHighlight = {
   id                  : string,
+  user_id             : UUID,
   log_no?             : number,
   date                : Date,
   location?           : string,

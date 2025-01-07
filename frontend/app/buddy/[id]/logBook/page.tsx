@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { UUID } from "crypto";
 import { findBuddysDiveRecords, FindBuddysDiveRecordsArray, isFindBuddysDiveRecordsArray } from "@/actions/diveRecord/findBuddysDiveRecords";
 import Heading from "@/components/Heading";
+import LogCard from '@/components/log/LogCard';
 
 type BuddyDiveRecordListPageParams = {
   params: Promise<{ id: UUID }>
@@ -62,9 +63,20 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
             <p>Loading...</p>
           ) : record.length === 0 ? (
             <p>No dive record on DivLog</p>) : record.map((r) => (
-              <p key={r.id}>{r.log_no}</p>
-            )
-          )
+              <LogCard
+                key={r.id}
+                id={r.id}
+                user_id={r.user_id}
+                is_draft={false}
+                log_no={r.log_no}
+                date={r.date}
+                location={r.location}
+                country_name={r.country}
+                is_my_buddy_dive={r.is_my_buddy_dive}
+                is_my_instruction={r.is_my_instruction}
+                is_visitor={true}
+              />
+          ))
         }
       </div>
     </>

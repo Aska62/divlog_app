@@ -190,6 +190,7 @@ const searchMyDiveRecords = asyncHandler(async (req, res) => {
       where,
       select: {
         id: true,
+        user_id: true,
         log_no: true,
         date: true,
         location: true,
@@ -206,6 +207,7 @@ const searchMyDiveRecords = asyncHandler(async (req, res) => {
     const recordToReturn = diveRecords ? diveRecords.map((record) => {
       return {
         id      : record.id,
+        user_id : record.user_id,
         log_no  : record.log_no,
         date    : record.date,
         location: record.location,
@@ -700,6 +702,7 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
       where,
       select: {
         id: true,
+        user_id: true,
         log_no: true,
         date: true,
         location: true,
@@ -730,6 +733,7 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
     const record = fetchedRecord? fetchedRecord.map((record) => {
       return {
         id               : record.id,
+        user_id          : record.user_id,
         log_no           : record.log_no,
         date             : record.date,
         location         : record.location,

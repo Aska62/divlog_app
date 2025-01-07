@@ -14,9 +14,8 @@ type FindBuddysDiveRecordsPrams =
 
 type BuddyDiveRecordHighlight = Omit<
   DiveRecordHighlight,
-  'user_id' | 'country_id' | 'is_draft' | 'country'
+  'is_draft'
 > & {
-  country?         : string,
   is_my_buddy_dive : boolean,
   is_my_instruction: boolean,
 }
@@ -78,7 +77,7 @@ export async function findBuddysDiveRecords({
   try {
     const res = await axios.get<FindBuddysDiveRecordsArray>(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/view/${userId}`,
       conditions)
-      console.log(res.data)
+
       if (isFindBuddysDiveRecordsArray(res.data)) {
         return { data: res.data };
       } else {

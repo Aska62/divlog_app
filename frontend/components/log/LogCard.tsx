@@ -2,19 +2,32 @@ import Link from "next/link";
 import { DiveRecordHighlight } from '@/types/diveRecordTypes';
 import formatDate from '@/utils/dateTime/formatDate';
 
-type LogCardProps = {'country_name'?: string} & Pick<DiveRecordHighlight,
-  | 'id'
-  | 'log_no'
-  | 'date'
-  | 'location'
-  | 'is_draft'
->;
+type LogCardProps = Omit<DiveRecordHighlight,
+  | 'country'
+> & {
+  is_visitor: boolean,
+  country_name?: string,
+  is_draft?: boolean,
+  is_my_buddy_dive? : boolean,
+  is_my_instruction?: boolean,
+}
 
-const LogCard:React.FC<LogCardProps> = ({id, log_no, date, location, is_draft, country_name}) => {
+const LogCard:React.FC<LogCardProps> = ({
+  id,
+  log_no,
+  user_id,
+  date,
+  location,
+  is_draft,
+  country_name,
+  is_my_buddy_dive,
+  is_my_instruction,
+  is_visitor
+}) => {
 
   return (
     <Link
-      href={`/logBook/${id}`}
+      href={ is_visitor ? `/buddy/${user_id}/logBook/${id}` : `/logBook/${id}`}
       className="relative w-60 h-44 border  border-darkBlue dark:border-lightBlue rounded-md shadow-dl mx-6 my-8 text-center hover:bg-lightBlue dark:hover:bg-baseBlackLight duration-75"
     >
       {is_draft && (
