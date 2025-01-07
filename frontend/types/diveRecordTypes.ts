@@ -6,13 +6,11 @@ import isString from "@/utils/isString";
 // Dive record highlight
 export type DiveRecordHighlight = {
   id                  : string,
-  user_id             : string,
   log_no?             : number,
   date                : Date,
   location?           : string,
-  country_id?         : number,
   is_draft            : boolean,
-  country?            : { name: string },
+  country?            : string,
 }
 
 export const isDiveRecordHighlight = (val: unknown): val is DiveRecordHighlight => {
@@ -22,7 +20,6 @@ export const isDiveRecordHighlight = (val: unknown): val is DiveRecordHighlight 
 
   const mustKeys = [
     'id',
-    'user_id',
     'date',
     'is_draft',
   ];

@@ -185,28 +185,38 @@ const searchMyDiveRecords = asyncHandler(async (req, res) => {
     where.is_draft = true;
   }
 
-  const diveRecords = await prisma.diveRecord.findMany({
-    where,
-    select: {
-      id: true,
-      user_id: true,
-      log_no: true,
-      date: true,
-      location: true,
-      country_id: true,
-      is_draft: true,
-      country: {
-        select: { name: true },
+  try {
+    const diveRecords = await prisma.diveRecord.findMany({
+      where,
+      select: {
+        id: true,
+        log_no: true,
+        date: true,
+        location: true,
+        is_draft: true,
+        country: {
+          select: { name: true },
+        },
       },
-    },
-    orderBy: {
-      log_no: 'desc',
-    }
-  });
+      orderBy: {
+        log_no: 'desc',
+      }
+    });
 
-  if (diveRecords) {
-    res.status(200).json(diveRecords);
-  } else {
+    const recordToReturn = diveRecords ? diveRecords.map((record) => {
+      return {
+        id      : record.id,
+        log_no  : record.log_no,
+        date    : record.date,
+        location: record.location,
+        country : record.country.name,
+        is_draft: record.is_draft,
+      }
+    }) : [];
+
+    res.status(200).json(recordToReturn);
+  } catch (error) {
+    console.log('Error:', error);
     res.status(400).send('Failed to find dive records');
   }
 });
