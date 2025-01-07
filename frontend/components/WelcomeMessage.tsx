@@ -14,7 +14,7 @@ const WelcomeMessage = () => {
     const getLogData = async() => {
       const countRes = await getRecordCount();
 
-      if (countRes) {
+      if (countRes?.total) {
         setLogCount(countRes.total);
       } else {
         setLogCount(0);
