@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { z } from 'zod';
+import { record, z } from 'zod';
 import asyncHandler from "../middleware/asyncHandler.js";
 
 const prisma = new PrismaClient();
@@ -627,19 +627,160 @@ const deleteDiveRecord = asyncHandler(async (req, res) => {
   })
 });
 
-// @desc Get dive records by user id TODO:
+// @desc Find buddy's dive records TODO:
 // @route GET /api/diveRecords/view/:userId
-// @access Public
-const getDiveRecordsByUserId = asyncHandler(async (req, res) => {
-  res.status(200).send({
-    message: 'Reached to getDiveRecordsByUserId func'
-  })
+// @access Private
+const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
+  const loggedInUserId = req.user.id;
+  const {
+    dateFrom,
+    dateTo,
+    logNoFrom,
+    logNoTo,
+    country,
+    isMyBuddyDive,
+    isMyInstruction
+  } = req.query;
+
+  const where = {
+    user_id: req.params.userId,
+    is_draft: false,
+  };
+
+  const dateConditions = (dateFrom && dateTo) ? {
+      gte: new Date(dateFrom),
+      lte: new Date(dateTo)
+    }
+    : dateFrom ? { gte: new Date(dateFrom) }
+    : dateTo && { lte: new Date(dateTo) }
+
+  if (dateConditions) {
+    where.date = dateConditions;
+  }
+
+  const logNoConditions = (logNoFrom && logNoTo) ? {
+    gte: Number(logNoFrom),
+    lte: Number(logNoTo)
+  }
+  : logNoFrom ? { gte: Number(logNoFrom) }
+  : logNoTo && { lte: Number(logNoTo) }
+
+  if (logNoConditions) {
+    where.log_no = logNoConditions;
+  }
+
+  if (country) {
+    where.country_code = Number(country);
+  }
+
+  if (isMyBuddyDive) {
+    where.buddy = {
+      user_id: loggedInUserId,
+    };
+  }
+
+  if (isMyInstruction) {
+    where.supervisor = {
+      user_id: loggedInUserId,
+    };
+  }
+
+  try {
+    const res = await prisma.diveRecord.findMany({
+      where,
+      select: {
+        id: true,
+        log_no: true,
+        date: true,
+        location: true,
+        country: {
+          select: { name: true },
+        },
+        buddy: {
+          select: {
+            where: {
+              id: loggedInUserId,
+            },
+            id: true,
+          }
+        },
+        supervisor: {
+          select: {
+            where: {
+              id: loggedInUserId,
+            },
+            id: true,
+          }
+        }
+      },
+      orderBy: {
+        log_no: 'desc',
+      }
+    });
+
+    const recordsFound = res.data? res.data.map((record) => {
+      return {
+        id               : record.id,
+        log_no           : record.log_no,
+        date             : record.date,
+        location         : record.location,
+        country          : record.country.name,
+        is_my_buddy_dive : !!record.buddy,
+        is_my_instruction: !!record.supervisor,
+      }
+    }) : {};
+
+    res.status(200).json(recordsFound);
+  } catch (error) {
+    console.log('Error: ', error);
+    res.status(400).send('Failed to find dive records');
+  }
 });
 
 // @desc Get dive record by dive record id TODO:
 // @route GET /api/diveRecords/view/:userId/:recordId
-// @access Public
-const getDiveRecordByIds = asyncHandler(async (req, res) => {
+// @access Private
+const getDiveRecordById = asyncHandler(async (req, res) => {
+
+  const diveRecord = await prisma.diveRecord.findUnique({
+    where: {
+      id: req.params.id,
+    },
+    include: {
+      country: {
+        select: { name: true },
+      },
+      purpose: {
+        select: { name: true },
+      },
+      buddy: {
+        select: {
+          id: true,
+          divlog_name: true,
+        },
+      },
+      supervisor: {
+        select: {
+          id: true,
+          divlog_name: true,
+        }
+      },
+      dive_center: {
+        select: {
+          id: true,
+          name: true,
+        }
+      }
+    },
+  });
+
+  if (diveRecord) {
+    res.status(200).json(diveRecord);
+  } else {
+    res.status(400).send('Failed to find dive record');
+  }
+
+
   res.status(200).send({
     message: 'Reached to getDiveRecordsById func'
   })
@@ -654,6 +795,6 @@ export {
   updateDiveRecord,
   getMyDiveRecordById,
   deleteDiveRecord,
-  getDiveRecordsByUserId,
-  getDiveRecordByIds,
+  searchBuddysDiveRecords,
+  getDiveRecordById,
 }

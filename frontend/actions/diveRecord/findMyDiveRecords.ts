@@ -1,9 +1,8 @@
 import axios from "axios";
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import { isDiveRecordHighlightArray, DiveRecordHighlight } from '@/types/diveRecordTypes';
-import { UserType } from "@/types/userTypes";
 
-type FindMyDiveRecordsParams = Partial<
+export type FindMyDiveRecordsParams = Partial<
   Record<
     | 'dateFrom'
     | 'dateTo'
@@ -14,10 +13,6 @@ type FindMyDiveRecordsParams = Partial<
     string
   >
 >
-
-export type UserHighlight = Pick<UserType, 'id' | 'divlog_name' | 'license_name'>
-
-export type FindUsersReturn = UserHighlight[]
 
 export async function findMyDiveRecords({dateFrom, dateTo, logNoFrom, logNoTo, country, status}: FindMyDiveRecordsParams):Promise<DiveRecordHighlight[] | void> {
   const params = {
