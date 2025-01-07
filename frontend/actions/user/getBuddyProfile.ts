@@ -7,7 +7,7 @@ type GetBuddyProfileParams = {
   loggedInUserId: UUID | null,
 }
 
-export type GetBuddyProfileReturn = Exclude<UserProfile, 'email'> & Record<
+export type GetBuddyProfileReturn = Omit<UserProfile, 'email'> & Record<
   'is_following' | 'is_followed', boolean
 >;
 

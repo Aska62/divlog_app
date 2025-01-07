@@ -19,7 +19,7 @@ export type DiveCenter = {
   is_following   : boolean,
 }
 
-export type DiveCenterHighLight = Exclude<DiveCenter, 'staffs' | 'follower_count'>;
+export type DiveCenterHighLight = Omit<DiveCenter, 'staffs' | 'follower_count'>;
 
 export const isDiveCenterHighLight = (val:unknown): val is UserType => {
   if (!val || !isObject(val) || isObjectEmpty(val)) {

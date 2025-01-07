@@ -5,7 +5,7 @@ import isString from '@/utils/isString';
 export type DiverInfoStateType = Partial<DiverInfoType> & {
   success?: boolean,
   error?: Partial<Record<
-    keyof Exclude<DiverInfoType, 'id'>,
+    keyof Omit<DiverInfoType, 'id'>,
     string
   >>,
   message?: string,

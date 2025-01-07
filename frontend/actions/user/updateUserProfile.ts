@@ -3,7 +3,7 @@ import { UserType } from '@/types/userTypes';
 import isNumString from "@/utils/isNumString";
 import isString from '@/utils/isString';
 
-export type UserProfileStateType = Partial<Exclude<UserType, 'id'>> & {
+export type UserProfileStateType = Partial<Omit<UserType, 'id'>> & {
   success?: boolean,
   error?: Partial<Record<
     | 'divlog_name'

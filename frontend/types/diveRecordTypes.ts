@@ -108,7 +108,7 @@ export const isDiveRecordDetail = (val: unknown): val is DiveRecordDetail => {
   return true;
 }
 
-export type DiveRecordDetailKey = keyof Exclude<DiveRecordDetail, 'country' | 'purpose' | 'buddy' | 'supervisor' | 'dive_center'>;
+export type DiveRecordDetailKey = keyof Omit<DiveRecordDetail, 'country' | 'purpose' | 'buddy' | 'supervisor' | 'dive_center'>;
 
 const diveRecordDetailKeys: DiveRecordDetailKey[] = [
   'id',
