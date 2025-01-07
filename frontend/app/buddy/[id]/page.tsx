@@ -1,8 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { UUID } from 'crypto';
 import { toast } from 'react-toastify';
+import { IoIosArrowForward } from "react-icons/io";
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import { getBuddyProfile, GetBuddyProfileReturn } from '@/actions/user/getBuddyProfile';
 import followUser from '@/actions/userFollow/followUser';
@@ -15,6 +17,7 @@ type BuddyPageParams = {
 }
 
 const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
+  const pathName = usePathname();
 
   const [loggedInUserId, setLoggedInUserId] = useState<UUID | null>(null);
   const [user, setUser] = useState<Partial<GetBuddyProfileReturn>>({});
@@ -154,6 +157,16 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
             </div>
           </div>
         )}
+      </div>
+
+      <div className='w-8/12 md:w-1/3 max-w-md mx-auto'>
+        <Link
+          href={`${pathName}/logBook`}
+          className='w-fit ml-auto mr-2 px-2 py-1 rounded-md flex items-center justify-end bg-eyeCatchDark text-baseWhite shadow-sm hover:bg-eyeCatch'
+        >
+          Visit Logbook
+          <IoIosArrowForward className='text-lg' />
+        </Link>
       </div>
 
     </>
