@@ -100,6 +100,7 @@ const getMyDiveRecordCount = asyncHandler(async (req, res) => {
     });
 
   } catch (error) {
+    console.log('Error:', error);
     res.status(400).send('Failed to get record count');
   }
 });
@@ -139,7 +140,7 @@ const getLastDiveRecord = asyncHandler(async (req, res) => {
       res.status(200).send('No record yet');
     }
   } catch (error) {
-    console.error('error: ', error);
+    console.error('Error: ', error);
     res.status(400).send('Error while fetching data');
   }
 });

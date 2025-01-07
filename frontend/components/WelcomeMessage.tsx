@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect } from "react";
-import axios from "axios";
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import formatDate from '@/utils/dateTime/formatDate';
 import { isDiveRecordHighlight, DiveRecordHighlight } from '@/types/diveRecordTypes';
 import { getRecordCount } from '@/actions/diveRecord/getRecordCount';
+import { getMyLastRecord } from "@/actions/diveRecord/getMyLastRecord";
 
 const WelcomeMessage = () => {
   const [logCount, setLogCount] = useState<number>(0);
@@ -19,17 +19,20 @@ const WelcomeMessage = () => {
       } else {
         setLogCount(0);
       }
+    }
 
-      const lastRecordRes = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/last`, { withCredentials: true });
+    const getLastRecord = async() => {
+      const lastRecord = await getMyLastRecord();
 
-      if (isDiveRecordHighlight(lastRecordRes.data))  {
-        setLastDive(lastRecordRes.data);
+      if (isDiveRecordHighlight(lastRecord))  {
+        setLastDive(lastRecord);
       } else {
         setLastDive({});
       }
     }
 
     getLogData();
+    getLastRecord();
   }, []);
 
   return (
