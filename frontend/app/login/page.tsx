@@ -12,7 +12,10 @@ const LoginPage = () => {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(createSession, {});
 
-  const [inputVal, setInputVal] = useState<LoginFromType>({});
+  const [inputVal, setInputVal] = useState<LoginFromType>({
+    email   : '',
+    password: '',
+  });
 
   const setIsAuth = useUser((state) => state.setIsAuth);
   const isAuth = useUser.getState().isAuth;

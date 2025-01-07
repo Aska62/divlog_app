@@ -12,7 +12,12 @@ const RegisterPage = () => {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(registerUser, {});
 
-  const [inputVal, setInputVal] = useState<RegisterFromType>({});
+  const [inputVal, setInputVal] = useState<RegisterFromType>({
+    divlogName     : '',
+    email          : '',
+    password       : '',
+    confirmPassword: ''
+  });
 
   const setIsAuth = useUser((state) => state.setIsAuth);
   const isAuth = useUser.getState().isAuth;
