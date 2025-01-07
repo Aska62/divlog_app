@@ -65,7 +65,7 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
       try {
         const res = await followUser({targetUserId: user.id});
         if (res.data) {
-          setUser({...user, ...{followed: true}});
+          setUser({...user, ...{is_following: true}});
         } else {
           console.log('Error while trying to follow:', res.message);
         }
@@ -83,7 +83,7 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
       try {
         const res = await unfollowUser({targetUserId: user.id});
         if (res.data) {
-          setUser({...user, ...{followed: false}});
+          setUser({...user, ...{is_followed: false}});
         } else {
           console.log('Error while trying to unfollow:', res.message)
         }
@@ -176,10 +176,10 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
                 </div>
               )}
 
-            <div className='w-8/12 md:w-1/3 max-w-md mx-auto'>
+            <div className='w-fit max-w-md ml-auto mr-0'>
               <Link
                 href={`${pathName}/logBook`}
-                className='w-fit ml-auto mr-2 px-2 py-1 rounded-md flex items-center justify-end bg-eyeCatchDark text-baseWhite shadow-sm hover:bg-eyeCatch'
+                className='w-fit ml-1 mr-2 p-2 rounded-md flex items-center justify-end bg-eyeCatchDark text-baseWhite shadow-sm hover:bg-eyeCatch'
               >
                 Visit Logbook
                 <IoIosArrowForward className='text-lg' />
