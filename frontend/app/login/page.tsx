@@ -1,5 +1,5 @@
 'use client';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
@@ -11,6 +11,8 @@ import LoginBtn from "@/components/LoginBtn";
 const LoginPage = () => {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(createSession, {});
+
+  const [inputVal, setInputVal] = useState<RegisterFromType>({});
 
   const setIsAuth = useUser((state) => state.setIsAuth);
   const isAuth = useUser.getState().isAuth;
@@ -31,6 +33,12 @@ const LoginPage = () => {
     }
   }, [router, state, isAuth, setIsAuth,]);
 
+  const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const {name, value} = e.target;
+    setInputVal({...inputVal, ...{[name]: value}});
+  }
+
   return (
     <main className="w-full h-screen flex flex-col items-center justify-center">
       <LogoLg />
@@ -43,6 +51,8 @@ const LoginPage = () => {
             name="email"
             placeholder="email"
             required
+            value={inputVal.email}
+            onChange={(e) => handleInputChange(e)}
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
           {state.error?.email && (
@@ -55,6 +65,8 @@ const LoginPage = () => {
             name="password"
             placeholder="password"
             required
+            value={inputVal.password}
+            onChange={(e) => handleInputChange(e)}
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
           {state.error?.password && (
