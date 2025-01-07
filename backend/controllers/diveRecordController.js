@@ -686,7 +686,7 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
   }
 
   try {
-    const res = await prisma.diveRecord.findMany({
+    const fetchedRecord = await prisma.diveRecord.findMany({
       where,
       select: {
         id: true,
@@ -697,18 +697,18 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
           select: { name: true },
         },
         buddy: {
+          where: {
+            id: loggedInUserId,
+          },
           select: {
-            where: {
-              id: loggedInUserId,
-            },
             id: true,
           }
         },
         supervisor: {
+          where: {
+            id: loggedInUserId,
+          },
           select: {
-            where: {
-              id: loggedInUserId,
-            },
             id: true,
           }
         }
@@ -717,8 +717,7 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
         log_no: 'desc',
       }
     });
-
-    const recordsFound = res.data? res.data.map((record) => {
+    const record = fetchedRecord? fetchedRecord.map((record) => {
       return {
         id               : record.id,
         log_no           : record.log_no,
@@ -729,8 +728,7 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
         is_my_instruction: !!record.supervisor,
       }
     }) : {};
-
-    res.status(200).json(recordsFound);
+    res.status(200).json(record);
   } catch (error) {
     console.log('Error: ', error);
     res.status(400).send('Failed to find dive records');

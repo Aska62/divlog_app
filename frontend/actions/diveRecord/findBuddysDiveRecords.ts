@@ -16,8 +16,8 @@ type BuddyDiveRecordHighlight = Omit<
   DiveRecordHighlight,
   'user_id' | 'country_id' | 'is_draft' | 'country'
 > & {
-  country?: string,
-  is_my_buddy_dive: boolean,
+  country?         : string,
+  is_my_buddy_dive : boolean,
   is_my_instruction: boolean,
 }
 
@@ -35,21 +35,22 @@ const isBuddyDiveRecordHighlight = (val: unknown): val is BuddyDiveRecordHighlig
 
   const filteredKeys = Object.keys(val).filter(key => mustKeys.includes(key));
 
-  if (filteredKeys.length !== mustKeys.length) {
-    return false;
-  }
-
-  return true;
+  return filteredKeys.length === mustKeys.length;
 }
 
-type FindBuddysDiveRecordsReturn = BuddyDiveRecordHighlight[];
+export type FindBuddysDiveRecordsArray = BuddyDiveRecordHighlight[];
 
-const isFindBuddysDiveRecordsReturn = (val: unknown): val is FindBuddysDiveRecordsReturn => {
+export const isFindBuddysDiveRecordsArray = (val: unknown): val is FindBuddysDiveRecordsArray => {
   if (!val || !Array.isArray(val) || val.length === 0) {
     return false;
   }
 
-  return !!val.find((v) => !isBuddyDiveRecordHighlight(v));
+  return val.find((v) => !isBuddyDiveRecordHighlight(v)) ? false : true;
+}
+
+type FindBuddysDiveRecordsReturn = {
+  data?: FindBuddysDiveRecordsArray,
+  error?:  string,
 }
 
 export async function findBuddysDiveRecords({
@@ -61,7 +62,7 @@ export async function findBuddysDiveRecords({
   country,
   isMyBuddyDive,
   isMyInstruction
-}: FindBuddysDiveRecordsPrams): Promise<FindBuddysDiveRecordsReturn | void> {
+}: FindBuddysDiveRecordsPrams): Promise<FindBuddysDiveRecordsReturn> {
   const params = {
     dateFrom,
     dateTo,
@@ -74,11 +75,17 @@ export async function findBuddysDiveRecords({
 
   const conditions = isObjectEmpty(params) ?  { withCredentials: true } :  { params, withCredentials: true }
 
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/view/${userId}`,
-    conditions)
-    .catch((error) => {
-      console.log('Error fetching data:', error)
-    });
-
-    return (res && isFindBuddysDiveRecordsReturn(res.data)) ? res.data : [];
+  try {
+    const res = await axios.get<FindBuddysDiveRecordsArray>(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/view/${userId}`,
+      conditions)
+      console.log(res.data)
+      if (isFindBuddysDiveRecordsArray(res.data)) {
+        return { data: res.data };
+      } else {
+        return { error: 'Invalid data format received' };
+      }
+    } catch (error) {
+      console.log('Error fetching data:', error);
+      return { error: 'Error fetching data'}
+  }
 }
