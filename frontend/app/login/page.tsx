@@ -3,7 +3,7 @@ import { useActionState, useEffect, useState } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import createSession from '@/actions/createSession';
+import createSession, { LoginFromType } from '@/actions/createSession';
 import useUser, { isUserInfo } from '@/stores/useUser';
 import LogoLg from "@/components/LogoLg";
 import LoginBtn from "@/components/LoginBtn";
@@ -12,7 +12,7 @@ const LoginPage = () => {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(createSession, {});
 
-  const [inputVal, setInputVal] = useState<RegisterFromType>({});
+  const [inputVal, setInputVal] = useState<LoginFromType>({});
 
   const setIsAuth = useUser((state) => state.setIsAuth);
   const isAuth = useUser.getState().isAuth;

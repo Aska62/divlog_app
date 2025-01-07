@@ -12,13 +12,14 @@ type LoginActionStateType = {
   },
 }
 
-type LoginFromType = {
-    email?: string,
-    password?: string,
-  } & LoginActionStateType
+export type LoginFromType = {
+  email?: string,
+  password?: string,
+}
 
+type CreateSessionPrevState = LoginFromType & LoginActionStateType
 
-async function createSession(_previousState: LoginFromType, formData: FormData):Promise<LoginActionStateType> {
+async function createSession(_previousState: CreateSessionPrevState, formData: FormData):Promise<LoginActionStateType> {
   const email = formData.get("email");
   const password = formData.get("password");
 
