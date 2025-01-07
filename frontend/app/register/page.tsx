@@ -1,9 +1,9 @@
 'use client';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import registerUser from '@/actions/registerUser';
+import registerUser, { RegisterFromType } from '@/actions/registerUser';
 import useUser, { isUserInfo } from '@/stores/useUser';
 import LogoLg from "@/components/LogoLg";
 import RegisterBtn from "@/components/RegisterBtn";
@@ -11,6 +11,8 @@ import RegisterBtn from "@/components/RegisterBtn";
 const RegisterPage = () => {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(registerUser, {});
+
+  const [inputVal, setInputVal] = useState<RegisterFromType>({});
 
   const setIsAuth = useUser((state) => state.setIsAuth);
   const isAuth = useUser.getState().isAuth;
@@ -31,6 +33,12 @@ const RegisterPage = () => {
     }
   }, [router, state, isAuth, setIsAuth]);
 
+  const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const {name, value} = e.target;
+    setInputVal({...inputVal, ...{[name]: value}});
+  }
+
   return (
     <main className="w-full h-fit flex flex-col items-center justify-center mt-16">
       <LogoLg />
@@ -45,6 +53,8 @@ const RegisterPage = () => {
             name="divlogName"
             placeholder="username"
             required
+            value={inputVal.divlogName}
+            onChange={(e) => handleInputChange(e)}
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
           {state.error?.divlogName && (
@@ -59,6 +69,8 @@ const RegisterPage = () => {
             name="email"
             placeholder="email"
             required
+            value={inputVal.email}
+            onChange={(e) => handleInputChange(e)}
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
           {state.error?.email && (
@@ -73,6 +85,8 @@ const RegisterPage = () => {
             name="password"
             placeholder="password"
             required
+            value={inputVal.password}
+            onChange={(e) => handleInputChange(e)}
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
           {state.error?.password && (
@@ -83,10 +97,12 @@ const RegisterPage = () => {
         {/* password confirmation */}
         <div className="h-14 mb-10 text-left">
           <input
-            type="confirmPassword"
+            type="password"
             name="confirmPassword"
             placeholder="confirm password"
             required
+            value={inputVal.confirmPassword}
+            onChange={(e) => handleInputChange(e)}
             className="w-full h-9 px-2 rounded-md bg-lightBlue dark:bg-baseWhite text-black focus:outline-none"
           />
           {state.error?.confirmPassword && (

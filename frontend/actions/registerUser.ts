@@ -13,23 +13,25 @@ type RegisterActionStateType = {
   },
 }
 
-type RegisterFromType = {
-  divLogName?: string,
+export type RegisterFromType = {
+  divlogName?: string,
   email?: string,
   password?: string,
   confirmPassword?: string,
-} & RegisterActionStateType
+}
+
+type RegisterFormPrevState = RegisterFromType & RegisterActionStateType;
 
 export const emailRegex = /^[a-zA-Z0-9_.±]+@+[a-zA-Z0-9-]+\.+[a-zA-Z0-9-.]{2,}$/;
 export const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{12,}$/;
 
-async function registerUser(_previousState: RegisterFromType, formData: FormData):Promise<RegisterActionStateType> {
-  const divLogName = String(formData.get("divlogName"));
+async function registerUser(_previousState: RegisterFormPrevState, formData: FormData):Promise<RegisterActionStateType> {
+  const divlogName = String(formData.get("divlogName"));
   const email = String(formData.get("email"));
   const password = String(formData.get("password"));
   const confirmPassword = String(formData.get("confirmPassword"));
 
-  const divLogNameErr = !divLogName ? 'Please input username' : false;
+  const divlogNameErr = !divlogName ? 'Please input username' : false;
   const emailErr = !email ? 'Please input email'
     : !email.match(emailRegex) ? 'Not a valid email address'
     : false;
@@ -41,11 +43,11 @@ async function registerUser(_previousState: RegisterFromType, formData: FormData
     : !confirmPassword.match(password) ? 'Passwords do not match'
     : false;
 
-  if (divLogNameErr || emailErr || passwordErr || confirmPasswordErr) {
+  if (divlogNameErr || emailErr || passwordErr || confirmPasswordErr) {
     return {
       error: {
         message: "Please fill out all fields correctly",
-        divlogName: divLogNameErr,
+        divlogName: divlogNameErr,
         email: emailErr,
         password: passwordErr,
         confirmPassword: confirmPasswordErr,
@@ -55,7 +57,7 @@ async function registerUser(_previousState: RegisterFromType, formData: FormData
 
   try {
     const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/users/register`,
-      { divlog_name: divLogName, email, password },
+      { divlog_name: divlogName, email, password },
       { withCredentials: true }
     );
 
