@@ -570,6 +570,29 @@ const findUsers = async(req, res) => {
   }
 }
 
+// @desc Get divlog name by user id
+// @route GET /api/users/divlogName/:userId
+// @access Public
+const getDivlogNameById = async(req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: req.params.userId,
+      },
+      select: {
+        divlog_name  : true,
+      }
+    });
+
+    res.status(200).json({ divlog_name: user.divlog_name });
+  } catch (error) {
+    console.log('Error: ', error);
+    res.status(500).send({
+      message: 'Failed to find users'
+    });
+  }
+}
+
 export {
   registerUser,
   loginUser,
@@ -580,4 +603,5 @@ export {
   getLoginUser,
   deleteUser,
   findUsers,
+  getDivlogNameById,
 }

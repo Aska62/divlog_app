@@ -40,7 +40,7 @@ const isBuddyDiveRecordHighlight = (val: unknown): val is BuddyDiveRecordHighlig
 export type FindBuddysDiveRecordsArray = BuddyDiveRecordHighlight[];
 
 export const isFindBuddysDiveRecordsArray = (val: unknown): val is FindBuddysDiveRecordsArray => {
-  if (!val || !Array.isArray(val) || val.length === 0) {
+  if (!val || !Array.isArray(val)) {
     return false;
   }
 
@@ -76,7 +76,7 @@ export async function findBuddysDiveRecords({
 
   try {
     const res = await axios.get<FindBuddysDiveRecordsArray>(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/view/${userId}`,
-      conditions)
+      conditions);
 
       if (isFindBuddysDiveRecordsArray(res.data)) {
         return { data: res.data };
