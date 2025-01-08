@@ -469,7 +469,7 @@ const getUserById = async(req, res) => {
       dive_centers : user.centers.map((center) => center.dive_center),
       is_followed  : user.followers?.length > 0,
       is_following : user.following_users?.length > 0,
-      log_count    : user.dive_records.length + user.diver_info.norecord_dive_count,
+      log_count    : user.dive_records.length + user.diver_info?.norecord_dive_count,
     });
   } else {
     res.status(400).send('Failed to find user info');
