@@ -750,53 +750,47 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc Get dive record by dive record id TODO:
+// @desc Get dive record by id
 // @route GET /api/diveRecords/view/:userId/:recordId
 // @access Private
 const getDiveRecordById = asyncHandler(async (req, res) => {
-
-  const diveRecord = await prisma.diveRecord.findUnique({
-    where: {
-      id: req.params.id,
-    },
-    include: {
-      country: {
-        select: { name: true },
+  try {
+    const diveRecord = await prisma.diveRecord.findUnique({
+      where: {
+        id: req.params.recordId,
+        user_id: req.params.userId,
       },
-      purpose: {
-        select: { name: true },
-      },
-      buddy: {
-        select: {
-          id: true,
-          divlog_name: true,
+      include: {
+        country: {
+          select: { name: true },
         },
-      },
-      supervisor: {
-        select: {
-          id: true,
-          divlog_name: true,
+        purpose: {
+          select: { name: true },
+        },
+        buddy: {
+          select: {
+            id: true,
+            divlog_name: true,
+          },
+        },
+        supervisor: {
+          select: {
+            id: true,
+            divlog_name: true,
+          }
+        },
+        dive_center: {
+          select: {
+            id: true,
+            name: true,
+          }
         }
       },
-      dive_center: {
-        select: {
-          id: true,
-          name: true,
-        }
-      }
-    },
-  });
-
-  if (diveRecord) {
+    });
     res.status(200).json(diveRecord);
-  } else {
+  } catch (error) {
     res.status(400).send('Failed to find dive record');
   }
-
-
-  res.status(200).send({
-    message: 'Reached to getDiveRecordsById func'
-  })
 });
 
 export {
