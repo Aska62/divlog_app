@@ -87,7 +87,7 @@ export type DiveRecordDetail = {
 }
 
 export const isDiveRecordDetail = (val: unknown): val is DiveRecordDetail => {
-  if (!val || !isObject(val) || isObjectEmpty(val)) {
+  if (!val || !isObject(val)) {
     return false;
   }
 

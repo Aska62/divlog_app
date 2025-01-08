@@ -211,7 +211,7 @@ const searchMyDiveRecords = asyncHandler(async (req, res) => {
         log_no  : record.log_no,
         date    : record.date,
         location: record.location,
-        country : record.country.name,
+        country : record.country?.name || '',
         is_draft: record.is_draft,
       }
     }) : [];
@@ -400,42 +400,43 @@ const addDiveRecord = asyncHandler(async (req, res) => {
 // @route GET /api/diveRecords/:id
 // @access Private
 const getMyDiveRecordById = asyncHandler(async (req, res) => {
-  const diveRecord = await prisma.diveRecord.findUnique({
-    where: {
-      id: req.params.id,
-      user_id: req.user.id,
-    },
-    include: {
-      country: {
-        select: { name: true },
+  try {
+    const diveRecord = await prisma.diveRecord.findUnique({
+      where: {
+        id: req.params.id,
+        user_id: req.user.id,
       },
-      purpose: {
-        select: { name: true },
-      },
-      buddy: {
-        select: {
-          id: true,
-          divlog_name: true,
+      include: {
+        country: {
+          select: { name: true },
         },
-      },
-      supervisor: {
-        select: {
-          id: true,
-          divlog_name: true,
+        purpose: {
+          select: { name: true },
+        },
+        buddy: {
+          select: {
+            id: true,
+            divlog_name: true,
+          },
+        },
+        supervisor: {
+          select: {
+            id: true,
+            divlog_name: true,
+          }
+        },
+        dive_center: {
+          select: {
+            id: true,
+            name: true,
+          }
         }
       },
-      dive_center: {
-        select: {
-          id: true,
-          name: true,
-        }
-      }
-    },
-  });
+    });
 
-  if (diveRecord) {
-    res.status(200).json(diveRecord);
-  } else {
+    res.status(200).json(diveRecord || {});
+  } catch (error) {
+    console.log('Error while finding record', error);
     res.status(400).send('Failed to find dive record');
   }
 });

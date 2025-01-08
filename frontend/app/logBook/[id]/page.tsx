@@ -1,33 +1,42 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from "next/link";
-import axios from "axios";
+import { getMyDiveRecordById } from '@/actions/diveRecord/getMyDiveRecordById';
 import { DiveRecordDetail, isDiveRecordDetail } from '@/types/diveRecordTypes';
 import formatDate from "@/utils/dateTime/formatDate";
 import formatTime from '@/utils/dateTime/formatTime';
 import calculateTimeGap from '@/utils/dateTime/calculateTimeGap';
 import Heading from "@/components/Heading";
 import EditLogBtn from "@/components/log/EditLogBtn";
+import { UUID } from 'crypto';
 
 type LogPageProps = {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: UUID }>
 }
 
 const LogPage:React.FC<LogPageProps> = ({ params }) => {
   const [diveRecord, setDiveRecord] = useState<Partial<DiveRecordDetail>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchLogRecord = async () => {
-      const { id } = await params;
-      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/${id}`,
-        { withCredentials: true })
-        .then((res) => {
-          setDiveRecord(res.data);
-        })
-        .catch((err) => {
-          console.log('Error fetching dive records: ', err);
-          setDiveRecord({});
-        });
+      setIsLoading(true);
+      try {
+        const { id } = await params;
+        const res = await getMyDiveRecordById(id);
+        if (isDiveRecordDetail(res)) {
+          setDiveRecord(res);
+          setIsError(false)
+        } else {
+          setIsError(true);
+        }
+      } catch (error) {
+        console.log('Error:', error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
     fetchLogRecord();
@@ -35,11 +44,15 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
 
   return (
     <>
-    { diveRecord && isDiveRecordDetail(diveRecord) ? (
-      <>
-        <Heading pageTitle={`Log No. ${diveRecord.log_no}`} />
+      <Heading pageTitle={`Log No. ${diveRecord.log_no}`} />
+      <div className="w-8/12 md:w-1/3 max-w-md h-fit mx-auto mb-12">
 
-        <div className="w-8/12 md:w-1/3 max-w-md h-fit mx-auto mb-12">
+      {isError ? (
+        <p>Error occurred</p>
+      ) : isLoading ? (
+        <p>Loading...</p>
+      ) : diveRecord && isDiveRecordDetail(diveRecord) ? (
+        <>
           <div className={`${diveRecord.is_draft ? "flex justify-between items-center" : "text-end"} mb-4`}>
             { diveRecord.is_draft && (<p className="w-1/2 bg-eyeCatchDark text-baseWhite text-center font-bold px-2 mt-3">This is DRAFT</p>)}
             <EditLogBtn id={diveRecord.id} />
@@ -202,13 +215,11 @@ const LogPage:React.FC<LogPageProps> = ({ params }) => {
               { diveRecord.notes || '-' }
             </p>
           </div>
-        </div>
-      </>
-    ) : (
-      <>
-        Loading...
-      </>
-    )}
+        </>
+      ) : (
+        <p>Dive record not found</p>
+      )}
+      </div>
     </>
   );
 }
