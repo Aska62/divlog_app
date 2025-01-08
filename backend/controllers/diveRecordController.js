@@ -767,6 +767,12 @@ const getDiveRecordById = asyncHandler(async (req, res) => {
         purpose: {
           select: { name: true },
         },
+        owner: {
+          select: {
+            id: true,
+            divlog_name: true,
+          }
+        },
         buddy: {
           select: {
             id: true,
