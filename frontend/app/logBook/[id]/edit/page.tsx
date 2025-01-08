@@ -2,7 +2,7 @@
 import { useState, useEffect, MouseEvent, useActionState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import axios from "axios";
+import { UUID } from 'crypto';
 import {
   DiveRecordDetail,
   isDiveRecordDetail,
@@ -15,6 +15,7 @@ import isNumber from '@/utils/isNumber';
 import isObjectValEmpty from '@/utils/isObjectValEmpty';
 import { isKeyWithNumVal } from '@/types/diveRecordTypes';
 import updateDiveRecord from '@/actions/diveRecord/updateDiveRecord';
+import { getMyDiveRecordById } from '@/actions/diveRecord/getMyDiveRecordById';
 import Heading from "@/components/Heading";
 import CountryOptions, { CountryOptionList } from '@/components/CountryOptions';
 import DivePurposeOptions, { DivePurposeOptionList } from '@/components/log/DivePurposeOptions';
@@ -22,7 +23,7 @@ import SearchModal from '@/components/log/SearchModal';
 import UpdateLogBtn from '@/components/log/UpdateLogBtn';
 
 type EditLogProps = {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: UUID }>
 }
 
 export type ModalTypes = 1 | 2 | 3;
@@ -100,18 +101,46 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
   useEffect(() => {
     const fetchLogRecord = async () => {
       const { id } = await params;
-      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/diveRecords/${id}`,
-        { withCredentials: true })
-        .then((res) => {
-          setDiveRecord(res.data);
-          setIsBuddyById(!res.data.buddy_str);
-          setIsSupervisorById(!res.data.supervisor_str);
-          setIsDiveCenterById(!res.data.dive_center_str);
-        })
-        .catch((err) => {
-          console.log('Error fetching dive records: ', err);
+      try {
+        const res = await getMyDiveRecordById(id);
+
+        if (isDiveRecordDetail(res)) {
+          setDiveRecord(res);
+          setIsBuddyById(!res.buddy_str);
+          setIsSupervisorById(!res.supervisor_str);
+          setIsDiveCenterById(!res.dive_center_str);
+          setBuddyRef({
+            id: res.buddy?.id,
+            name: res.buddy?.divlog_name,
+          });
+          setSupervisorRef({
+            id: res.supervisor?.id,
+            name: res.supervisor?.divlog_name,
+          });
+          setDiveCenterRef({
+            id: res.dive_center?.id,
+            name: res.dive_center?.name,
+          });
+        } else {
           setDiveRecord({});
-        });
+          setIsBuddyById(true);
+          setIsSupervisorById(true);
+          setIsDiveCenterById(true);
+          setBuddyRef({});
+          setSupervisorRef({});
+          setDiveCenterRef({});
+        }
+      } catch (error) {
+        console.log('Error fetching dive records: ', error);
+        setDiveRecord({});
+        setIsBuddyById(true);
+        setIsSupervisorById(true);
+        setIsDiveCenterById(true);
+        setIsDiveCenterById(true);
+        setBuddyRef({});
+        setSupervisorRef({});
+        setDiveCenterRef({});
+      }
     }
 
     fetchLogRecord();

@@ -9,7 +9,6 @@ export async function getMyDiveRecordById(id: UUID): Promise<DiveRecordDetail | 
       console.log('Error fetching last dive record:', error);
     });
 
-
     if (res) {
       return res.data
     }
