@@ -1,16 +1,16 @@
 import axios from "axios";
 import isObject from "@/utils/isObject";
 import isObjectEmpty from "@/utils/isObjectEmpty";
-import { DiveCenterHighLight } from '@/types/diveCenterTypes';
+import { DiveCenterHighLight, isDiveCenterHighLight} from '@/types/diveCenterTypes';
 
-type findDiveCentersParams = {
+type FindDiveCentersParams = {
   keyword     : string,
   country     : number | '',
   organization: number | '',
   status      : 1 | 2,
 }
 
-export const isFindDiveCentersParams = (val:unknown): val is findDiveCentersParams => {
+export const isFindDiveCentersParams = (val:unknown): val is FindDiveCentersParams => {
   if (!val || !isObject(val) || isObjectEmpty(val)) {
     return false;
   }
@@ -25,9 +25,17 @@ export const isFindDiveCentersParams = (val:unknown): val is findDiveCentersPara
   return Object.keys(val).every(k => keys.includes(k));
 }
 
-export type findDiveCentersReturn = DiveCenterHighLight[];
+export type FindDiveCentersReturn = DiveCenterHighLight[];
 
-export async function findDiveCenters({keyword, country, organization, status}: findDiveCentersParams):Promise<findDiveCentersReturn | void> {
+export const isFindDiveCentersReturn = (value: unknown): value is FindDiveCentersReturn => {
+  if (!value || !Array.isArray(value)) {
+    return false;
+  }
+
+  return !value.find((val) => !isDiveCenterHighLight(val));
+}
+
+export async function findDiveCenters({keyword, country, organization, status}: FindDiveCentersParams):Promise<FindDiveCentersReturn | void> {
 
   const params = {
     keyword,

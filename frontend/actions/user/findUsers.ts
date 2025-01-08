@@ -1,7 +1,8 @@
 import axios from "axios";
 import isObjectEmpty from "@/utils/isObjectEmpty";
-import { isStringOrEmptyString } from "@/utils/isString";
+import isString, { isStringOrEmptyString } from "@/utils/isString";
 import { UserType } from "@/types/userTypes";
+import isObject from "@/utils/isObject";
 
 type FindUsersParams = {
   keyword: string,
@@ -21,12 +22,33 @@ export const isFindUsersParams = (value: unknown): value is FindUsersParams => {
 
 export type UserHighlight = Pick<
   UserType, 'id' | 'divlog_name' | 'license_name'
-> & {
-  followers: { following_user_id: string}[],
-  following_users: { user_id: string}[]
+> & Record<'is_following' | 'is_followed', boolean>
+
+export const isUserHighLight = (value: unknown): value is UserHighlight => {
+  if (!value || !isObject(value)) {
+    return false;
+  }
+
+  const mustKeys = ['id', 'divlog_name', 'license_name', 'is_following', 'is_followed'];
+  if (Object.keys(value).find((key) => !mustKeys.includes(key))) {
+    return false;
+  }
+
+  return !Object.entries(value).find(([key, val]) => {
+    return (['is_following', 'is_followed'].includes(key) && typeof val !== 'boolean')
+    || !['is_following', 'is_followed'].includes(key) && !isString(val)
+  });
 }
 
-export type FindUsersReturn = UserHighlight[]
+export type FindUsersReturn = UserHighlight[];
+
+export const isFindUsersReturn = (value: unknown): value is FindUsersReturn => {
+  if (!value || !Array.isArray(value)) {
+    return false;
+  }
+
+  return !!value.find((val) => !isUserHighLight(val));
+}
 
 export async function findUsers({keyword, status}: FindUsersParams):Promise<FindUsersReturn | void> {
 

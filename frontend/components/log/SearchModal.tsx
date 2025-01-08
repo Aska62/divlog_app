@@ -1,12 +1,12 @@
 'use client';
 import { useState, MouseEvent, useRef } from "react";
 import { useDebouncedCallback } from 'use-debounce';
-import axios from "axios";
 import { RxCross2 } from "react-icons/rx";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import isObject from "@/utils/isObject";
-import isObjectEmpty from "@/utils/isObjectEmpty";
 import isString from "@/utils/isString";
+import { isDiveCenterHighLight} from '@/types/diveCenterTypes';
+import { findUsers, FindUsersReturn, isUserHighLight } from "@/actions/user/findUsers";
+import { findDiveCenters, FindDiveCentersReturn } from "@/actions/diveCenter/findDiveCenters";
 import {
   ModalTypes,
   modalTypeBuddy,
@@ -15,47 +15,6 @@ import {
   ChoiceStateValue,
 } from "@/app/logBook/[id]/edit/page";
 
-type UserOption = {
-  id: string,
-  divlog_name: string,
-  license_name?: string,
-}
-
-type CountryName = { name: string };
-
-const isCountryName = (val:unknown): val is CountryName => {
-  if (!isObject(val) || isObjectEmpty(val)) {
-    return false;
-  }
-
-  return Object.entries(val).some(([k, v]) => k === 'name' && isString(v));
-}
-
-type DiveCenterOption = {
-  id: string,
-  name: string,
-  country?: CountryName,
-}
-
-const isDiveCenterOption = (val: unknown): val is DiveCenterOption => {
-  if (!isObject(val) || isObjectEmpty(val)) {
-    return false;
-  }
-
-  const mustKeys = ['id', 'name'];
-
-  const wrongEntry = Object.entries(val).find(([k, v]) => {
-    if (k === 'country') {
-      return !isCountryName(v)
-    }
-
-    return (!mustKeys.includes(k) || !isString(v))
-
-  });
-
-  return !wrongEntry;
-}
-
 type SearchModalProps = {
   type: ModalTypes | 0,
   setData: React.Dispatch<React.SetStateAction<Partial<ChoiceStateValue>>> | false;
@@ -63,11 +22,11 @@ type SearchModalProps = {
 }
 
 const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisible }) => {
-  const target = type === modalTypeBuddy ? 'buddy'
+  const targetName = type === modalTypeBuddy ? 'buddy'
     : type === modalTypeSupervisor ? 'supervisor'
     : type === modalTypeDiveCenter && 'dive center';
 
-  const [options, setOptions] = useState<UserOption[] | DiveCenterOption[]>([]);
+  const [options, setOptions] = useState<FindUsersReturn | FindDiveCentersReturn>([]);
 
   const ref = useRef<HTMLDivElement>(null);
   const onClickOutside = () => setIsModalVisible(false);
@@ -75,19 +34,25 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
 
 
   const handleKeywordChange = useDebouncedCallback( async(val: string): Promise<void> => {
-    if (type > 0) {
-      const targetKey = type === modalTypeDiveCenter ? 'diveCenters' : 'users';
-
-      if (val) {
-        await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/${targetKey}/find/${val}`,
-          { withCredentials: true }
-        ).then((res) => {
-          setOptions(res.data);
-        })
-        .catch((err) => {
-          console.log('Error while fetching options: ', err);
-        });
-
+    if (val) {
+      try {
+        const res = (type === modalTypeDiveCenter)
+          ? await findDiveCenters({
+            keyword: val,
+            country: '',
+            organization: '',
+            status: 1,
+          })
+          : await findUsers({
+            keyword: val,
+            status: 1,
+          })
+        if (res) {
+          console.log('res:', res)
+          setOptions(res);
+        }
+      } catch (error) {
+        console.log('Error while fetching options: ', error);
       }
     }
   }, 500);
@@ -117,7 +82,7 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
         onClick={() => setIsModalVisible(false)}
         className="absolute top-2 right-3 text-2xl hover:cursor-pointer hover:text-darkBlueLight duration-75"
       />
-      <p className="text-center my-3 pt-3 font-bold text-lg">Find { target }</p>
+      <p className="text-center my-3 pt-3 font-bold text-lg">Find { targetName }</p>
       <input
         type="text"
         className="w-9/12 h-10 p-1 my-3 bg-lightBlue rounded-md focus:outline-none"
@@ -131,12 +96,12 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
             className="mx-auto py-6 flex justify-between items-center hover:text-darkBlueLight"
           >
             <div className="flex flex-col items-start">
-              {isDiveCenterOption(option) ? (
+              {isDiveCenterHighLight(option) ? (
                 <>
                   <p className="text-md">{ option.name }</p>
-                  <p className="text-sm" >{ option.country?.name }</p>
+                  <p className="text-sm" >{ option.country }</p>
                 </>
-              ) : (
+              ) : isUserHighLight(option) && (
                 <>
                   <p className="text-md">{ option.license_name }</p>
                   <p className="text-sm">@{ option.divlog_name }</p>
@@ -146,7 +111,7 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
             <input type="hidden" name='id' value={option.id} />
             <button
               className="w-fit bg-white border border-darkBlue hover:bg-lightBlue duration-75 text-sm px-2 py-1 rounded-md"
-              onClick={(e) => handleOptionClick({ e, id:option.id, name: isDiveCenterOption(option) ? option.name : option.divlog_name })}
+              onClick={(e) => handleOptionClick({ e, id:option.id, name: isUserHighLight(option) ? option.divlog_name : isDiveCenterHighLight(option) ? option.name : '' })}
             >Select</button>
           </div>
         ))}

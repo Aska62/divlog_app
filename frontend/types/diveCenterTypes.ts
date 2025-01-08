@@ -2,7 +2,6 @@ import { UUID } from "crypto";
 import isObject from "@/utils/isObject";
 import isObjectEmpty from "@/utils/isObjectEmpty";
 import isString from "@/utils/isString";
-import { UserType } from '@/types/userTypes';
 
 export type DiveCenter = {
   id             : UUID,
@@ -21,20 +20,17 @@ export type DiveCenter = {
 
 export type DiveCenterHighLight = Omit<DiveCenter, 'staffs' | 'follower_count'>;
 
-export const isDiveCenterHighLight = (val:unknown): val is UserType => {
+export const isDiveCenterHighLight = (val:unknown): val is DiveCenterHighLight => {
   if (!val || !isObject(val) || isObjectEmpty(val)) {
     return false;
   }
 
-  const keys = ['id', 'name', 'country', 'email', 'organization'];
+  const keys = ['id', 'name', 'country', 'email', 'organization', 'is_following'];
 
   const wrongEntries = Object.entries(val).filter(([k, v]) =>
-    !keys.includes(k) || (!isString(v))
+    !keys.includes(k) ||
+    (k === 'is_following' ? typeof v !== 'boolean' : !isString(v))
   );
 
-  if (wrongEntries.length > 0) {
-    return false;
-  }
-
-  return true;
+  return wrongEntries.length === 0;
 }

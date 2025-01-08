@@ -556,7 +556,15 @@ const findUsers = async(req, res) => {
   try {
     const users = await prisma.user.findMany(conditions);
     if (users) {
-      res.status(200).json(users);
+      res.status(200).json(users.map((user) => {
+        return {
+          id: user.id,
+          divlog_name: user.divlog_name,
+          license_name: user.license_name,
+          is_following: user.following_users.length > 0,
+          is_followed: user.followers.length > 0,
+        }
+      }));
     } else {
       res.status(200).send({
         message: 'No matching users found'

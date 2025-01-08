@@ -15,8 +15,8 @@ const BuddyCard = ({user, mx, my}: BuddyCardProps) => {
     className={`${mx && `mx-${mx}`} ${my && `my-${my}`} flex items-center relative w-80 h-32 border border-darkBlue dark:border-lightBlue rounded-md shadow-dl hover:bg-lightBlue dark:hover:bg-baseBlackLight duration-75`}
     >
       <div className="flex absolute top-1 right-2">
-        {user.following_users.length > 0 && <RiUserFollowFill />}
-        {user.followers.length > 0 && <RiUserFollowLine />}
+        {user.is_following && <RiUserFollowFill />}
+        {user.is_followed && <RiUserFollowLine />}
       </div>
       <div className="w-16 h-16 rounded-full bg-lightBlue mx-3"></div>
       <div>
