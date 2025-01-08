@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DiveRecordHighlight } from '@/types/diveRecordTypes';
 import formatDate from '@/utils/dateTime/formatDate';
+import ParticipantIcon, { isBuddy, isInstructor} from "../buddies/InvolvedDiveIcon";
 
 type LogCardProps = Omit<DiveRecordHighlight,
   | 'country'
@@ -33,6 +34,13 @@ const LogCard:React.FC<LogCardProps> = ({
       {is_draft && (
         <p className="absolute top-1 right-1 bg-lightBlue text-sm px-2 rounded-md text-darkBlue">Draft</p>
       )}
+
+      {/* Participate icons */}
+      <div className="absolute top-0 right-0 w-12 flex justify-around ml-auto mr-0 mb-3">
+        {is_my_buddy_dive && <ParticipantIcon type={isBuddy} />}
+        {is_my_instruction && <ParticipantIcon type={isInstructor} />}
+      </div>
+
       <div className="w-full h-full flex flex-col items-center justify-center">
         <p className="text-sm">No. {log_no}</p>
         <p className="text-2xl pt-1 text-wrap text-center">{location}</p>
