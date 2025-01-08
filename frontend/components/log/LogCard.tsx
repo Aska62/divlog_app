@@ -13,6 +13,7 @@ type LogCardProps = Omit<DiveRecordHighlight,
 }
 
 const LogCard:React.FC<LogCardProps> = ({
+  is_visitor,
   id,
   log_no,
   user_id,
@@ -22,7 +23,6 @@ const LogCard:React.FC<LogCardProps> = ({
   country_name,
   is_my_buddy_dive,
   is_my_instruction,
-  is_visitor
 }) => {
 
   return (

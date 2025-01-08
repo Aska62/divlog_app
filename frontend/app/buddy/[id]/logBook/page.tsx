@@ -58,25 +58,29 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
       <div className="w-8/12 md:w-1/3 max-w-md h-fit mx-auto mt-6 mb-12">
 
         {isError ? (
-            <p>Error occurred</p>
-          ) : isLoading ? (
-            <p>Loading...</p>
+          <p>Error occurred</p>
+        ) : isLoading ? (
+          <p>Loading...</p>
           ) : record.length === 0 ? (
-            <p>No dive record on DivLog</p>) : record.map((r) => (
-              <LogCard
-                key={r.id}
-                id={r.id}
-                user_id={r.user_id}
-                is_draft={false}
-                log_no={r.log_no}
-                date={r.date}
-                location={r.location}
-                country_name={r.country}
-                is_my_buddy_dive={r.is_my_buddy_dive}
-                is_my_instruction={r.is_my_instruction}
-                is_visitor={true}
-              />
-          ))
+            <p>No dive record on DivLog</p>
+          ) :
+            <div className="w-full max-w-5xl mx-auto flex flex-col items-center md:flex-row md:justify-center md:flex-wrap pt-4 pb-10">
+              {record.map((r) => (
+                <LogCard
+                  key={r.id}
+                  is_visitor={true}
+                  id={r.id}
+                  user_id={r.user_id}
+                  is_draft={false}
+                  log_no={r.log_no}
+                  date={r.date}
+                  location={r.location}
+                  country_name={r.country}
+                  is_my_buddy_dive={r.is_my_buddy_dive}
+                  is_my_instruction={r.is_my_instruction}
+                />
+              ))}
+            </div>
         }
       </div>
     </>
