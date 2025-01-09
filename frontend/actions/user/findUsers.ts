@@ -35,8 +35,11 @@ export const isUserHighLight = (value: unknown): value is UserHighlight => {
   }
 
   return !Object.entries(value).find(([key, val]) => {
-    return (['is_following', 'is_followed'].includes(key) && typeof val !== 'boolean')
-    || !['is_following', 'is_followed'].includes(key) && !isString(val)
+    if (['is_following', 'is_followed'].includes(key)) {
+      return typeof val !== 'boolean';
+    } else if (['id', 'divlog_name'].includes(key)) {
+      return !isString(val);
+    }
   });
 }
 
