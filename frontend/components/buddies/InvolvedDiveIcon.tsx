@@ -28,7 +28,7 @@ const ParticipantIcon = ({type}: ParticipantIconProps) => {
 
         {showTooltip && (
           <div
-            className={`bg-baseWhite text-darkBlue shadow-dl w-fit px-2 py-1 rounded-md absolute bottom-6 ${type === isBuddy ? 'right-6' : 'left-6'}`}>
+            className={`bg-baseWhite text-darkBlue shadow-dl w-20 px-2 py-1 rounded-md absolute bottom-6 ${type === isBuddy ? 'right-4' : 'left-6'}`}>
             <p>{type === isBuddy ? 'You are a buddy' : 'You are a supervisor'}</p>
           </div>
         )}
