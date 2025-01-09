@@ -4,7 +4,7 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { RiUserFollowFill } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { useDebouncedCallback } from 'use-debounce';
-import { findDiveCenters , findDiveCentersReturn, isFindDiveCentersParams } from '@/actions/diveCenter/findDiveCenters';
+import { findDiveCenters , FindDiveCentersReturn, isFindDiveCentersParams } from '@/actions/diveCenter/findDiveCenters';
 import Heading from "@/components/Heading";
 import CountryOptions from '@/components/CountryOptions';
 import OrganizationOptions from '@/components/OrganizationOptions';
@@ -15,7 +15,7 @@ const DiveCenterListPage = () => {
   const pathName = usePathname();
   const router = useRouter();
 
-  const [diveCenters, setDiveCenters] = useState<findDiveCentersReturn>([]);
+  const [diveCenters, setDiveCenters] = useState<FindDiveCentersReturn>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>(searchParams.get('name') || '');
   const [country, setCountry] = useState<string>(searchParams.get('country') || '');
@@ -38,15 +38,12 @@ const DiveCenterListPage = () => {
 
     switch (name) {
       case 'name':
-        console.log('name')
         setName(value);
         break;
       case 'country':
-        console.log('country')
         setCountry(value);
         break;
       case 'organization':
-        console.log('org')
         setOrganization(value);
         break;
     }
