@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
-import { toast } from "react-toastify";
 import { useDebouncedCallback } from 'use-debounce';
+import { toast } from "react-toastify";
 import { UUID } from "crypto";
 import {
   findBuddysDiveRecords,
@@ -77,7 +77,6 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
   }, 300);
 
   const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.preventDefault();
     const { name, value } = e.target;
     let isBoolean = false;
     let boolValue;

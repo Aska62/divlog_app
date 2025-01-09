@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
+import { toast } from "react-toastify";
 import { isDiveRecordHighlightArray, DiveRecordHighlight } from '@/types/diveRecordTypes';
 import { findMyDiveRecords } from '@/actions/diveRecord/findMyDiveRecords';
 import Heading from "@/components/Heading";
@@ -15,43 +16,94 @@ const LogBokPage = () => {
   const router = useRouter();
 
   const [diveRecords, setDiveRecords] = useState<[DiveRecordHighlight?]>([]);
-  // TODO:test
-  const handleInputChange = useDebouncedCallback((e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+  const [dateFrom, setDateFrom] = useState<string>(searchParams.get('dateFrom') || '');
+  const [dateTo, setDateTo] = useState<string>(searchParams.get('dateTo') || '');
+  const [logNoFrom, setLogNoFrom] = useState<string>(searchParams.get('logNoFrom') || '');
+  const [logNoTo, setLogNoTo] = useState<string>(searchParams.get('logNoTo') || '');
+  const [country, setCountry] = useState<string>(searchParams.get('country') || '');
+  const [status, setStatus] = useState<string>(searchParams.get('status') || '');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+
+  const updateQueryParams = useDebouncedCallback(({
+    name, value
+  }: {
+    name: string,
+    value?: string
+  }) => {
     const params = new URLSearchParams(searchParams);
+
+    if (value) {
+      params.set(name, value);
+    } else {
+      params.delete(name);
+    }
+
+    router.replace(`${pathName}/?${params.toString()}`);
+  }, 300);
+
+  const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    if (name) {
-      if (value) {
-        params.set(name, value);
-      } else {
-        params.delete(name);
-      }
-
-      router.replace(`${pathName}/?${params.toString()}`);
+    switch (name) {
+      case 'dateFrom':
+        setDateFrom(value);
+        break;
+      case 'dateTo':
+        setDateTo(value);
+        break;
+      case 'logNoFrom':
+        setLogNoFrom(value);
+        break;
+      case 'logNoTo':
+        setLogNoTo(value);
+        break;
+      case 'country':
+        setCountry(value);
+        break;
+      case 'status':
+        setStatus(value);
+        break;
     }
-  }, 300);
+
+    updateQueryParams({name, value});
+  }
 
   // Clear
   const handleClear = (e:React.MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
     router.replace(`${pathName}`);
+    setDateFrom('');
+    setDateTo('');
+    setLogNoFrom('');
+    setLogNoTo('');
+    setCountry('');
+    setStatus('');
   }
 
   useEffect(() => {
     const getLogData = async() => {
-      const dateFrom = searchParams.get('dateFrom')?.toString();
-      const dateTo = searchParams.get('dateTo')?.toString();
-      const logNoFrom = searchParams.get('logNoFrom')?.toString();
-      const logNoTo = searchParams.get('logNoTo')?.toString();
-      const country = searchParams.get('country')?.toString();
-      const status = searchParams.get('status')?.toString();
+      setIsLoading(true);
+      const queryParams = {
+        dateFrom : searchParams.get('dateFrom')?.toString() || '',
+        dateTo   : searchParams.get('dateTo')?.toString() || '',
+        logNoFrom: searchParams.get('logNoFrom')?.toString() || '',
+        logNoTo  : searchParams.get('logNoTo')?.toString() || '',
+        country  : searchParams.get('country')?.toString() || '',
+        status   : searchParams.get('status')?.toString() || '',
+      }
 
-      const record = await findMyDiveRecords({dateFrom, dateTo, logNoFrom, logNoTo, country, status})
+      try {
+        const record = await findMyDiveRecords(queryParams)
 
-      if (isDiveRecordHighlightArray(record)) {
-        setDiveRecords(record);
-      } else {
-        setDiveRecords([])
+        setDiveRecords(isDiveRecordHighlightArray(record) ? record : []);
+        setIsError(false);
+      } catch (error) {
+        setIsError(true);
+        toast.error('Failed to find dive record');
+        console.log('error:', error);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -78,7 +130,7 @@ const LogBokPage = () => {
                 placeholder="Date"
                 className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
                 onChange={(e) => handleInputChange(e)}
-                defaultValue={searchParams.get('dateFrom')?.toString()}
+                value={dateFrom}
               />
             </div>
             <div className="w-full md:w-6/12 flex justify-between mb-3 md:mx-0">
@@ -89,7 +141,7 @@ const LogBokPage = () => {
                 placeholder="Date"
                 className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
                 onChange={(e) => handleInputChange(e)}
-                defaultValue={searchParams.get('dateTo')?.toString()}
+                value={dateTo}
               />
             </div>
           </div>
@@ -107,7 +159,7 @@ const LogBokPage = () => {
                 placeholder="Log no."
                 className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
                 onChange={(e) => handleInputChange(e)}
-                defaultValue={searchParams.get('logNoFrom')?.toString()}
+                value={logNoFrom}
               />
             </div>
             <div className="w-full md:w-6/12 flex justify-between mb-3 md:mx-0">
@@ -118,7 +170,7 @@ const LogBokPage = () => {
                 placeholder="Log no."
                 className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
                 onChange={(e) => handleInputChange(e)}
-                defaultValue={searchParams.get('logNoTo')?.toString()}
+                value={logNoTo}
               />
             </div>
           </div>
@@ -130,7 +182,7 @@ const LogBokPage = () => {
             name="country"
             className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 self-end md:ml-3 focus:outline-none"
             onChange={(e) => handleInputChange(e)}
-            defaultValue={searchParams.get('country')?.toString()}
+            value={country}
           >
             <option value="">--- Please select ---</option>
             <CountryOptions />
@@ -148,7 +200,7 @@ const LogBokPage = () => {
                 id="all"
                 value="1"
                 onChange={(e) => handleInputChange(e)}
-                checked={!searchParams.get('status') || searchParams.get('status')?.toString() === '1'}
+                checked={status === '1'}
               />
               <label htmlFor="all" className="ml-2">All</label>
             </div>
@@ -159,7 +211,7 @@ const LogBokPage = () => {
                 id="nonDraft"
                 value="2"
                 onChange={(e) => handleInputChange(e)}
-                checked={searchParams.get('status')?.toString() === '2'}
+                checked={status === '2'}
               />
               <label htmlFor="nonDraft" className="ml-2">Non-Draft</label>
             </div>
@@ -170,7 +222,7 @@ const LogBokPage = () => {
                 id="draft"
                 value="3"
                 onChange={(e) => handleInputChange(e)}
-                checked={searchParams.get('status')?.toString() === '3'}
+                checked={status === '3'}
               />
               <label htmlFor="draft" className="ml-2">Draft</label>
             </div>
@@ -185,24 +237,31 @@ const LogBokPage = () => {
         </button>
       </form>
 
-      <div className="w-full max-w-5xl mx-auto flex flex-col items-center md:flex-row md:justify-center md:flex-wrap pt-4 pb-10">
-        { isDiveRecordHighlightArray(diveRecords) && diveRecords.length > 0 ?
-          diveRecords.map((record) => (
-            <LogCard
-              key={record.id}
-              user_id={record.user_id}
-              id={record.id}
-              log_no={record.log_no}
-              date={record.date}
-              location={record.location}
-              is_draft={record.is_draft}
-              country_name={record.country}
-              is_visitor={false}
-            />
-          )
-        ) : (
-          <div>No dive logged on DivLog</div>
-        )}
+      {/* Search result */}
+      <div className="w-8/12 md:w-1/3 max-w-md h-fit mx-auto mt-6 mb-12 ">
+        { isError ? (
+          <p>Error occurred</p>
+        ) : isLoading ? (
+          <p>Loading...</p>
+        ) : diveRecords.length === 0 ? (
+          <p>No dive record on DivLog</p>
+        ) : isDiveRecordHighlightArray(diveRecords) &&
+          <div className="w-full max-w-5xl mx-auto flex flex-col items-center md:flex-row md:justify-center md:flex-wrap pt-4 pb-10">
+            {diveRecords.map((record) => (
+              <LogCard
+                key={record.id}
+                user_id={record.user_id}
+                id={record.id}
+                log_no={record.log_no}
+                date={record.date}
+                location={record.location}
+                is_draft={record.is_draft}
+                country_name={record.country}
+                is_visitor={false}
+              />
+            ))}
+          </div>
+        }
       </div>
     </>
   );
