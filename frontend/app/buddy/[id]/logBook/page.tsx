@@ -73,9 +73,50 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
     fetchRecordAndName();
   }, [params]);
 
+  const updateQueryParams = useDebouncedCallback(({name, value}: {name: string, value: string}) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (value) {
+      params.set(name, value);
+    } else {
+      params.delete(name);
+    }
+
+    router.replace(`${pathName}/?${params.toString()}`);
+  }, 300);
+
   const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     e.preventDefault();
-    console.log('handleInputChange');
+    const { name, value } = e.target;
+    let isBoolean = false;
+
+    switch (name) {
+      case 'dateFrom':
+        setDateFrom(value);
+        break;
+      case 'dateTo':
+        setDateTo(value);
+        break;
+      case 'logNoFrom':
+        setLogNoFrom(value);
+        break;
+      case 'logNoTo':
+        setLogNoTo(value);
+        break;
+      case 'country':
+        setCountry(value);
+        break;
+      case 'isMyBuddyDive':
+        setIsMyBuddyDive(!isMyBuddyDive);
+        isBoolean = true;
+        break;
+      case 'isMyInstruction':
+        setIsMyInstruction(!isMyInstruction);
+        isBoolean = true;
+        break;
+    }
+
+    updateQueryParams({name, value: isBoolean ? '' : value});
   }
 
   // Clear
