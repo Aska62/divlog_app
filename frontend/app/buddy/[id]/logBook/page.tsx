@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useDebouncedCallback } from 'use-debounce';
 import { UUID } from "crypto";
 import {
   findBuddysDiveRecords,
@@ -9,12 +11,17 @@ import {
 import { getDivlogNameById } from '@/actions/user/getDivlogNameById';
 import Heading from "@/components/Heading";
 import LogCard from '@/components/log/LogCard';
+import CountryOptions from '@/components/CountryOptions';
 
 type BuddyDiveRecordListPageParams = {
   params: Promise<{ id: UUID }>
 }
 
 const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ params }) => {
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const router = useRouter();
+
   const [owner, setOwner] = useState<{
     id: UUID,
     divlog_name: string
@@ -59,11 +66,131 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
     fetchRecordAndName();
   }, [params]);
 
+  const handleInputChange = (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    e.preventDefault();
+    console.log('handleInputChange');
+  }
+
+  // Clear
+  const handleClear = (e:React.MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault();
+    router.replace(`${pathName}`);
+  }
+
   return (
     <>
       <Heading pageTitle={`${owner.divlog_name || 'Buddy'}'s Log Book`} />
-      <div className="w-8/12 md:w-1/3 max-w-md h-fit mx-auto mt-6 mb-12">
+      <div>
 
+        {/* Search form */}
+        <form className="flex flex-col max-w-xl py-4 px-5 rounded-sm mx-auto my-6 shadow-dl">
+          {/* Date */}
+          <div className="w-full flex flex-col md:flex-row md:justify-between mb-4">
+            <p>Date</p>
+            <div className="w-full md:w-10/12 flex flex-col md:flex-row md:justify-between">
+              <div className="w-full md:w-6/12 flex justify-between mb-3 md:mx-0">
+                <label htmlFor="dateFrom" className="text-sm pl-3 md:pl-0 md:px-1">From</label>
+                <input
+                  type="date"
+                  name="dateFrom"
+                  placeholder="Date"
+                  className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
+                  onChange={(e) => handleInputChange(e)}
+                  defaultValue={searchParams.get('dateFrom')?.toString()}
+                />
+              </div>
+              <div className="w-full md:w-6/12 flex justify-between mb-3 md:mx-0">
+                <label htmlFor="dateTo" className="text-sm pl-3 md:pl-0 md:px-1">To</label>
+                <input
+                  type="date"
+                  name="dateTo"
+                  placeholder="Date"
+                  className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
+                  onChange={(e) => handleInputChange(e)}
+                  defaultValue={searchParams.get('dateTo')?.toString()}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Log No. */}
+          <div className="w-full flex flex-col md:flex-row md:justify-between mb-4">
+            <p className="w-fit m-0">Log No.</p>
+            <div className="w-full md:w-10/12 flex flex-col md:flex-row md:justify-between">
+              <div className="w-full md:w-6/12 flex justify-between mb-3 md:mx-0">
+                <label htmlFor="logNoFrom" className="text-sm pl-3 md:pl-0 md:px-1">From</label>
+                <input
+                  type="number"
+                  name="logNoFrom"
+                  placeholder="Log no."
+                  className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
+                  onChange={(e) => handleInputChange(e)}
+                  defaultValue={searchParams.get('logNoFrom')?.toString()}
+                />
+              </div>
+              <div className="w-full md:w-6/12 flex justify-between mb-3 md:mx-0">
+                <label htmlFor="logNoTo" className="text-sm pl-3 md:pl-0 md:px-1">To</label>
+                <input
+                  type="number"
+                  name="logNoTo"
+                  placeholder="Log no."
+                  className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-10/12 md:w-full px-1 focus:outline-none"
+                  onChange={(e) => handleInputChange(e)}
+                  defaultValue={searchParams.get('logNoTo')?.toString()}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full mb-4 flex flex-col md:flex-row md:justify-between">
+            <label htmlFor="country">Country/region</label>
+            <select
+              name="country"
+              className="text-black bg-lightBlue dark:bg-baseWhite rounded-sm w-full md:w-3/5 h-7 self-end md:ml-3 focus:outline-none"
+              onChange={(e) => handleInputChange(e)}
+              defaultValue={searchParams.get('country')?.toString()}
+            >
+              <option value="">--- Please select ---</option>
+              <CountryOptions />
+            </select>
+          </div>
+
+          {/* Involvement status */}
+          <div className="w-full flex flex-col md:flex-row mb-4">
+            <div className="mr-6">
+              <input
+                type="checkbox"
+                name="isMyBuddyDive"
+                id="isMyBuddyDive"
+                value="1"
+                onChange={(e) => handleInputChange(e)}
+                checked={searchParams.get('isMyBuddyDive')?.toString() === '0'}
+              />
+              <label htmlFor="isMyBuddyDive" className="ml-2">With me as a buddy</label>
+            </div>
+            <div className="mr-6">
+              <input
+                type="checkbox"
+                name="isMyInstruction"
+                id="isMyInstruction"
+                value="1"
+                onChange={(e) => handleInputChange(e)}
+                checked={searchParams.get('isMyInstruction')?.toString() === '0'}
+              />
+              <label htmlFor="isMyInstruction" className="ml-2">With me as a supervisor</label>
+            </div>
+          </div>
+
+          <button
+            onClick={(e) => handleClear(e)}
+            className="self-end bg-lightGray dark:bg-lightBlue hover:bg-darkBlue dark:hover:bg-lightGray duration-75 text-baseWhite dark:text-baseBlack px-2 rounded-md"
+          >
+            Clear
+          </button>
+        </form>
+
+        {/* Search result */}
+        <div className="w-8/12 md:w-1/3 max-w-md h-fit mx-auto mt-6 mb-12 ">
         {isError ? (
           <p>Error occurred</p>
         ) : isLoading ? (
@@ -88,7 +215,8 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
                 />
               ))}
             </div>
-        }
+          }
+        </div>
       </div>
     </>
   );
