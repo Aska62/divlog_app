@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { TbScubaMask } from "react-icons/tb";
 import { UUID } from 'crypto';
+import useUser from '@/stores/useUser';
 import isObjectEmpty from '@/utils/isObjectEmpty';
 import { getDiveCenterInfo } from '@/actions/diveCenter/getDiveCenterInfo';
 import followDiveCenter from '@/actions/diveCenterFollow/followDiveCenter';
@@ -21,12 +22,6 @@ const DiveCenterPage: React.FC<DiveCenterPageParams> = ({ params }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
-  const [userId, setUserId] = useState<UUID | null>(null);
-
-    useEffect(() => {
-      const userInfo = window.localStorage.getItem('userInfo');
-      setUserId(userInfo ? JSON.parse(userInfo).id : null);
-    }, []);
 
   useEffect(() => {
     const getDiveCenter = async() => {
@@ -165,7 +160,7 @@ const DiveCenterPage: React.FC<DiveCenterPageParams> = ({ params }) => {
                 <div className='w-full flex items-start'>
                   {diveCenter.staffs.map((staff) => (
                     <Link
-                      href={staff.id === userId ? '/account' : '/buddy/${staff.id}' }
+                      href={staff.id === useUser.getState().userId ? '/account' : '/buddy/${staff.id}' }
                       key={staff.id}
                       className='my-2 mx-3 py-2 px-3 rounded-md flex w-fit items-center hover:shadow-dl'
                     >

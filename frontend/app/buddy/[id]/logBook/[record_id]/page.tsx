@@ -5,6 +5,7 @@ import { getBuddyDiveRecordById, GetBuddyDiveRecordReturn, isDiveRecordDetailRet
 import formatDate from "@/utils/dateTime/formatDate";
 import formatTime from '@/utils/dateTime/formatTime';
 import calculateTimeGap from '@/utils/dateTime/calculateTimeGap';
+import useUser from '@/stores/useUser';
 import Heading from "@/components/Heading";
 import { UUID } from 'crypto';
 
@@ -156,14 +157,20 @@ const BuddyLogPage: React.FC<BuddyLogPageProps> = ({ params }) => {
             {/* Buddy */}
             <div className="items-baseline mb-8">
               <p className="text-sm mr-2">Buddy: </p>
-              { diveRecord.buddy ? (
-                <Link
-                  href={`/user/${diveRecord.buddy.id}`}
-                  className="text-lg hover:text-eyeCatch"
-                >
-                  { diveRecord.buddy.divlog_name }
-                </Link>
-              ) : (
+              { diveRecord.buddy ?
+                  diveRecord.buddy.id === useUser.getState().userId ? (
+                    <Link
+                      href={`/user/${diveRecord.buddy.id}`}
+                      className="text-lg hover:text-eyeCatch"
+                    >
+                      { diveRecord.buddy.divlog_name }
+                    </Link>
+                  ) : (
+                    <p className="text-lg hover:text-eyeCatch">
+                      { diveRecord.buddy.divlog_name }
+                    </p>
+                  )
+              : (
                 <p className="text-lg">
                   { diveRecord.buddy_str ? diveRecord.buddy_str : '-' }
                 </p>

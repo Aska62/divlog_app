@@ -1,3 +1,4 @@
+import { UUID } from 'crypto';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -34,7 +35,8 @@ export const isUserInfo = (value: unknown):value is UserInfo => {
 }
 
 type State = {
-  isAuth: boolean
+  isAuth: boolean,
+  userId: UUID | null,
 };
 
 type Action = {
@@ -45,9 +47,13 @@ const useUser = create(
   (persist<State & Action>(
     (set) => ({
       isAuth: false,
+      userId: null,
       setIsAuth: () => {
         const userSession = localStorage.getItem('userInfo');
-        set({ isAuth: !!userSession });
+        set({
+          isAuth: !!userSession,
+          userId: userSession ? JSON.parse(userSession).id : null,
+        });
       },
     }),
     {

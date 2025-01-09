@@ -48,7 +48,6 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
             status: 1,
           })
         if (res) {
-          console.log('res:', res)
           setOptions(res);
         }
       } catch (error) {
