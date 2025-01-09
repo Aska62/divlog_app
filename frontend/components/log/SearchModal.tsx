@@ -1,5 +1,5 @@
 'use client';
-import { useState, MouseEvent, useRef } from "react";
+import { useState, MouseEvent, useRef, useEffect } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 import { RxCross2 } from "react-icons/rx";
 import { useClickOutside } from "@/hooks/useClickOutside";
@@ -27,34 +27,36 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
     : type === modalTypeDiveCenter && 'dive center';
 
   const [options, setOptions] = useState<FindUsersReturn | FindDiveCentersReturn>([]);
-
+  const [keyword, setKeyword] = useState<string>('');
   const ref = useRef<HTMLDivElement>(null);
   const onClickOutside = () => setIsModalVisible(false);
   useClickOutside(ref, onClickOutside);
 
-
-  const handleKeywordChange = useDebouncedCallback( async(val: string): Promise<void> => {
-    if (val) {
-      try {
-        const res = (type === modalTypeDiveCenter)
-          ? await findDiveCenters({
-            keyword: val,
-            country: '',
-            organization: '',
-            status: 1,
-          })
-          : await findUsers({
-            keyword: val,
-            status: 1,
-          })
-        if (res) {
-          setOptions(res);
-        }
-      } catch (error) {
-        console.log('Error while fetching options: ', error);
+  const handleSearch = useDebouncedCallback( async(val: string): Promise<void> => {
+    try {
+      const res = (type === modalTypeDiveCenter)
+        ? await findDiveCenters({
+          keyword: val,
+          country: '',
+          organization: '',
+          status: 1,
+        })
+        : await findUsers({
+          keyword: val,
+          status: 1,
+        })
+      if (res) {
+        setOptions(res);
       }
+    } catch (error) {
+      console.log('Error while fetching options: ', error);
     }
-  }, 500);
+  }, 300);
+
+  const handleKeywordChange = (val: string): void => {
+    setKeyword(val);
+    handleSearch(val);
+  };
 
   type HandleOptionClick = {
     e: MouseEvent<HTMLButtonElement>,
@@ -72,6 +74,10 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
     setIsModalVisible(false);
   }
 
+  useEffect(() => {
+    handleSearch('');
+  }, [handleSearch]);
+
   return (
     <div
       ref={ref}
@@ -86,6 +92,7 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
         type="text"
         className="w-9/12 h-10 p-1 my-3 bg-lightBlue rounded-md focus:outline-none"
         placeholder="Find by name"
+        value={keyword}
         onChange={(e) => handleKeywordChange(e.target.value)}
       />
       <div className="w-10/12 md:w-8/12 mx-auto my-3 overflow-y-scroll">
