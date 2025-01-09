@@ -18,6 +18,8 @@ const BuddyLogPage: React.FC<BuddyLogPageProps> = ({ params }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
 
+  const userId = useUser.getState().userId;
+
   useEffect(() => {
     const fetchLogRecord = async () => {
       setIsLoading(true);
@@ -46,7 +48,7 @@ const BuddyLogPage: React.FC<BuddyLogPageProps> = ({ params }) => {
 
   return (
     <>
-      <Heading pageTitle={`${diveRecord.owner?.divlog_name}'s Log No. ${diveRecord.log_no || '-'}`} />
+      <Heading pageTitle={`${diveRecord.owner?.divlog_name || 'Buddy'}'s Log No. ${diveRecord.log_no || '-'}`} />
       <div className="w-8/12 md:w-1/3 max-w-md h-fit mx-auto mt-20 mb-12">
 
         {isError ? (
@@ -158,18 +160,17 @@ const BuddyLogPage: React.FC<BuddyLogPageProps> = ({ params }) => {
             <div className="items-baseline mb-8">
               <p className="text-sm mr-2">Buddy: </p>
               { diveRecord.buddy ?
-                  diveRecord.buddy.id === useUser.getState().userId ? (
-                    <Link
-                      href={`/user/${diveRecord.buddy.id}`}
-                      className="text-lg hover:text-eyeCatch"
-                    >
-                      { diveRecord.buddy.divlog_name }
-                    </Link>
-                  ) : (
-                    <p className="text-lg hover:text-eyeCatch">
-                      { diveRecord.buddy.divlog_name }
-                    </p>
-                  )
+                diveRecord.buddy.id === userId ? (
+                  <p className="text-lg">
+                    { diveRecord.buddy.divlog_name }
+                  </p>
+                ) : (
+                  <Link
+                    href={`/buddy/${diveRecord.buddy.id}`}
+                    className="text-lg hover:text-eyeCatch"
+                  >
+                    { diveRecord.buddy.divlog_name }
+                  </Link>)
               : (
                 <p className="text-lg">
                   { diveRecord.buddy_str ? diveRecord.buddy_str : '-' }
@@ -180,13 +181,18 @@ const BuddyLogPage: React.FC<BuddyLogPageProps> = ({ params }) => {
             {/* Supervisor */}
             <div className="items-baseline mb-8">
               <p className="text-sm mr-2">Supervisor: </p>
-              { diveRecord.supervisor ? (
-                <Link
-                  href={`/user/${diveRecord.supervisor.id}`}
-                  className="text-lg hover:text-eyeCatch"
-                >
+              { diveRecord.supervisor ?
+                diveRecord.supervisor.id === userId ? (
+                  <p className="text-lg">
                     { diveRecord.supervisor.divlog_name }
-                </Link>
+                  </p>
+                ) : (
+                  <Link
+                    href={`/buddy/${diveRecord.supervisor.id}`}
+                    className="text-lg hover:text-eyeCatch"
+                  >
+                      { diveRecord.supervisor.divlog_name }
+                  </Link>
               ) : (
                 <p className="text-lg">
                   { diveRecord.supervisor_str ? diveRecord.supervisor_str : '-' }
