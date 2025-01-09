@@ -1,12 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { toast } from "react-toastify";
 import { useDebouncedCallback } from 'use-debounce';
 import { UUID } from "crypto";
 import {
   findBuddysDiveRecords,
   FindBuddysDiveRecordsArray,
-  isFindBuddysDiveRecordsArray
+  isFindBuddysDiveRecordsArray,
+  isFindBuddysDiveRecordsPrams,
 } from "@/actions/diveRecord/findBuddysDiveRecords";
 import { getDivlogNameById } from '@/actions/user/getDivlogNameById';
 import Heading from "@/components/Heading";
@@ -38,26 +40,12 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
   const [isMyInstruction, setIsMyInstruction] = useState<boolean>(!!searchParams.get('isMyInstruction'));
 
   useEffect(() => {
-    const fetchDiveRecord = async(userId: UUID) => {
-      try {
-        const res = await findBuddysDiveRecords({userId});
-
-        setRecord(isFindBuddysDiveRecordsArray(res.data) ? res.data : []);
-        setIsError(!!res.error);
-      } catch (error) {
-        console.log('Error in fetchDiveRecord', error);
-        setIsError(true);
-      }
-    }
-
-    const fetchRecordAndName = async() => {
-      setIsLoading(true);
+    const fetchLogOwnerName = async() => {
       const { id } = await params; // user id
 
       try {
         await getDivlogNameById(id)
         .then((res) => {
-          fetchDiveRecord(id);
           setOwner({
             id,
             divlog_name: res?.divlog_name || ''
@@ -65,15 +53,18 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
         })
       } catch (error) {
         console.log('Error fetching divlog name', error);
-      } finally {
-        setIsLoading(false);
       }
     }
 
-    fetchRecordAndName();
+    fetchLogOwnerName();
   }, [params]);
 
-  const updateQueryParams = useDebouncedCallback(({name, value}: {name: string, value: string}) => {
+  const updateQueryParams = useDebouncedCallback(({
+    name, value
+  }: {
+    name: string,
+    value?: string
+  }) => {
     const params = new URLSearchParams(searchParams);
 
     if (value) {
@@ -89,6 +80,7 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
     e.preventDefault();
     const { name, value } = e.target;
     let isBoolean = false;
+    let boolValue;
 
     switch (name) {
       case 'dateFrom':
@@ -107,16 +99,18 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
         setCountry(value);
         break;
       case 'isMyBuddyDive':
-        setIsMyBuddyDive(!isMyBuddyDive);
         isBoolean = true;
+        boolValue = isMyBuddyDive ? '' : '1';
+        setIsMyBuddyDive(!isMyBuddyDive);
         break;
       case 'isMyInstruction':
-        setIsMyInstruction(!isMyInstruction);
         isBoolean = true;
+        boolValue = isMyInstruction ? '' : '1';
+        setIsMyInstruction(!isMyInstruction);
         break;
     }
 
-    updateQueryParams({name, value: isBoolean ? '' : value});
+    updateQueryParams({name, value: isBoolean ? boolValue : value});
   }
 
   // Clear
@@ -131,6 +125,40 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
     setIsMyBuddyDive(false);
     setIsMyInstruction(false);
   }
+
+  useEffect(() => {
+    const getDiveCenters = async() => {
+      setIsLoading(true);
+      const { id } = await params;
+      const queryParams = {
+        userId: id,
+        dateFrom: searchParams.get('dateFrom') || '',
+        dateTo: searchParams.get('dateTo') || '',
+        logNoFrom: searchParams.get('logNoFrom') || '',
+        logNoTo: searchParams.get('logNoTo') || '',
+        country: Number(searchParams.get('country')) || '',
+        isMyBuddyDive: searchParams.get('isMyBuddyDive'),
+        isMyInstruction: searchParams.get('isMyInstruction'),
+      }
+
+      if (isFindBuddysDiveRecordsPrams(queryParams)) {
+        try {
+          const res = await findBuddysDiveRecords(queryParams)
+          setRecord(isFindBuddysDiveRecordsArray(res.data) ? res.data : []);
+          setIsError(!!res.error);
+        } catch (error) {
+          setIsError(true);
+          toast.error('Failed to find dive record');
+          console.log('error:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    getDiveCenters();
+  }, [params, searchParams]);
+
 
   return (
     <>
@@ -216,7 +244,6 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
               type="checkbox"
               name="isMyBuddyDive"
               id="isMyBuddyDive"
-              value="1"
               onChange={(e) => handleInputChange(e)}
               checked={isMyBuddyDive}
             />
@@ -227,7 +254,6 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
               type="checkbox"
               name="isMyInstruction"
               id="isMyInstruction"
-              value="1"
               onChange={(e) => handleInputChange(e)}
               checked={isMyInstruction}
             />

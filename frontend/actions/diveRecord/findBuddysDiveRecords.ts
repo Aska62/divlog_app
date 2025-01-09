@@ -12,6 +12,26 @@ type FindBuddysDiveRecordsPrams =
     Record<'isMyBuddyDive' | 'isMyInstruction', string>
   >;
 
+export const isFindBuddysDiveRecordsPrams = (val: unknown): val is FindBuddysDiveRecordsPrams => {
+  if (!val || !isObject(val) || isObjectEmpty(val)) {
+    return false;
+  }
+
+  const keys = [
+    'userId',
+    'dateFrom',
+    'dateTo',
+    'logNoFrom',
+    'logNoTo',
+    'country',
+    'isMyBuddyDive',
+    'isMyInstruction'
+  ];
+
+  return Object.keys(val).every(k => keys.includes(k));
+
+}
+
 type BuddyDiveRecordHighlight = Omit<
   DiveRecordHighlight,
   'is_draft'

@@ -683,18 +683,18 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
   }
 
   if (country) {
-    where.country_code = Number(country);
+    where.country_id = Number(country);
   }
 
   if (isMyBuddyDive) {
     where.buddy = {
-      user_id: loggedInUserId,
+      id: loggedInUserId,
     };
   }
 
   if (isMyInstruction) {
     where.supervisor = {
-      user_id: loggedInUserId,
+      id: loggedInUserId,
     };
   }
 
