@@ -738,7 +738,7 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
         log_no           : record.log_no,
         date             : record.date,
         location         : record.location,
-        country          : record.country.name,
+        country          : record.country?.name,
         is_my_buddy_dive : !!record.buddy,
         is_my_instruction: !!record.supervisor,
       }
