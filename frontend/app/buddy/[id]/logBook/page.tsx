@@ -123,6 +123,13 @@ const BuddyDiveRecordListPage: React.FC<BuddyDiveRecordListPageParams> = ({ para
   const handleClear = (e:React.MouseEvent<HTMLButtonElement>): void => {
     e.preventDefault();
     router.replace(`${pathName}`);
+    setDateFrom('');
+    setDateTo('');
+    setLogNoFrom('');
+    setLogNoTo('');
+    setCountry('');
+    setIsMyBuddyDive(false);
+    setIsMyInstruction(false);
   }
 
   return (
