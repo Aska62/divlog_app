@@ -119,46 +119,46 @@ const Header = () => {
             <MdLogout className="mx-3 h-6 hover:text-darkBlueLight hover:cursor-pointer" onClick={handleLogout} />
           </nav>
         </div>
-      </header>
 
-      {/* Mobile Menu */}
-      <div className={`fixed top-0 z-10 w-screen h-screen bg-baseWhite70 transition duration-700 ${menuOpen ? 'block opacity-100' : 'hidden opacity-0'}`}>
-        <nav className={`shadow-lg w-full sm:w-96 h-full fixed transition duration-700 ease-in-out ${menuOpen ? "right-0" : "left-full"} bg-darkBlue text-lg text-baseWhite`}>
-          <RxCross2 className="absolute top-3 right-3 h-7 w-7 hover:cursor-pointer hover:text-baseWhite70" onClick={() => setMenuOpen(false)}/>
+        {/* Mobile Menu */}
+        <div className={`fixed top-0 z-10 w-screen h-screen bg-baseWhite70 transition duration-700 ${menuOpen ? 'block opacity-100' : 'hidden opacity-0'}`}>
+          <nav className={`shadow-lg w-full sm:w-96 h-full fixed transition duration-700 ease-in-out ${menuOpen ? "right-0" : "left-full"} bg-darkBlue text-lg text-baseWhite`}>
+            <RxCross2 className="absolute top-3 right-3 h-7 w-7 hover:cursor-pointer hover:text-baseWhite70" onClick={() => setMenuOpen(false)}/>
 
-          <div className=" w-1/2 mx-auto mt-24 flex flex-col">
+            <div className=" w-1/2 mx-auto mt-24 flex flex-col">
 
-            {menuInfo.map((menu) => (
-              <div className="w-full my-6" key={menu.id}>
-              <div
-                id={String(menuContentIds[menu.id])}
-                onClick={(e) => handleMenuClick(e)}
-                className="flex items-center w-full px-2 mb-1 hover:text-baseWhite70"
-              >
-                <p className={`mr-2 rounded-sm hover:cursor-pointer ${visibleMenuBox === menuContentIds[menu.id] && 'text-baseWhite70'}`}>
-                  {menu.name}
-                </p>
-                <IoIosArrowDown className={`${visibleMenuBox === menuContentIds[menu.id] && 'rotate-180'} duration-150`} />
+              {menuInfo.map((menu) => (
+                <div className="w-full my-6" key={menu.id}>
+                <div
+                  id={String(menuContentIds[menu.id])}
+                  onClick={(e) => handleMenuClick(e)}
+                  className="flex items-center w-full px-2 mb-1 hover:text-baseWhite70"
+                >
+                  <p className={`mr-2 rounded-sm hover:cursor-pointer ${visibleMenuBox === menuContentIds[menu.id] && 'text-baseWhite70'}`}>
+                    {menu.name}
+                  </p>
+                  <IoIosArrowDown className={`${visibleMenuBox === menuContentIds[menu.id] && 'rotate-180'} duration-150`} />
+                </div>
+                {visibleMenuBox === menuContentIds[menu.id] && (
+                  <MobileMenuBox
+                    menuId={menuContentIds[menu.id]}
+                    closeMenuBox={setVisibleMenuBox}
+                    setMenuOpen={setMenuOpen}
+                  />
+                )}
               </div>
-              {visibleMenuBox === menuContentIds[menu.id] && (
-                <MobileMenuBox
-                  menuId={menuContentIds[menu.id]}
-                  closeMenuBox={setVisibleMenuBox}
-                  setMenuOpen={setMenuOpen}
-                />
-              )}
-            </div>
-            ))}
+              ))}
 
-            <div className="w-full my-6 text-left">
-              <MdLogout
-                className="w-12 px-2 mb-1 h-6 hover:text-baseWhite70 hover:cursor-pointer"
-                onClick={handleLogout}
-              />
+              <div className="w-full my-6 text-left">
+                <MdLogout
+                  className="w-12 px-2 mb-1 h-6 hover:text-baseWhite70 hover:cursor-pointer"
+                  onClick={handleLogout}
+                />
+              </div>
             </div>
-          </div>
-        </nav>
-      </div>
+          </nav>
+        </div>
+      </header>
     </>
   );
 }

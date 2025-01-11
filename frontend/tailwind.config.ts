@@ -30,6 +30,9 @@ const config: Config = {
       boxShadow: {
         'dl': '0 4px 8px 0.5px rgba(0, 0, 0, 0.3)'
       },
+      spacing: {
+        'screenWOHeader': 'calc(100vh - 3.5rem)'
+      }
     },
     fontFamily: {
       logo: ["Julius Sans One", "sans-serif"],

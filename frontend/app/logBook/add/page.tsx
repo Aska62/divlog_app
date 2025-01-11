@@ -2,6 +2,7 @@
 import { useState, useEffect, MouseEvent, useActionState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import useScroll from '@/stores/useScroll';
 import {
   DiveRecordDetail,
   DiveRecordDetailKey,
@@ -28,6 +29,9 @@ import addDiveRecord from '@/actions/diveRecord/addDiveRecord';
 
 const AddLog = () => {
   const router = useRouter();
+
+  const setIsScrollable = useScroll((state) => state.setIsScrollable);
+  const isScrollable = useScroll.getState().isScrollable;
 
   const [state, formAction, isPending] = useActionState(addDiveRecord, {});
 
@@ -124,6 +128,7 @@ const AddLog = () => {
   ): void => {
     e.preventDefault();
 
+    setIsScrollable(false);
     setModalType(modalType);
     setIsModalVisible(true);
   }
@@ -227,7 +232,7 @@ const AddLog = () => {
   }
 
   return (
-    <>
+    <div className={`${!isScrollable && 'h-screenWOHeader overflow-hidden'}`}>
       <Heading pageTitle="Add New Log" />
         <form action={formAction} className="w-11/12 max-w-xl h-fit mx-auto my-12">
           <p className="w-10/12 md:w-full text-center md:text-left mb-8 text-eyeCatchDark">* mandatory</p>
@@ -801,7 +806,7 @@ const AddLog = () => {
             />
           </div>
         )}
-    </>
+    </div>
   );
 }
 

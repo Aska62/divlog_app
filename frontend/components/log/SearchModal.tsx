@@ -3,6 +3,7 @@ import { useState, MouseEvent, useRef, useEffect } from "react";
 import { useDebouncedCallback } from 'use-debounce';
 import { RxCross2 } from "react-icons/rx";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import useScroll from '@/stores/useScroll';
 import isString from "@/utils/isString";
 import { isDiveCenterHighLight} from '@/types/diveCenterTypes';
 import { findUsers, FindUsersReturn, isUserHighLight } from "@/actions/user/findUsers";
@@ -21,7 +22,15 @@ type SearchModalProps = {
   setIsModalVisible: React.Dispatch<React.SetStateAction<false>>;
 }
 
+
 const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisible }) => {
+  const setIsScrollable = useScroll((state) => state.setIsScrollable);
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setIsScrollable(true);
+  }
+
   const targetName = type === modalTypeBuddy ? 'buddy'
     : type === modalTypeSupervisor ? 'supervisor'
     : type === modalTypeDiveCenter && 'dive center';
@@ -29,8 +38,7 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
   const [options, setOptions] = useState<FindUsersReturn | FindDiveCentersReturn>([]);
   const [keyword, setKeyword] = useState<string>('');
   const ref = useRef<HTMLDivElement>(null);
-  const onClickOutside = () => setIsModalVisible(false);
-  useClickOutside(ref, onClickOutside);
+  useClickOutside(ref, closeModal);
 
   const handleSearch = useDebouncedCallback( async(val: string): Promise<void> => {
     try {
@@ -71,7 +79,7 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
       setData({id, name});
     }
 
-    setIsModalVisible(false);
+    closeModal();
   }
 
   useEffect(() => {
@@ -84,7 +92,7 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
       className="w-10/12 max-w-xl h-80 md:h-96 mx-auto mt-36 bg-baseWhite text-darkBlue shadow-dl rounded-md flex flex-col items-center relative"
     >
       <RxCross2
-        onClick={() => setIsModalVisible(false)}
+        onClick={closeModal}
         className="absolute top-2 right-3 text-2xl hover:cursor-pointer hover:text-darkBlueLight duration-75"
       />
       <p className="text-center my-3 pt-3 font-bold text-lg">Find { targetName }</p>

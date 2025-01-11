@@ -3,6 +3,7 @@ import { useState, useEffect, MouseEvent, useActionState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { UUID } from 'crypto';
+import useScroll from '@/stores/useScroll';
 import {
   DiveRecordDetail,
   isDiveRecordDetail,
@@ -35,6 +36,9 @@ export type ChoiceStateValue = { id: string | null, name: string | null };
 
 const EditLog:React.FC<EditLogProps> = ({ params }) => {
   const router = useRouter();
+
+  const setIsScrollable = useScroll((state) => state.setIsScrollable);
+  const isScrollable = useScroll.getState().isScrollable;
 
   const [state, formAction, isPending] = useActionState(updateDiveRecord, {});
 
@@ -99,6 +103,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
   });
 
   useEffect(() => {
+    setIsScrollable(true);
     const fetchLogRecord = async () => {
       const { id } = await params;
       try {
@@ -144,7 +149,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     }
 
     fetchLogRecord();
-  }, [params]);
+  }, [params, setIsScrollable]);
 
   useEffect(() => {
     if (state.success) {
@@ -178,7 +183,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
     e: MouseEvent<HTMLButtonElement>, modalType: ModalTypes
   ): void => {
     e.preventDefault();
-
+    setIsScrollable(false);
     setModalType(modalType);
     setIsModalVisible(true);
   }
@@ -279,7 +284,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
   }
 
   return (
-    <>
+    <div className={`${!isScrollable && 'h-screenWOHeader overflow-hidden'}`}>
       { diveRecord && isDiveRecordDetail(diveRecord) ? (
       <>
         <Heading pageTitle={`Edit Log No. ${ diveRecord.log_no || '' }`} />
@@ -845,7 +850,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
         </form>
 
         { isModalVisible && (
-          <div className='w-screen h-screen fixed z-20 top-0 left-0 bg-baseWhite70'>
+          <div className={`w-screen h-screen fixed z-20 top-0 left-0 bg-baseWhite70 `}>
             <SearchModal
               type={ modalType }
               setData={
@@ -863,7 +868,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
         Loading...
       </>
       )}
-    </>
+    </div>
   );
 }
 
