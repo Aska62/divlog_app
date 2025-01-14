@@ -284,7 +284,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
   }
 
   return (
-    <div className={`${!isScrollable && 'h-screenWOHeader overflow-hidden'}`}>
+    <div className={`${!isScrollable && 'h-screenWOHeader overflow-y-hidden'}`}>
       { diveRecord && isDiveRecordDetail(diveRecord) ? (
       <>
         <Heading pageTitle={`Edit Log No. ${ diveRecord.log_no || '' }`} />
@@ -850,7 +850,7 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
         </form>
 
         { isModalVisible && (
-          <div className={`w-screen h-screen fixed z-20 top-0 left-0 bg-baseWhite70 `}>
+          <div className="w-screen h-screen fixed z-20 top-0 left-0 bg-baseWhite70">
             <SearchModal
               type={ modalType }
               setData={
@@ -864,9 +864,9 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
         )}
       </>
       ) : (
-      <>
-        Loading...
-      </>
+        <>
+          Loading...
+        </>
       )}
     </div>
   );
