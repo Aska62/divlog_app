@@ -150,6 +150,7 @@ model DiveRecord {
   dive_center_str     String?      @db.VarChar(75)
   dive_center_id      String?      @db.Uuid
   notes               String?      @db.VarChar
+  is_plan             Boolean      @default(false)
   is_draft            Boolean      @default(true)
   created_at          DateTime     @default(now())
   updated_at          DateTime     @updatedAt
