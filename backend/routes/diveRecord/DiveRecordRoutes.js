@@ -10,8 +10,8 @@ import {
   deleteDiveRecord,
   searchBuddysDiveRecords,
   getDiveRecordById,
-} from '../controllers/diveRecordController.js';
-import { protect } from '../middleware/authMiddleware.js';
+} from '../../controllers/diveRecord/diveRecordController.js';
+import { protect } from '../../middleware/authMiddleware.js';
 
 const router = express.Router();
 

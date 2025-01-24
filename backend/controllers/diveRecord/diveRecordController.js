@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { record, z } from 'zod';
-import asyncHandler from "../middleware/asyncHandler.js";
+import asyncHandler from "../../middleware/asyncHandler.js";
 
 const prisma = new PrismaClient();
 

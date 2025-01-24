@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import userRoutes from './routes/UserRoutes.js';
-import diveRecordRoutes from './routes/DiveRecordRoutes.js';
+import diveRecordRoutes from './routes/diveRecord/DiveRecordRoutes.js';
+import divePlanRoutes from './routes/diveRecord/DivePlanRoutes.js';
 import countryRoutes from './routes/CountryRoutes.js';
 import divePurposeRoutes from './routes/DivePurposeRoutes.js';
 import diveCenterRoutes from './routes/DiveCenterRoutes.js';
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/diveRecords', diveRecordRoutes);
+app.use('/api/divePlans', divePlanRoutes);
 app.use('/api/countries', countryRoutes);
 app.use('/api/divePurposes', divePurposeRoutes);
 app.use('/api/diveCenters', diveCenterRoutes);
