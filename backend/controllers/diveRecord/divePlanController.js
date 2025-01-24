@@ -22,6 +22,7 @@ const getMyDivePlans = asyncHandler(async (req, res) => {
       end_time: false,
       tankpressure_start: false,
       tankpressure_end: false,
+      is_draft: false,
       country: {
         select: { name: true },
       },

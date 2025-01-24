@@ -28,23 +28,16 @@ export const isDiveRecordHighlight = (val: unknown): val is DiveRecordHighlight 
 
   const filteredKeys = Object.keys(val).filter(key => mustKeys.includes(key));
 
-  if (filteredKeys.length !== mustKeys.length) {
-    return false;
-  }
-
-  return true;
+  return filteredKeys.length !== mustKeys.length;
 }
 
-export const isDiveRecordHighlightArray = (val:unknown): val is [DiveRecordHighlight] => {
+export const isDiveRecordHighlightArray = (val:unknown): val is DiveRecordHighlight[] => {
   if (!val || !isArray(val)) {
     return false;
   };
 
   const wrongEntry = val.filter((entry) => !isDiveRecordHighlight(entry));
-  if (wrongEntry.length > 0) {
-    return false;
-  }
-  return true;
+  return wrongEntry.length > 0;
 }
 
 // Full dive record
