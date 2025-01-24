@@ -39,7 +39,10 @@ const DiveRecordValidator = z.object({
 // @access Private
 const getMyDiveRecords = asyncHandler(async (req, res) => {
   const diveRecords = await prisma.diveRecord.findMany({
-    where: { user_id: req.user.id },
+    where: {
+      user_id: req.user.id,
+      is_plan: false
+    },
     include: {
       country: {
         select: { name: true },
@@ -80,7 +83,10 @@ const getMyDiveRecords = asyncHandler(async (req, res) => {
 // @access Private
 const getMyDiveRecordCount = asyncHandler(async (req, res) => {
   const diverInfo = await prisma.diverInfo.findUnique({
-    where: { user_id: req.user.id },
+    where: {
+      user_id: req.user.id,
+      is_plan: false,
+    },
   });
   const noRecordDiveCount = diverInfo?.norecord_dive_count || 0;
 
@@ -114,6 +120,7 @@ const getLastDiveRecord = asyncHandler(async (req, res) => {
       where: {
         user_id: req.user.id,
         is_draft: false,
+        is_plan: false,
       },
       select: {
         id: true,
@@ -151,7 +158,10 @@ const getLastDiveRecord = asyncHandler(async (req, res) => {
 const searchMyDiveRecords = asyncHandler(async (req, res) => {
   const { dateFrom, dateTo, logNoFrom, logNoTo, country, status } = req.query;
 
-  const where = { user_id: req.user.id };
+  const where = {
+    user_id: req.user.id,
+    is_plan: false,
+  };
 
   const dateConditions = (dateFrom && dateTo) ? {
       gte: new Date(dateFrom),
@@ -405,6 +415,7 @@ const getMyDiveRecordById = asyncHandler(async (req, res) => {
       where: {
         id: req.params.id,
         user_id: req.user.id,
+        is_plan: false,
       },
       include: {
         country: {
@@ -658,6 +669,7 @@ const searchBuddysDiveRecords = asyncHandler(async (req, res) => {
   const where = {
     user_id: req.params.userId,
     is_draft: false,
+    is_plan: false,
   };
 
   const dateConditions = (dateFrom && dateTo) ? {
@@ -759,6 +771,7 @@ const getDiveRecordById = asyncHandler(async (req, res) => {
       where: {
         id: req.params.recordId,
         user_id: req.params.userId,
+        is_plan: false,
       },
       include: {
         country: {
