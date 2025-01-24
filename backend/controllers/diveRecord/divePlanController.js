@@ -9,6 +9,51 @@ const prisma = new PrismaClient();
 // @access Private
 const getMyDivePlans = asyncHandler(async (req, res) => {
   console.log('getMyDivePlans func');
+  const divePlans = await prisma.diveRecord.findMany({
+    where: {
+      user_id: req.user.id,
+      is_plan: true
+    },
+    include: {
+      weather: false,
+      surface_temperature: false,
+      water_temperature: false,
+      visibility: false,
+      end_time: false,
+      tankpressure_start: false,
+      tankpressure_end: false,
+      country: {
+        select: { name: true },
+      },
+      purpose: {
+        select: { name: true },
+      },
+      buddy: {
+        select: {
+          id: true,
+          divlog_name: true,
+        },
+      },
+      supervisor: {
+        select: {
+          id: true,
+          divlog_name: true,
+        }
+      },
+      dive_center: {
+        select: {
+          id: true,
+          name: true,
+        }
+      }
+    }
+  });
+
+  if (divePlans) {
+    res.status(200).json(divePlans);
+  } else {
+    res.status(400).send('Failed to find dive plans');
+  }
 });
 
 // @desc Create dive plan of logged in user
