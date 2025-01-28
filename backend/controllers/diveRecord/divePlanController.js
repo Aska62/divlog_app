@@ -8,7 +8,6 @@ const prisma = new PrismaClient();
 // @route GET /api/divePlans
 // @access Private
 const getMyDivePlans = asyncHandler(async (req, res) => {
-  console.log('getMyDivePlans func');
   const divePlans = await prisma.diveRecord.findMany({
     where: {
       user_id: req.user.id,

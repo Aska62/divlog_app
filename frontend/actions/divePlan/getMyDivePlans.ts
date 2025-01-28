@@ -1,7 +1,7 @@
 import axios from "axios";
-import { isDivePlanHighlightArray, DivePlanHighLight } from "@/types/divePlantypes";
+import { isDivePlanHighlightArray, DivePlanHighLight } from "@/types/divePlanTypes";
 
-export async function getMyDivePlans():Promise<DivePlanHighLight[] | void> {
+export async function getMyDivePlans(): Promise<DivePlanHighLight[] | void> {
   const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/divePlans`,
     { withCredentials: true }
     )

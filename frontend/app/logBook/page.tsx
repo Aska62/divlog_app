@@ -256,7 +256,7 @@ const LogBokPage = () => {
                 date={record.date}
                 location={record.location}
                 is_draft={record.is_draft}
-                country_name={record.country}
+                country_name={record.country?.name}
                 is_visitor={false}
               />
             ))}

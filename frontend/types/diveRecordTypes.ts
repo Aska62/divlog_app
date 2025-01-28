@@ -12,7 +12,7 @@ export type DiveRecordHighlight = {
   date                : Date,
   location?           : string,
   is_draft            : boolean,
-  country?            : string,
+  country?            : { name: string },
 }
 
 export const isDiveRecordHighlight = (val: unknown): val is DiveRecordHighlight => {
