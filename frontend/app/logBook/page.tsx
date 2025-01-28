@@ -15,7 +15,7 @@ const LogBokPage = () => {
   const pathName = usePathname();
   const router = useRouter();
 
-  const [diveRecords, setDiveRecords] = useState<[DiveRecordHighlight?]>([]);
+  const [diveRecords, setDiveRecords] = useState<DiveRecordHighlight[]>([]);
   const [dateFrom, setDateFrom] = useState<string>(searchParams.get('dateFrom') || '');
   const [dateTo, setDateTo] = useState<string>(searchParams.get('dateTo') || '');
   const [logNoFrom, setLogNoFrom] = useState<string>(searchParams.get('logNoFrom') || '');
