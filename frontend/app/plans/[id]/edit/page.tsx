@@ -23,16 +23,28 @@ import SearchModal from '@/components/log/SearchModal';
 import UpdateLogBtn from '@/components/log/UpdateLogBtn';
 import { LogErrMsg } from '@/app/logBook/[id]/edit/page';
 
-type EditPlanPageProps = {
-  params: Promise<{ id: UUID }>
-}
-
 export type ModalTypes = 1 | 2 | 3;
 export const modalTypeBuddy = 1;
 export const modalTypeSupervisor = 2;
 export const modalTypeDiveCenter = 3;
 
 export type ChoiceStateValue = { id: string | null, name: string | null };
+
+export type PlanErrMsg = Omit<LogErrMsg,
+'log_no'
+| 'weather'
+| 'surface_temperature'
+| 'water_temperature'
+| 'visibility'
+| 'end_time'
+| 'tankpressure_start'
+| 'tankpressure_end'
+| 'is_draft'
+>;
+
+type EditPlanPageProps = {
+  params: Promise<{ id: UUID }>
+}
 
 const EditDivePlanPage:React.FC<EditPlanPageProps> = ({ params }) => {
   const router = useRouter();
@@ -67,18 +79,6 @@ const EditDivePlanPage:React.FC<EditPlanPageProps> = ({ params }) => {
   const [modalType, setModalType] = useState<ModalTypes | 0>(1);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  type PlanErrMsg = Omit<LogErrMsg,
-      'log_no'
-      | 'weather'
-      | 'surface_temperature'
-      | 'water_temperature'
-      | 'visibility'
-      | 'end_time'
-      | 'tankpressure_start'
-      | 'tankpressure_end'
-      | 'is_draft'
-    >;
 
   const [isInputError, setIsInputError] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<PlanErrMsg>({
