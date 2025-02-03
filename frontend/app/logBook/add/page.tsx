@@ -3,10 +3,7 @@ import { useState, useEffect, MouseEvent, useActionState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import useScroll from '@/stores/useScroll';
-import {
-  DiveRecordDetail,
-  DiveRecordDetailKey,
-} from '@/types/diveRecordTypes';
+import { DiveRecordDetail } from '@/types/diveRecordTypes';
 import { getNumDate } from "@/utils/dateTime/formatDate";
 import formatTime from '@/utils/dateTime/formatTime';
 import combineDateTime from '@/utils/dateTime/combineDateTime';
@@ -23,7 +20,8 @@ import {
   modalTypeBuddy,
   modalTypeSupervisor,
   modalTypeDiveCenter,
-  ChoiceStateValue
+  ChoiceStateValue,
+  LogErrMsg
 } from '@/app/logBook/[id]/edit/page';
 import addDiveRecord from '@/actions/diveRecord/addDiveRecord';
 
@@ -59,14 +57,8 @@ const AddLog = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalTypes | 0>(1);
 
-  type ErrMsg = Record<
-    Exclude<DiveRecordDetailKey,
-      'id' | 'user_id' | 'created_at' | 'updated_at' | 'country' | 'purpose' | 'buddy' | 'supervisor' | 'dive_center'
-    >, string
-  >;
-
   const [isInputError, setIsInputError] = useState<boolean>(true);
-  const [errorMsg, setErrorMsg] = useState<ErrMsg>({
+  const [errorMsg, setErrorMsg] = useState<LogErrMsg>({
     log_no: '',
     date: '',
     location: '',
