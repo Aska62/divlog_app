@@ -59,7 +59,7 @@ const getMyDivePlans = asyncHandler(async (req, res) => {
 // @desc Create dive plan of logged in user
 // @route POST /api/divePlans
 // @access Private
-const addMyDiveRecords = asyncHandler(async (req, res) => {
+const addMyDivePlan = asyncHandler(async (req, res) => {
   console.log('addMyDiveRecords func');
 });
 
@@ -121,7 +121,7 @@ const copyDivePlanById = asyncHandler(async (req, res) => {
 
 export {
   getMyDivePlans,
-  addMyDiveRecords,
+  addMyDivePlan,
   getMyDivePlanById,
   updateMyDivePlan,
   deleteMyDivePlanById,

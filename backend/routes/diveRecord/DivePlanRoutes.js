@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   getMyDivePlans,
-  addMyDiveRecords,
+  addMyDivePlan,
   getMyDivePlanById,
   updateMyDivePlan,
   deleteMyDivePlanById,
@@ -15,7 +15,7 @@ import { protect } from '../../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.route('/').get(protect, getMyDivePlans).post(protect, addMyDiveRecords);
+router.route('/').get(protect, getMyDivePlans).post(protect, addMyDivePlan);
 router.route('/saveAsLog/:id').put(protect, saveMyDivePlanAsLog);
 router.route('/share/cancel/:id').put(protect, cancelSharingMyDivePlan);
 router.route('/share/:id').post(protect, shareMyDivePlan);
