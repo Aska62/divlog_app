@@ -27,8 +27,7 @@ export const isDiveRecordHighlight = (val: unknown): val is DiveRecordHighlight 
   ];
 
   const filteredKeys = Object.keys(val).filter(key => mustKeys.includes(key));
-
-  return filteredKeys.length !== mustKeys.length;
+  return filteredKeys.length === mustKeys.length;
 }
 
 export const isDiveRecordHighlightArray = (val:unknown): val is DiveRecordHighlight[] => {

@@ -85,7 +85,6 @@ const getMyDiveRecordCount = asyncHandler(async (req, res) => {
   const diverInfo = await prisma.diverInfo.findUnique({
     where: {
       user_id: req.user.id,
-      is_plan: false,
     },
   });
   const noRecordDiveCount = diverInfo?.norecord_dive_count || 0;
@@ -95,6 +94,7 @@ const getMyDiveRecordCount = asyncHandler(async (req, res) => {
       where: {
         user_id: req.user.id,
         is_draft: false, // exclude draft
+        is_plan: false, // exclude plan
       },
       _count: { id: true }
     });
@@ -112,7 +112,7 @@ const getMyDiveRecordCount = asyncHandler(async (req, res) => {
 });
 
 // @desc Get dive record of logged in user
-// @route GET /api/diveRecords
+// @route GET /api/diveRecords/last
 // @access Private
 const getLastDiveRecord = asyncHandler(async (req, res) => {
   try {
