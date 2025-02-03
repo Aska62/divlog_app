@@ -69,7 +69,15 @@ const getMyDivePlans = asyncHandler(async (req, res) => {
           name: true,
         }
       }
-    }
+    },
+    orderBy: [
+      {
+        date: 'asc',
+      },
+      {
+        start_time: 'asc',
+      },
+    ]
   });
 
   if (divePlans) {
