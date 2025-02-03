@@ -28,7 +28,7 @@ export type DivePlanStateType = Partial<DivePlanDetail> & {
     string
   >>,
   message?: string,
-  diveRecordId?: boolean,
+  divePlanId?: boolean,
 }
 
 async function updateDivePlan(_previousState: DivePlanStateType, formData: FormData):Promise<DivePlanStateType> {

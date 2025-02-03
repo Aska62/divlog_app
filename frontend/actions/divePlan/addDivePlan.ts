@@ -37,7 +37,7 @@ async function addDivePlan(_previousState: DivePlanStateType, formData: FormData
     return {
       success: true,
       message: 'Successfully added new Plan',
-      diveRecordId: res.data.id
+      divePlanId: res.data.id
     }
 
   } catch (error) {
