@@ -36,6 +36,8 @@ export type DivePlanDetail = {
   user_id             : string,
   date                : Date,
   location?           : string,
+  country_id?         : string,
+  purpose_id?         : string,
   course?             : string,
   max_depth?          : number,
   start_time?         : Date,

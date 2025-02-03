@@ -99,8 +99,6 @@ const getMyDivePlanById = asyncHandler(async (req, res) => {
       },
       include: {
         log_no: false,
-        country_id: false,
-        purpose_id: false,
         weather: false,
         surface_temperature: false,
         water_temperature: false,

@@ -23,10 +23,6 @@ import DivePurposeOptions, { DivePurposeOptionList } from '@/components/log/Dive
 import SearchModal from '@/components/log/SearchModal';
 import UpdateLogBtn from '@/components/log/UpdateLogBtn';
 
-type EditLogProps = {
-  params: Promise<{ id: UUID }>
-}
-
 export type ModalTypes = 1 | 2 | 3;
 export const modalTypeBuddy = 1;
 export const modalTypeSupervisor = 2;
@@ -34,6 +30,16 @@ export const modalTypeDiveCenter = 3;
 
 export type ChoiceStateValue = { id: string | null, name: string | null };
 
+export type LogErrMsg = Record<
+  Exclude<
+    DiveRecordDetailKey,
+    'id' | 'user_id' | 'created_at' | 'updated_at' | 'country' | 'purpose' | 'buddy' | 'supervisor' | 'dive_center'
+  >, string
+>;
+
+type EditLogProps = {
+  params: Promise<{ id: UUID }>
+}
 const EditLog:React.FC<EditLogProps> = ({ params }) => {
   const router = useRouter();
 
@@ -66,14 +72,8 @@ const EditLog:React.FC<EditLogProps> = ({ params }) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [modalType, setModalType] = useState<ModalTypes | 0>(1);
 
-  type ErrMsg = Record<
-    Exclude<DiveRecordDetailKey,
-      'id' | 'user_id' | 'created_at' | 'updated_at' | 'country' | 'purpose' | 'buddy' | 'supervisor' | 'dive_center'
-    >, string
-  >;
-
   const [isInputError, setIsInputError] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<ErrMsg>({
+  const [errorMsg, setErrorMsg] = useState<LogErrMsg>({
     log_no: '',
     date: '',
     location: '',
