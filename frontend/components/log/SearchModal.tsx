@@ -9,10 +9,8 @@ import { isDiveCenterHighLight} from '@/types/diveCenterTypes';
 import { findUsers, FindUsersReturn, isUserHighLight } from "@/actions/user/findUsers";
 import { findDiveCenters, FindDiveCentersReturn } from "@/actions/diveCenter/findDiveCenters";
 import {
+  diveRecordModalTypes,
   ModalTypes,
-  modalTypeBuddy,
-  modalTypeSupervisor,
-  modalTypeDiveCenter,
   ChoiceStateValue,
 } from "@/app/logBook/[id]/edit/page";
 
@@ -31,9 +29,9 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
     setIsScrollable(true);
   }
 
-  const targetName = type === modalTypeBuddy ? 'buddy'
-    : type === modalTypeSupervisor ? 'supervisor'
-    : type === modalTypeDiveCenter && 'dive center';
+  const targetName = type === diveRecordModalTypes.buddy ? 'buddy'
+    : type === diveRecordModalTypes.supervisor ? 'supervisor'
+    : type === diveRecordModalTypes.diveCenter && 'dive center';
 
   const [options, setOptions] = useState<FindUsersReturn | FindDiveCentersReturn>([]);
   const [keyword, setKeyword] = useState<string>('');
@@ -42,7 +40,7 @@ const SearchModal:React.FC<SearchModalProps> = ({ type, setData, setIsModalVisib
 
   const handleSearch = useDebouncedCallback( async(val: string): Promise<void> => {
     try {
-      const res = (type === modalTypeDiveCenter)
+      const res = (type === diveRecordModalTypes.diveCenter)
         ? await findDiveCenters({
           keyword: val,
           country: '',

@@ -22,11 +22,7 @@ import DivePurposeOptions, { DivePurposeOptionList } from '@/components/log/Dive
 import SearchModal from '@/components/log/SearchModal';
 import UpdateLogBtn from '@/components/log/UpdateLogBtn';
 import { LogErrMsg } from '@/app/logBook/[id]/edit/page';
-
-export type ModalTypes = 1 | 2 | 3;
-export const modalTypeBuddy = 1;
-export const modalTypeSupervisor = 2;
-export const modalTypeDiveCenter = 3;
+import { diveRecordModalTypes, ModalTypes } from '@/app/logBook/[id]/edit/page';
 
 export type ChoiceStateValue = { id: string | null, name: string | null };
 
@@ -244,15 +240,15 @@ const EditDivePlanPage:React.FC<EditPlanPageProps> = ({ params }) => {
     e.preventDefault();
 
     switch(modalType) {
-      case modalTypeBuddy:
+      case diveRecordModalTypes.buddy:
         setBuddyRef({id: '', name: ''});
         setDivePlan({ ...divePlan, ...{ buddy_ref: '' } });
         break;
-      case modalTypeSupervisor:
+      case diveRecordModalTypes.supervisor:
         setSupervisorRef({id: '', name: ''});
         setDivePlan({ ...divePlan, ...{ supervisor_ref: '' } });
         break;
-      case modalTypeDiveCenter:
+      case diveRecordModalTypes.diveCenter:
         setDiveCenterRef({id: '', name: ''});
         setDivePlan({ ...divePlan, ...{ dive_center_id: '' } });
         break;
@@ -467,14 +463,14 @@ const EditDivePlanPage:React.FC<EditPlanPageProps> = ({ params }) => {
                     <div className='w-full flex justify-between'>
                       <div className='flex flex-row justify-start h-6 mt-2'>
                         <button
-                          onClick={(e) => openSearchModal(e, modalTypeBuddy)}
+                          onClick={(e) => openSearchModal(e, diveRecordModalTypes.buddy)}
                           disabled={!isBuddyById}
                           className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
                         >
                           Search
                         </button>
                         <button
-                          onClick={(e) => clearSelect(e, modalTypeBuddy)}
+                          onClick={(e) => clearSelect(e, diveRecordModalTypes.buddy)}
                           disabled={!isBuddyById}
                           className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
                         >
@@ -537,14 +533,14 @@ const EditDivePlanPage:React.FC<EditPlanPageProps> = ({ params }) => {
                     <div className='w-full flex justify-between'>
                       <div className='flex flex-row justify-start h-6 mt-2'>
                         <button
-                          onClick={(e) => openSearchModal(e, modalTypeSupervisor)}
+                          onClick={(e) => openSearchModal(e, diveRecordModalTypes.supervisor)}
                           disabled={!isSupervisorById}
                           className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
                         >
                           Search
                         </button>
                         <button
-                          onClick={(e) => clearSelect(e, modalTypeSupervisor)}
+                          onClick={(e) => clearSelect(e, diveRecordModalTypes.supervisor)}
                           disabled={!isSupervisorById}
                           className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
                         >
@@ -607,14 +603,14 @@ const EditDivePlanPage:React.FC<EditPlanPageProps> = ({ params }) => {
                     <div className='w-full flex justify-between'>
                       <div className='flex flex-row justify-start h-6 mt-2'>
                         <button
-                          onClick={(e) => openSearchModal(e, modalTypeDiveCenter)}
+                          onClick={(e) => openSearchModal(e, diveRecordModalTypes.diveCenter)}
                           disabled={!isDiveCenterById}
                           className='rounded-md md:w-fit px-2 mr-2 bg-red-400 text-baseWhite'
                         >
                           Search
                         </button>
                         <button
-                          onClick={(e) => clearSelect(e, modalTypeDiveCenter)}
+                          onClick={(e) => clearSelect(e, diveRecordModalTypes.diveCenter)}
                           disabled={!isDiveCenterById}
                           className='rounded-md md:w-fit px-2 bg-gray-500 text-baseWhite'
                         >
@@ -677,9 +673,9 @@ const EditDivePlanPage:React.FC<EditPlanPageProps> = ({ params }) => {
               <SearchModal
                 type={ modalType }
                 setData={
-                  modalType === modalTypeBuddy ? setBuddyRef
-                  : modalType === modalTypeSupervisor ? setSupervisorRef
-                  : modalType === modalTypeDiveCenter && setDiveCenterRef
+                  modalType === diveRecordModalTypes.buddy ? setBuddyRef
+                  : modalType === diveRecordModalTypes.supervisor ? setSupervisorRef
+                  : modalType === diveRecordModalTypes.diveCenter && setDiveCenterRef
                 }
                 setIsModalVisible={() => setIsModalVisible(false)}
               />
