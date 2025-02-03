@@ -67,7 +67,67 @@ const addMyDivePlan = asyncHandler(async (req, res) => {
 // @route GET /api/divePlans/:id
 // @access Private
 const getMyDivePlanById = asyncHandler(async (req, res) => {
-  console.log('getMyDivePlanById func');
+  try {
+    const divePlan = await prisma.diveRecord.findUnique({
+      where: {
+        id: req.params.id,
+        user_id: req.user.id,
+        is_plan: true,
+      },
+      include: {
+        log_no: false,
+        country_id: false,
+        purpose_id: false,
+        weather: false,
+        surface_temperature: false,
+        water_temperature: false,
+        visibility: false,
+        end_time: false,
+        tankpressure_start: false,
+        tankpressure_end: false,
+        buddy_ref: false,
+        supervisor_ref: false,
+        dive_center_id: false,
+        is_plan: false,
+        is_draft: false,
+        country: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        purpose: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        buddy: {
+          select: {
+            id: true,
+            divlog_name: true,
+          },
+        },
+        supervisor: {
+          select: {
+            id: true,
+            divlog_name: true,
+          }
+        },
+        dive_center: {
+          select: {
+            id: true,
+            name: true,
+          }
+        }
+      },
+    });
+
+    res.status(200).json(divePlan || {});
+  } catch (error) {
+    console.log('Error while finding a plan', error);
+    res.status(400).send('Failed to find a plan');
+  }
 });
 
 // @desc Update dive plan of logged in user
