@@ -56,7 +56,6 @@ async function updateDivePlan(_previousState: DivePlanStateType, formData: FormD
     notes              : formData.get('notes'),
   }
 
-  console.log('updateDivePlan func', data)
   try {
     const res = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/divePlans/${id}`,
       { ...data },
