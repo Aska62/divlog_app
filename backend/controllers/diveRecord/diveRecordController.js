@@ -415,7 +415,6 @@ const getMyDiveRecordById = asyncHandler(async (req, res) => {
       where: {
         id: req.params.id,
         user_id: req.user.id,
-        is_plan: false,
       },
       include: {
         country: {
