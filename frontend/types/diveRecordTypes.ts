@@ -36,7 +36,8 @@ export const isDiveRecordHighlightArray = (val:unknown): val is DiveRecordHighli
   };
 
   const wrongEntry = val.filter((entry) => !isDiveRecordHighlight(entry));
-  return wrongEntry.length > 0;
+
+  return wrongEntry.length === 0;
 }
 
 // Full dive record
