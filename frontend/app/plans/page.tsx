@@ -1,11 +1,11 @@
 'use client';
 import { useState, useEffect } from "react";
-// import { useDebouncedCallback } from 'use-debounce';
 import { toast } from "react-toastify";
 import { getMyDivePlans } from "@/actions/divePlan/getMyDivePlans";
 import { DivePlanHighLight, isDivePlanHighlightArray } from "@/types/divePlanTypes"
 import Heading from "@/components/Heading";
 import PlanCard from "@/components/plans/PlanCard";
+import AddNewLogBtn from "@/components/log/AddNewLogBtn";
 
 const Plans = () => {
     const [divePlans, setDivePlans] = useState<DivePlanHighLight[]>([]);
@@ -35,6 +35,9 @@ const Plans = () => {
   return (
     <>
       <Heading pageTitle="Dive Plans" />
+      <div className="w-10/12 max-w-xl mx-auto text-right">
+        <AddNewLogBtn isPlan={true} />
+      </div>
 
       <div className="w-8/12 md:w-1/3 max-w-md h-fit mx-auto mt-6 mb-12 ">
         { isError ? (
