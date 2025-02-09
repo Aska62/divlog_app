@@ -6,6 +6,7 @@ import { UUID } from 'crypto';
 import { toast } from 'react-toastify';
 import { IoIosArrowForward } from "react-icons/io";
 import isObjectEmpty from "@/utils/isObjectEmpty";
+import useUser from '@/stores/useUser';
 import { getBuddyProfile, GetBuddyProfileReturn } from '@/actions/user/getBuddyProfile';
 import followUser from '@/actions/userFollow/followUser';
 import unfollowUser from '@/actions/userFollow/unfollowUser';
@@ -19,15 +20,11 @@ type BuddyPageParams = {
 const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
   const pathName = usePathname();
 
-  const [loggedInUserId, setLoggedInUserId] = useState<UUID | null>(null);
+  const loggedInUserId = useUser.getState().userId;
+
   const [user, setUser] = useState<Partial<GetBuddyProfileReturn>>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
-
-  useEffect(() => {
-    const userInfo = window.localStorage.getItem('userInfo');
-    setLoggedInUserId(userInfo ? JSON.parse(userInfo).id : null);
-  }, []);
 
   useEffect(() => {
     const getUser = async() => {
