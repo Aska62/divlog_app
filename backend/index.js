@@ -12,6 +12,7 @@ import organizationRoutes from './routes/OrganizationRoutes.js';
 import diverInfoRoutes from './routes/DiverInfoRoutes.js';
 import userFollowRoute from './routes/UserFollowRoute.js';
 import diveCenterFollowRoute from './routes/DiveCenterFollowRoute.js';
+import authRoute from './routes/AuthRoute.js';
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use('/api/organizations', organizationRoutes);
 app.use('/api/diverInfo', diverInfoRoutes);
 app.use('/api/userFollow', userFollowRoute);
 app.use('/api/diveCenterFollow', diveCenterFollowRoute);
+app.use('/api/auth', authRoute);
 
 // Start server
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

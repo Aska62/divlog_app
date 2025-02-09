@@ -1,6 +1,7 @@
 import { UUID } from 'crypto';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import checkAuth from '@/actions/checkAuth';
 
 export type UserInfo = {
   id?: string,
@@ -48,11 +49,11 @@ const useUser = create(
     (set) => ({
       isAuth: false,
       userId: null,
-      setIsAuth: () => {
-        const userSession = localStorage.getItem('userInfo');
+      setIsAuth: async() => {
+        const userId = await checkAuth();
         set({
-          isAuth: !!userSession,
-          userId: userSession ? JSON.parse(userSession).id : null,
+          isAuth: !!userId,
+          userId: userId || null,
         });
       },
     }),
