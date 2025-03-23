@@ -5,10 +5,13 @@ import { toast } from 'react-toastify';
 import { IoIosArrowForward } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import { BsPlusCircle } from "react-icons/bs";
+import formatDate from '@/utils/dateTime/formatDate';
 import { DiverInfoType, DiverInfoInputFields } from '@/types/diverInfoTypes';
+import { isDiveRecordHighlight, DiveRecordHighlight } from '@/types/diveRecordTypes';
 import { getDiverInfo } from '@/actions/diverInfo/getDiverInfo';
 import updateDiverInfo from '@/actions/diverInfo/updateDiverInfo';
 import { getRecordCount } from '@/actions/diveRecord/getRecordCount';
+import { getMyLastRecord } from '@/actions/diveRecord/getMyLastRecord';
 import { UNIT_IMPERIAL, UNIT_METRIC } from '@/constants/unit';
 import isNumString from '@/utils/isNumString';
 import {
@@ -28,8 +31,19 @@ const DiverInfoPage = () => {
   const [loggedDiveCount, setLoggedDiveCount] = useState<number>(0);
   const [editing, setEditing] = useState<DiverInfoInputFields | ''>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [lastDive, setLastDive] = useState<DiveRecordHighlight | Record<string, void>>({});
 
   const [state, formAction, isPending] = useActionState(updateDiverInfo, {});
+
+  useEffect(() => {
+    const getLastRecord = async() => {
+      const lastRecord = await getMyLastRecord();
+      if (isDiveRecordHighlight(lastRecord)) {
+        setLastDive(lastRecord);
+      }
+    }
+    getLastRecord();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,6 +189,14 @@ const DiverInfoPage = () => {
           className="w-2/3 max-w-sm h-fit mx-auto mt-6 mb-12"
         >
           {diverInfo.id && <input type="hidden" name='id' value={diverInfo.id} />}
+
+          {/* Last dive */}
+          {!!lastDive.date && (
+            <div className="items-baseline my-14 md:flex">
+              <p className="text-sm mr-4 md:w-36">Last dive: </p>
+              <p className="text-lg">{formatDate(lastDive.date)}</p>
+            </div>
+          )}
 
           {/* Logged dive */}
           <div className="items-baseline my-14 md:flex">
