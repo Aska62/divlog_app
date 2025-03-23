@@ -6,10 +6,13 @@ import { UUID } from 'crypto';
 import { toast } from 'react-toastify';
 import { IoIosArrowForward } from "react-icons/io";
 import isObjectEmpty from "@/utils/isObjectEmpty";
+import formatDate from '@/utils/dateTime/formatDate';
+import { isDiveRecordHighlight, DiveRecordHighlight } from '@/types/diveRecordTypes';
 import useUser from '@/stores/useUser';
 import { getBuddyProfile, GetBuddyProfileReturn } from '@/actions/user/getBuddyProfile';
 import followUser from '@/actions/userFollow/followUser';
 import unfollowUser from '@/actions/userFollow/unfollowUser';
+import { getLastRecordByUserId } from '@/actions/diveRecord/getLastRecordByUserId'
 import Heading from "@/components/Heading";
 import FollowIcon, { statusFollowing, statusFollowed } from '@/components/buddies/FollowIcon';
 
@@ -25,6 +28,7 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
   const [user, setUser] = useState<Partial<GetBuddyProfileReturn>>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
+  const [lastDive, setLastDive] = useState<DiveRecordHighlight | Record<string, void>>({});
 
   useEffect(() => {
     const getUser = async() => {
@@ -54,6 +58,17 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
       getUser();
     }
   }, [params, loggedInUserId, user]);
+
+  useEffect(() => {
+    const getLastRecord = async() => {
+      const { id } = await params;
+      const lastRecord = await getLastRecordByUserId({userId: id});
+      if (isDiveRecordHighlight(lastRecord)) {
+        setLastDive(lastRecord);
+      }
+    }
+    getLastRecord();
+  }, [params]);
 
   const onFollowBtnClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -142,6 +157,14 @@ const BuddyDetailPage:React.FC<BuddyPageParams> = ({ params }) => {
               <p className="text-sm mr-2">Total dives: </p>
               <p className="text-lg">{user.log_count}</p>
             </div>
+
+           {/* Last dive */}
+            {!!lastDive.date && (
+              <div className="items-baseline mb-8">
+                <p className="text-sm mr-2">Last dive: </p>
+                <p className="text-lg">{formatDate(lastDive.date)}</p>
+              </div>
+            )}
 
             {/* Certificate */}
             <div className="items-baseline mb-8">

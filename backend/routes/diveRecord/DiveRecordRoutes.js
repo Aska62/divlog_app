@@ -3,6 +3,7 @@ import {
   getMyDiveRecords,
   getMyDiveRecordCount,
   getLastDiveRecord,
+  getLastDiveRecordByUserId,
   searchMyDiveRecords,
   addDiveRecord,
   updateDiveRecord,
@@ -16,6 +17,7 @@ import { protect } from '../../middleware/authMiddleware.js';
 const router = express.Router();
 
 router.route('/').get(protect, getMyDiveRecords).post(protect, addDiveRecord);
+router.route('/last/:userId').get(protect, getLastDiveRecordByUserId);
 router.route('/last').get(protect, getLastDiveRecord);
 router.route('/count').get(protect, getMyDiveRecordCount);
 router.route('/search').get(protect, searchMyDiveRecords);
