@@ -243,7 +243,7 @@ const updateUser = async(req, res) => {
     license_name,
     email,
     certification,
-    cert_org_id: Number(cert_org_id),
+    cert_org_id: Number(cert_org_id) > 0 ? Number(cert_org_id) : cert_org_id,
   });
 
   if (!validated.success) {
